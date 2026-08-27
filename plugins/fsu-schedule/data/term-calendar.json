@@ -1,0 +1,153 @@
+[
+  {
+    "termCode": "2026-fall",
+    "displayName": "Fall 2026",
+    "timezone": "America/New_York",
+    "startDate": "2026-08-24",
+    "endDate": "2026-12-11",
+    "classesBeginDate": "2026-08-24",
+    "classesEndDate": "2026-12-04",
+    "deadlines": [
+      {
+        "id": "drop-add-ends",
+        "type": "drop-add",
+        "date": "2026-08-27",
+        "description": "Last day to drop/add and have fees adjusted. Drop/Add began 12:01 a.m. on Aug. 22 and ends at 11:59 p.m. on Aug. 27. Students are liable for all fees for classes remaining on their schedules at 11:59 p.m.",
+        "time": "23:59",
+        "url": "https://registrar.fsu.edu/fall-2026-academic-calendar"
+      },
+      {
+        "id": "late-registration-ends",
+        "type": "late-registration",
+        "date": "2026-08-27",
+        "description": "Last day of Late Registration ($100.00 late registration fee). Also the last day to add a class without academic dean’s permission, and the last day to cancel enrollment and have fees removed.",
+        "url": "https://registrar.fsu.edu/fall-2026-academic-calendar"
+      },
+      {
+        "id": "tuition-payment",
+        "type": "tuition-payment",
+        "date": "2026-09-04",
+        "description": "Last day to pay or defer tuition, housing, or fees for all students without a late payment fee.",
+        "url": "https://registrar.fsu.edu/fall-2026-academic-calendar"
+      },
+      {
+        "id": "graduation-application",
+        "type": "graduation-application",
+        "date": "2026-09-11",
+        "description": "End of the Fall 2026 graduation application period, which opened Sept. 1.",
+        "url": "https://registrar.fsu.edu/fall-2026-academic-calendar"
+      },
+      {
+        "id": "spring-2027-registration-opens",
+        "type": "registration-opens",
+        "date": "2026-10-05",
+        "description": "Registration for Spring 2027 begins.",
+        "url": "https://registrar.fsu.edu/fall-2026-academic-calendar"
+      },
+      {
+        "id": "drop-without-grade",
+        "type": "drop-without-penalty",
+        "date": "2026-10-09",
+        "description": "End of the Seventh Week of the Term. Last day to drop a course without receiving a grade. Also the last day to reduce course load without the permission of an academic dean; dean’s permission is required to drop below 12 credit hours.",
+        "url": "https://registrar.fsu.edu/fall-2026-academic-calendar"
+      },
+      {
+        "id": "su-grading-election",
+        "type": "pass-fail-election",
+        "date": "2026-10-09",
+        "description": "Last day to submit a form requesting S/U grading, or to change an S/U option back to a regular grade.",
+        "url": "https://registrar.fsu.edu/fall-2026-academic-calendar"
+      },
+      {
+        "id": "withdraw-without-grade",
+        "type": "term-withdrawal",
+        "date": "2026-10-09",
+        "description": "Last day to withdraw from school without receiving a grade. Distinct from the December 4 deadline, which is the last day to withdraw at all.",
+        "url": "https://registrar.fsu.edu/fall-2026-academic-calendar"
+      },
+      {
+        "id": "late-drop-with-dean",
+        "type": "course-withdrawal",
+        "date": "2026-11-13",
+        "description": "End of the Twelfth Week of the Term. Deadline for a late drop with an academic dean’s permission.",
+        "url": "https://registrar.fsu.edu/fall-2026-academic-calendar"
+      },
+      {
+        "id": "final-withdrawal",
+        "type": "term-withdrawal",
+        "date": "2026-12-04",
+        "description": "Last Day of Classes. Last day to officially withdraw from the University, and last day to petition an academic dean for a reduction in course load.",
+        "url": "https://registrar.fsu.edu/fall-2026-academic-calendar"
+      },
+      {
+        "id": "incomplete-extensions",
+        "type": "incomplete-resolution",
+        "date": "2026-12-11",
+        "description": "Last day to submit extensions for incomplete (I) grades.",
+        "time": "16:00",
+        "url": "https://registrar.fsu.edu/fall-2026-academic-calendar"
+      },
+      {
+        "id": "final-grades-due",
+        "type": "final-grades-due",
+        "date": "2026-12-15",
+        "description": "Online grades due from instructors. Grades become available online Dec. 16.",
+        "time": "16:00",
+        "url": "https://registrar.fsu.edu/fall-2026-academic-calendar"
+      }
+    ],
+    "nonClassDays": [
+      {
+        "id": "labor-day",
+        "name": "Labor Day",
+        "type": "holiday",
+        "startDate": "2026-09-07",
+        "endDate": "2026-09-07",
+        "classesCancelled": true
+      },
+      {
+        "id": "veterans-day",
+        "name": "Veterans’ Day Observed",
+        "type": "holiday",
+        "startDate": "2026-11-11",
+        "endDate": "2026-11-11",
+        "classesCancelled": true
+      },
+      {
+        "id": "homecoming-friday",
+        "name": "Homecoming — no classes after 12:00 p.m. on Friday, November 20",
+        "type": "no-class-day",
+        "startDate": "2026-11-20",
+        "endDate": "2026-11-20",
+        "classesCancelled": false
+      },
+      {
+        "id": "thanksgiving",
+        "name": "Thanksgiving Day Holiday",
+        "type": "holiday",
+        "startDate": "2026-11-25",
+        "endDate": "2026-11-27",
+        "classesCancelled": true
+      }
+    ],
+    "finals": {
+      "startDate": "2026-12-07",
+      "endDate": "2026-12-11",
+      "note": "Final Exam Week. Classes end Dec. 4 and the term ends Dec. 11. The Registrar’s Fall 2026 academic calendar page does not publish the exam block grid, so a schedule expanded from weekly meeting patterns is wrong for this week and a consumer must not present a normal weekly schedule for Dec. 7–11.",
+      "url": "https://registrar.fsu.edu/fall-2026-academic-calendar"
+    },
+    "provenance": {
+      "sourceUrl": "https://registrar.fsu.edu/fall-2026-academic-calendar",
+      "retrievedOn": "2026-08-27",
+      "method": "fetched",
+      "confidence": "high",
+      "note": "Every date and every quoted description was read off the FSU University Registrar’s Fall 2026 Academic Calendar page. Three things on that page are deliberately NOT represented here, because the schema cannot hold them faithfully or the page does not supply them: (1) the sessions array is omitted entirely, because the page publishes no first-half / second-half or summer-session date ranges, which means a course meeting’s partOfTerm cannot be resolved and half-term conflict checking is not possible from this record; (2) Homecoming Friday is a HALF day — classes are cancelled only after 12:00 p.m. — which nonClassPeriod has no way to express, so it is recorded with classesCancelled false and the detail carried in the name; (3) no reading day appears on the page, so none is recorded. Financial-aid, housing, health-insurance, thesis and dissertation dates from the page are omitted as out of scope for a class-schedule plugin."
+    },
+    "source": {
+      "url": "https://registrar.fsu.edu/fall-2026-academic-calendar",
+      "label": "FSU University Registrar — Fall 2026 Academic Calendar",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  }
+]

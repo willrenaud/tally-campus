@@ -1,0 +1,17 @@
+{
+  "name": "fsu-campus-tools",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Development tooling for the fsu-campus plugin marketplace. This package is NOT the plugin: it exists only so the repository's schemas and shipped campus data can be validated in CI and before a commit. Nothing here is loaded at plugin runtime, and node_modules is gitignored, so none of these dependencies reach a student who installs fsu-schedule.",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "validate": "node tools/validate-schemas.mjs && node tools/validate-data.mjs",
+    "validate:schemas": "node tools/validate-schemas.mjs",
+    "validate:data": "node tools/validate-data.mjs"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
+  }
+}

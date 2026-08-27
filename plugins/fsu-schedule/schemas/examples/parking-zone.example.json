@@ -46,6 +46,24 @@
   ],
   "rules": [
     {
+      "id": "base-open",
+      "window": {
+        "daysOfWeek": [
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday",
+          "friday",
+          "saturday",
+          "sunday"
+        ],
+        "startTime": "00:00",
+        "endTime": "24:00"
+      },
+      "mode": "open-to-all",
+      "enforcementNote": "The mandatory catch-all at rules[0]. It states the honest default for this garage: outside enforcement hours anyone may park, no permit. Every rule below is an exception layered on top, and because this rule covers all seven days with no date bounds, no instant is ever left without an answer."
+    },
+    {
       "id": "weekday-permit-hours",
       "window": {
         "daysOfWeek": [
@@ -64,57 +82,30 @@
         "faculty-staff",
         "ada-accessible"
       ],
-      "priority": 0,
       "appliesOnAcademicBreaks": false,
-      "enforcementNote": "Patrolled through the morning. A citation is issued rather than a warning, and the posted signage at the vehicle entrance is the authority if it disagrees with the published map."
+      "enforcementNote": "Shadows the base rule during the enforced weekday window. Patrolled through the morning; a citation is issued rather than a warning, and the posted signage at the vehicle entrance is the authority if it disagrees with the published map."
     },
     {
-      "id": "weekday-evening-open",
+      "id": "overnight-resident-only",
       "window": {
         "daysOfWeek": [
           "monday",
           "tuesday",
           "wednesday",
           "thursday",
-          "friday"
-        ],
-        "startTime": "16:30",
-        "endTime": "24:00"
-      },
-      "mode": "open-to-all",
-      "priority": 0,
-      "enforcementNote": "No permit needed after enforcement hours end. This is the window that makes a single permitRequired boolean wrong for this garage."
-    },
-    {
-      "id": "weekday-overnight-open",
-      "window": {
-        "daysOfWeek": [
-          "monday",
-          "tuesday",
-          "wednesday",
-          "thursday",
-          "friday"
-        ],
-        "startTime": "00:00",
-        "endTime": "07:30"
-      },
-      "mode": "open-to-all",
-      "priority": 0,
-      "enforcementNote": "The overnight half of the open window. It is a separate rule because a window may not wrap past midnight."
-    },
-    {
-      "id": "weekend-open",
-      "window": {
-        "daysOfWeek": [
+          "friday",
           "saturday",
           "sunday"
         ],
-        "startTime": "00:00",
-        "endTime": "24:00"
+        "startTime": "22:00",
+        "endTime": "06:00"
       },
-      "mode": "open-to-all",
-      "priority": 0,
-      "enforcementNote": "Open all weekend except when a game-day rule overrides."
+      "mode": "permit-required",
+      "allows": [
+        "student-resident",
+        "ada-accessible"
+      ],
+      "enforcementNote": "A WRAPPING window: the end is earlier than the start, so it runs 22:00 to midnight and on to 06:00 the following morning. Under the previous no-wrap rule this needed two separate entries and it was easy to get the second one wrong. daysOfWeek names the nights the window OPENS on, not the mornings it spills into."
     },
     {
       "id": "home-game-closure",
@@ -129,10 +120,9 @@
       "allows": [
         "reserved"
       ],
-      "priority": 100,
       "effectiveFrom": "2026-09-05",
       "effectiveTo": "2026-09-05",
-      "enforcementNote": "Home football Saturday: reserved for permit holders and towed otherwise. Priority 100 means this rule wins over the everyday weekend rule for that date without the weekend rule having to be edited."
+      "enforcementNote": "Home football Saturday: reserved for permit holders, towed otherwise. It sits LAST, so on that one date it shadows everything above it without any of those rules being edited. Ordering replaced the old integer priority field; array position cannot tie the way two equal priorities could."
     }
   ],
   "capacity": {
@@ -150,7 +140,13 @@
     "permit-only"
   ],
   "evChargingSpaces": 4,
-  "notes": "ILLUSTRATIVE PLACEHOLDER RECORD. This garage does not exist. The rule windows, permit classes, capacity, and game-day override are invented to demonstrate the time-windowed rule model. Replace with verified FSU Transportation and Parking Services data before shipping.",
+  "notes": "ILLUSTRATIVE PLACEHOLDER RECORD. This garage does not exist. The rule windows, permit classes, capacity, and game-day override are invented to demonstrate the ordered last-match-wins rule model, the mandatory catch-all base rule, and a window that wraps past midnight. Replace with verified FSU Transportation and Parking Services data before shipping.",
+  "provenance": {
+    "retrievedOn": "2026-08-27",
+    "method": "unverified",
+    "confidence": "low",
+    "note": "Illustrative example, not real campus data. method \"unverified\" is the correct label for an invented record and is exactly what tools/validate-data.mjs refuses to let into plugins/fsu-schedule/data/. Examples are allowed to carry it; shipped records are not."
+  },
   "source": {
     "label": "Placeholder example, not a real source",
     "retrievedAt": "2026-08-27T10:00:00-04:00",

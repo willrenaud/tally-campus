@@ -24,7 +24,7 @@
     "timeOfDayInclusiveEnd": {
       "type": "string",
       "pattern": "^(([01][0-9]|2[0-3]):[0-5][0-9]|24:00)$",
-      "description": "A wall-clock time in America/New_York used as the EXCLUSIVE end of a time window, 24-hour \"HH:MM\". Accepts the extra value \"24:00\" to mean end-of-day, which lets a window run to midnight without wrapping. A window whose end is less than or equal to its start is invalid; express an overnight span as two windows instead."
+      "description": "A wall-clock time in America/New_York used as the EXCLUSIVE end of a time window, 24-hour \"HH:MM\". Accepts the extra value \"24:00\" to mean end-of-day. A window whose end is EARLIER than its start wraps past midnight into the following day; see timeWindow for the exact evaluation rule. A window whose end EQUALS its start is invalid, because it is ambiguous between a zero-length window and a whole-day one; write a whole day as \"00:00\" to \"24:00\". JSON Schema cannot compare two sibling properties, so the equality rule is enforced by the data validator rather than by this schema."
     },
     "dayOfWeek": {
       "type": "string",
@@ -51,7 +51,7 @@
     },
     "timeWindow": {
       "type": "object",
-      "description": "A recurring weekly window of wall-clock time: a set of weekdays plus a start and an exclusive end, all in America/New_York. Used for parking enforcement rules and for pedestrian crowd factors. The window does not wrap past midnight; split overnight spans into two windows.",
+      "description": "A recurring weekly window of wall-clock time: a set of weekdays plus a start and an exclusive end, all in America/New_York.\n\nEVALUATION RULE. Let start and end be the endpoints as minutes past midnight, with \"24:00\" equal to 1440. Given an instant with weekday D and time T:\n\n  (a) If end > start, the window does NOT wrap. It matches when D is in daysOfWeek and start <= T < end. This is the ordinary case.\n  (b) If end < start, the window DOES wrap past midnight. It matches when either D is in daysOfWeek and T >= start, or the day BEFORE D is in daysOfWeek and T < end.\n  (c) If end == start the window is invalid; a consumer must reject it rather than guess.\n\nIn the wrapping case daysOfWeek names the days the window OPENS on, not every day it touches. A window of friday 17:00 to 02:00 covers Friday evening and the small hours of Saturday morning; it does not cover Friday 00:00 to 02:00.\n\nWrapping is what lets overnight parking enforcement be one rule instead of two. Note the asymmetry it introduces: for a wrapping window, whether an instant matches depends on the previous day as well as the current one, so an implementation that filters by weekday before comparing times will silently drop the after-midnight half.",
       "properties": {
         "daysOfWeek": {
           "$ref": "#/$defs/dayOfWeekList",
@@ -63,7 +63,7 @@
         },
         "endTime": {
           "$ref": "#/$defs/timeOfDayInclusiveEnd",
-          "description": "Exclusive end of the window. Must be strictly later than startTime; use \"24:00\" for end-of-day."
+          "description": "Exclusive end of the window. May be earlier than startTime, in which case the window wraps past midnight into the day after each day named in daysOfWeek. Must not equal startTime. Use \"24:00\" for a window ending exactly at midnight without wrapping."
         }
       },
       "required": [
@@ -127,6 +127,82 @@
         "unknown"
       ],
       "description": "How much a value should be trusted. \"verified\" means checked against an authoritative FSU source or measured in person; \"estimated\" means derived, interpolated, or eyeballed; \"unknown\" means carried over without review. Answers given to students SHOULD hedge when the supporting data is not verified."
+    },
+    "provenanceMethod": {
+      "type": "string",
+      "enum": [
+        "fetched",
+        "computed",
+        "unverified"
+      ],
+      "description": "How a shipped data record came to hold the values it holds. \"fetched\" means the values were read off the page named by provenance.sourceUrl during the session that wrote the record. \"computed\" means they were derived from other sourced values by a documented calculation, such as a walking duration derived from two fetched coordinates. \"unverified\" means neither: the record rests on an unchecked assumption. Records that would be \"unverified\" should generally not ship at all; the value exists so that one which does slip through is at least labelled as such."
+    },
+    "provenance": {
+      "type": "object",
+      "description": "Where one shipped static record came from, when, and how much to trust it. Distinct from sourceAttribution, which is document-level prose attribution: provenance is a per-record audit trail, and its purpose is to make an unsourced record impossible to write by accident. The rule the data build follows is that a record is either fetched from a page actually retrieved, or computed by a documented calculation from records that were, or it does not ship.",
+      "properties": {
+        "sourceUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "The page the values were read from. For a computed record this is the source of the INPUTS to the computation, so the derivation can be re-checked from the top. Required when method is \"fetched\" or \"computed\"."
+        },
+        "retrievedOn": {
+          "$ref": "#/$defs/date",
+          "description": "The date sourceUrl was actually retrieved, ISO-8601, America/New_York. Campus data goes stale on an annual cycle at best, so this is the field that tells a maintainer what needs re-checking."
+        },
+        "method": {
+          "$ref": "#/$defs/provenanceMethod",
+          "description": "How the record was produced."
+        },
+        "confidence": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ],
+          "description": "How much weight an answer may put on this record. \"high\" means read directly off an official FSU page with no interpretation. \"medium\" means derived, interpolated, or read off a source that was clear about most of the record but not all of it. \"low\" means good enough to route with, not good enough to act on. An answer built on anything below \"high\" should say so."
+        },
+        "note": {
+          "type": "string",
+          "description": "What was ambiguous, interpolated, or assumed. This is where an ambiguity in the source is recorded rather than resolved."
+        }
+      },
+      "required": [
+        "retrievedOn",
+        "method",
+        "confidence"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "enum": [
+                  "fetched",
+                  "computed"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "required": [
+              "sourceUrl"
+            ],
+            "properties": {
+              "sourceUrl": {
+                "type": "string",
+                "format": "uri",
+                "description": "Required here because a record claiming to be fetched or computed must name the page it came from. A record with no retrievable source is method \"unverified\", and an unverified record belongs in DATA-GAPS.md rather than in the shipped data."
+              }
+            }
+          }
+        }
+      ]
     },
     "sourceAttribution": {
       "type": "object",

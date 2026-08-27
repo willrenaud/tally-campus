@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://fsu-campus.example/schemas/v0/parking-zone.schema.json",
   "title": "FSU parking zone",
-  "description": "One FSU parking area: a surface lot, a garage, a metered block, or a park-and-ride site. Static shipped data. The central design point is that permit eligibility is TIME-DEPENDENT, never a single boolean. A lot that is permit-only from 07:30 to 16:30 on weekdays and open to anyone afterward cannot be represented by a permitRequired flag, and getting that wrong is the difference between a free space and a citation. So eligibility lives entirely in the rules array: a list of windowed rules, each naming its days, its start and exclusive end in America/New_York wall-clock time, who may park, and how it is enforced. Answering \"can I park here at 14:00 on a Tuesday?\" means selecting the rules whose window and effective date range contain that moment and taking the one with the highest priority. When no rule matches, the answer is unknown rather than permitted; the data does not assert an open default.",
+  "description": "One FSU parking area: a surface lot, a garage, a metered block, or a park-and-ride site. Static shipped data. The central design point is that permit eligibility is TIME-DEPENDENT, never a single boolean. A lot that is permit-only from 07:30 to 16:30 on weekdays and open to anyone afterward cannot be represented by a permitRequired flag, and getting that wrong is the difference between a free space and a citation. So eligibility lives entirely in the rules array, which is ORDERED and evaluated firewall-style: the LAST rule whose window and effective date range contain the moment in question is the one that applies, and earlier matches are shadowed. Because rules[0] is required to be a catch-all covering all seven days from 00:00 to 24:00 with no date bounds, at least one rule always matches, so every instant has a defined answer and the zone never needs a fallback of \"unknown\". Later rules are the exceptions: weekday enforcement hours layered over an open base, a home-game closure layered over that. Ordering replaced an earlier integer priority field, because a priority number is a second thing to keep consistent and two rules at equal priority had no defined winner, whereas array order cannot tie.",
   "type": "object",
   "properties": {
     "id": {
@@ -72,8 +72,21 @@
     },
     "rules": {
       "type": "array",
-      "description": "The complete, ordered-by-nothing set of time-windowed parking rules for this zone. At least one rule is required: a zone with no rules asserts nothing and must never be reported as parkable. Rules may overlap deliberately, for example a football-game-day closure layered over the ordinary weekday rule; overlap is resolved by priority, highest wins.",
+      "description": "The complete, ORDERED set of time-windowed parking rules for this zone, evaluated last-match-wins. rules[0] MUST be a catch-all: all seven days, \"00:00\" to \"24:00\", and no effectiveFrom or effectiveTo, so that every instant is covered by at least one rule. Every rule after it is an exception layered on top, and later entries shadow earlier ones where their windows overlap. Write them broadest first: the base rule, then the recurring enforcement window, then dated overrides such as a football-game-day closure. There is no tie to break, so a change to one exception never requires editing the rules underneath it.",
       "minItems": 1,
+      "prefixItems": [
+        {
+          "allOf": [
+            {
+              "$ref": "#/$defs/parkingRule"
+            },
+            {
+              "$ref": "#/$defs/catchAllBaseRule"
+            }
+          ],
+          "description": "The base rule. Must be a parkingRule that also satisfies the catch-all constraint."
+        }
+      ],
       "items": {
         "$ref": "#/$defs/parkingRule"
       }
@@ -119,6 +132,10 @@
     "source": {
       "$ref": "common.defs.schema.json#/$defs/sourceAttribution",
       "description": "Where these rules came from and when they were last checked. Parking rules change between academic years, so a stale retrievedAt is a reason to hedge in an answer."
+    },
+    "provenance": {
+      "$ref": "common.defs.schema.json#/$defs/provenance",
+      "description": "Per-record audit trail: which page this record was read from, on what date, by what method, and how much to trust it. REQUIRED on every shipped record. A record that cannot name a source it was actually fetched from, or a documented computation over records that were, does not belong in the data directory at all; it belongs in DATA-GAPS.md."
     }
   },
   "required": [
@@ -127,7 +144,8 @@
     "zoneType",
     "centroid",
     "accessPoints",
-    "rules"
+    "rules",
+    "provenance"
   ],
   "additionalProperties": false,
   "$defs": {
@@ -224,7 +242,7 @@
     },
     "parkingRule": {
       "type": "object",
-      "description": "One time-windowed statement about who may park in this zone. A rule is the atomic unit of parking eligibility; a zone's full behaviour is the layering of all its rules.",
+      "description": "One time-windowed statement about who may park in this zone. A rule is the atomic unit of parking eligibility; a zone's full behaviour is its ordered rule list evaluated last-match-wins. A rule says nothing at all about moments outside its window: silence is not permission, and it is the mandatory catch-all at rules[0] that guarantees some rule always speaks.",
       "properties": {
         "id": {
           "$ref": "common.defs.schema.json#/$defs/slug",
@@ -232,7 +250,7 @@
         },
         "window": {
           "$ref": "common.defs.schema.json#/$defs/timeWindow",
-          "description": "The recurring weekly window this rule governs, in America/New_York wall-clock time, with an exclusive end. A rule covering all day every day is written as all seven days from \"00:00\" to \"24:00\"."
+          "description": "The recurring weekly window this rule governs, in America/New_York wall-clock time, with an exclusive end. A window whose end is earlier than its start wraps past midnight, so an overnight span is one rule rather than two; see the evaluation rule on common.defs timeWindow. A rule covering all day every day is written as all seven days from \"00:00\" to \"24:00\"."
         },
         "mode": {
           "type": "string",
@@ -264,11 +282,6 @@
           "type": "number",
           "minimum": 0,
           "description": "Hourly cost in US dollars when mode is \"paid\". Omit for permit-only or free windows."
-        },
-        "priority": {
-          "type": "integer",
-          "default": 0,
-          "description": "Tie-breaker for overlapping rules: when more than one rule matches a moment, the one with the highest priority applies and the others are ignored entirely. Ordinary recurring rules should stay at 0; a football-game-day closure or a construction restriction should be given a higher priority so it overrides the everyday rule without that rule having to be edited. Two matching rules at equal priority is a data error, and a consumer SHOULD surface it rather than pick arbitrarily."
         },
         "effectiveFrom": {
           "$ref": "common.defs.schema.json#/$defs/date",
@@ -319,6 +332,39 @@
             }
           }
         }
+      ]
+    },
+    "catchAllBaseRule": {
+      "type": "object",
+      "title": "Catch-all base rule constraint",
+      "description": "The extra constraint that rules[0] must satisfy on top of being a parkingRule. It must cover all seven weekdays from \"00:00\" to \"24:00\" and must carry neither effectiveFrom nor effectiveTo, because a base rule with a date bound would leave instants outside that range undefined. Its purpose is to make \"no rule matched\" unrepresentable: with a catch-all underneath, every instant resolves to some rule, and a consumer never has to choose between reporting \"unknown\" and guessing. State the honest default here, which for most FSU zones is either open-to-all overnight and at weekends, or permit-required if the zone is restricted around the clock.",
+      "properties": {
+        "window": {
+          "type": "object",
+          "properties": {
+            "daysOfWeek": {
+              "type": "array",
+              "minItems": 7,
+              "description": "All seven days. With uniqueItems already required and only seven values in the enum, minItems 7 forces the full week."
+            },
+            "startTime": {
+              "const": "00:00"
+            },
+            "endTime": {
+              "const": "24:00"
+            }
+          },
+          "required": [
+            "daysOfWeek",
+            "startTime",
+            "endTime"
+          ]
+        },
+        "effectiveFrom": false,
+        "effectiveTo": false
+      },
+      "required": [
+        "window"
       ]
     },
     "capacity": {

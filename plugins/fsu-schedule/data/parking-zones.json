@@ -1,0 +1,730 @@
+[
+  {
+    "id": "pg1-woodward-avenue-garage",
+    "name": "Parking Garage 1 — Woodward Avenue",
+    "aliases": [
+      "pg1",
+      "garage 1",
+      "woodward garage",
+      "woodward avenue garage",
+      "the woodward deck"
+    ],
+    "zoneType": "garage",
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4446332,
+      "lon": -84.2988749
+    },
+    "accessPoints": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Parking Garage 1 — Woodward Avenue — structure centre, pedestrian exits not yet surveyed",
+        "point": {
+          "lat": 30.4446332,
+          "lon": -84.2988749
+        }
+      }
+    ],
+    "rules": [
+      {
+        "id": "base-permit-required",
+        "window": {
+          "daysOfWeek": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday"
+          ],
+          "startTime": "00:00",
+          "endTime": "24:00"
+        },
+        "mode": "permit-required",
+        "allows": [
+          "faculty-staff",
+          "ada-accessible"
+        ],
+        "enforcementNote": "MANDATORY CATCH-ALL, DELIBERATELY THE RESTRICTIVE READING. FSU publishes when students and visitors MAY park in a garage; it does not publish a general statement that a garage is open at every other moment. Rather than infer permission from silence, this base rule asserts the narrowest thing the sources support, and the rules after it widen access for the windows FSU does state. A moment that reaches this rule and no other is a moment the shipped data cannot vouch for: treat it as \"permit holders only, and check the posted signs\", not as \"you are fine\"."
+      },
+      {
+        "id": "student-garage-hours",
+        "window": {
+          "daysOfWeek": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday"
+          ],
+          "startTime": "05:45",
+          "endTime": "24:00"
+        },
+        "mode": "permit-required",
+        "allows": [
+          "student-commuter",
+          "student-resident",
+          "faculty-staff",
+          "motorcycle-scooter",
+          "ada-accessible"
+        ],
+        "enforcementNote": "FSU Transportation & Parking Services states, of garages: \"Students may park in Student (W) White Spaces from 5:45 AM to Midnight, unless denoted by signage.\" THE PHRASE \"UNLESS DENOTED BY SIGNAGE\" IS PART OF THE RULE, NOT A DISCLAIMER — a posted sign at the specific space overrides everything in this record. SOURCE CONFLICT, NOT RESOLVED HERE: the same site's general parking page states students may park in Student (W) White Spaces \"Monday - Friday, 7:30 AM - 4:30 PM\", which is a much narrower window than 5:45 AM to Midnight. One statement is about garages and the other about student spaces generally, and FSU does not say which governs a white space inside a garage. This rule encodes the wider garage-specific wording because that is the page about garages; a student relying on the 4:30 PM to Midnight portion of it should confirm against the signs."
+      },
+      {
+        "id": "friday-evening-open",
+        "window": {
+          "daysOfWeek": [
+            "friday"
+          ],
+          "startTime": "22:00",
+          "endTime": "24:00"
+        },
+        "mode": "open-to-all",
+        "enforcementNote": "FSU states: \"Open parking is available on campus from 10:00 PM on Friday through 11:59 PM on Sunday.\" This is the Friday-night portion of that span. It sits after the student-hours rule so that it shadows it for those two hours."
+      },
+      {
+        "id": "weekend-open",
+        "window": {
+          "daysOfWeek": [
+            "saturday",
+            "sunday"
+          ],
+          "startTime": "00:00",
+          "endTime": "24:00"
+        },
+        "mode": "open-to-all",
+        "enforcementNote": "The Saturday and Sunday portion of FSU's \"open parking ... from 10:00 PM on Friday through 11:59 PM on Sunday\". FSU adds, without giving dates: \"Open weekend parking varies during home football games.\" NO HOME-GAME DATES ARE ENCODED IN THIS RELEASE, so on a home football Saturday this rule is wrong and will tell a student the garage is open when it may be closed, reserved, or a tow-away zone. See DATA-GAPS.md. Any answer about a Saturday in football season must say this out loud."
+      }
+    ],
+    "servesBuildings": [
+      "OSB",
+      "NSU",
+      "MCH",
+      "LOV",
+      "SCN",
+      "HTL",
+      "HCB",
+      "MIL",
+      "RBB",
+      "THC",
+      "HWC",
+      "BEL",
+      "RBA",
+      "TUL"
+    ],
+    "notes": "FSU building number 0070; street address 104 N WOODWARD AVE. Vehicle clearance 8'-2\" on the first floor and 7'-0\" on upper floors. FSU also states that back-in parking hang-tags are not valid in garages and that vehicles must park nose-in. NOT ENCODED, BECAUSE IT COULD NOT BE SOURCED FROM A PAGE FETCHED FOR THIS BUILD: which floors of the garage are reserved for which permit colour. Several third-party summaries state the first floor of every FSU garage is faculty/staff (R and RP) and the upper floors are student (W), but that sentence does not appear on the FSU pages retrieved here, so this record does not assert it. The rules below are therefore about the garage as a whole and cannot tell a student which deck to use.",
+    "provenance": {
+      "sourceUrl": "https://transportation.fsu.edu/parking",
+      "retrievedOn": "2026-08-27",
+      "method": "fetched",
+      "confidence": "medium",
+      "note": "Rules quoted from https://transportation.fsu.edu/parking and https://transportation.fsu.edu/parking/permits. Official name, FSU building number 0070 and street address from https://www.facilities.fsu.edu/portal/building/?bldg=0070. Coordinate from the OpenStreetMap polygon \"way/Woodward Avenue Garage\", paired by name. Confidence is \"medium\" rather than \"high\" for a specific reason: the two FSU pages disagree about the hours students may use white spaces (07:30-16:30 versus 05:45-24:00), FSU publishes no home-football-game dates, and no per-floor permit split could be sourced. The disagreement is recorded in the rule notes rather than resolved. Capacity, payment methods, EV spaces, vehicle entrances and real pedestrian exits are all absent because no fetched page gave them."
+    },
+    "source": {
+      "url": "https://transportation.fsu.edu/parking",
+      "label": "FSU Transportation & Parking Services — Parking",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "estimated"
+    }
+  },
+  {
+    "id": "pg2-traditions-way-garage",
+    "name": "Parking Garage 2 — Traditions Way",
+    "aliases": [
+      "pg2",
+      "garage 2",
+      "traditions garage",
+      "traditions way garage"
+    ],
+    "zoneType": "garage",
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4418172,
+      "lon": -84.297107
+    },
+    "accessPoints": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Parking Garage 2 — Traditions Way — structure centre, pedestrian exits not yet surveyed",
+        "point": {
+          "lat": 30.4418172,
+          "lon": -84.297107
+        }
+      }
+    ],
+    "rules": [
+      {
+        "id": "base-permit-required",
+        "window": {
+          "daysOfWeek": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday"
+          ],
+          "startTime": "00:00",
+          "endTime": "24:00"
+        },
+        "mode": "permit-required",
+        "allows": [
+          "faculty-staff",
+          "ada-accessible"
+        ],
+        "enforcementNote": "MANDATORY CATCH-ALL, DELIBERATELY THE RESTRICTIVE READING. FSU publishes when students and visitors MAY park in a garage; it does not publish a general statement that a garage is open at every other moment. Rather than infer permission from silence, this base rule asserts the narrowest thing the sources support, and the rules after it widen access for the windows FSU does state. A moment that reaches this rule and no other is a moment the shipped data cannot vouch for: treat it as \"permit holders only, and check the posted signs\", not as \"you are fine\"."
+      },
+      {
+        "id": "student-garage-hours",
+        "window": {
+          "daysOfWeek": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday"
+          ],
+          "startTime": "05:45",
+          "endTime": "24:00"
+        },
+        "mode": "permit-required",
+        "allows": [
+          "student-commuter",
+          "student-resident",
+          "faculty-staff",
+          "motorcycle-scooter",
+          "ada-accessible"
+        ],
+        "enforcementNote": "FSU Transportation & Parking Services states, of garages: \"Students may park in Student (W) White Spaces from 5:45 AM to Midnight, unless denoted by signage.\" THE PHRASE \"UNLESS DENOTED BY SIGNAGE\" IS PART OF THE RULE, NOT A DISCLAIMER — a posted sign at the specific space overrides everything in this record. SOURCE CONFLICT, NOT RESOLVED HERE: the same site's general parking page states students may park in Student (W) White Spaces \"Monday - Friday, 7:30 AM - 4:30 PM\", which is a much narrower window than 5:45 AM to Midnight. One statement is about garages and the other about student spaces generally, and FSU does not say which governs a white space inside a garage. This rule encodes the wider garage-specific wording because that is the page about garages; a student relying on the 4:30 PM to Midnight portion of it should confirm against the signs."
+      },
+      {
+        "id": "friday-evening-open",
+        "window": {
+          "daysOfWeek": [
+            "friday"
+          ],
+          "startTime": "22:00",
+          "endTime": "24:00"
+        },
+        "mode": "open-to-all",
+        "enforcementNote": "FSU states: \"Open parking is available on campus from 10:00 PM on Friday through 11:59 PM on Sunday.\" This is the Friday-night portion of that span. It sits after the student-hours rule so that it shadows it for those two hours."
+      },
+      {
+        "id": "weekend-open",
+        "window": {
+          "daysOfWeek": [
+            "saturday",
+            "sunday"
+          ],
+          "startTime": "00:00",
+          "endTime": "24:00"
+        },
+        "mode": "open-to-all",
+        "enforcementNote": "The Saturday and Sunday portion of FSU's \"open parking ... from 10:00 PM on Friday through 11:59 PM on Sunday\". FSU adds, without giving dates: \"Open weekend parking varies during home football games.\" NO HOME-GAME DATES ARE ENCODED IN THIS RELEASE, so on a home football Saturday this rule is wrong and will tell a student the garage is open when it may be closed, reserved, or a tow-away zone. See DATA-GAPS.md. Any answer about a Saturday in football season must say this out loud."
+      }
+    ],
+    "servesBuildings": [
+      "MON",
+      "THC",
+      "HCB",
+      "GME",
+      "HWC",
+      "BEL",
+      "LIB",
+      "RBA",
+      "NSU",
+      "RBB",
+      "WJB",
+      "HSF",
+      "MIL",
+      "SCN",
+      "OSB"
+    ],
+    "notes": "FSU building number 0378; street address 860 TRADITIONS WAY. Vehicle clearance 9'-0\" on the first floor and 7'-0\" on upper floors. FSU also states that back-in parking hang-tags are not valid in garages and that vehicles must park nose-in. NOT ENCODED, BECAUSE IT COULD NOT BE SOURCED FROM A PAGE FETCHED FOR THIS BUILD: which floors of the garage are reserved for which permit colour. Several third-party summaries state the first floor of every FSU garage is faculty/staff (R and RP) and the upper floors are student (W), but that sentence does not appear on the FSU pages retrieved here, so this record does not assert it. The rules below are therefore about the garage as a whole and cannot tell a student which deck to use.",
+    "provenance": {
+      "sourceUrl": "https://transportation.fsu.edu/parking",
+      "retrievedOn": "2026-08-27",
+      "method": "fetched",
+      "confidence": "medium",
+      "note": "Rules quoted from https://transportation.fsu.edu/parking and https://transportation.fsu.edu/parking/permits. Official name, FSU building number 0378 and street address from https://www.facilities.fsu.edu/portal/building/?bldg=0378. Coordinate from the OpenStreetMap polygon \"way/Traditions Way Garage\", paired by name. Confidence is \"medium\" rather than \"high\" for a specific reason: the two FSU pages disagree about the hours students may use white spaces (07:30-16:30 versus 05:45-24:00), FSU publishes no home-football-game dates, and no per-floor permit split could be sourced. The disagreement is recorded in the rule notes rather than resolved. Capacity, payment methods, EV spaces, vehicle entrances and real pedestrian exits are all absent because no fetched page gave them."
+    },
+    "source": {
+      "url": "https://transportation.fsu.edu/parking",
+      "label": "FSU Transportation & Parking Services — Parking",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "estimated"
+    }
+  },
+  {
+    "id": "pg3-spirit-way-garage",
+    "name": "Parking Garage 3 — Spirit Way",
+    "aliases": [
+      "pg3",
+      "garage 3",
+      "spirit way garage",
+      "the spirit garage"
+    ],
+    "zoneType": "garage",
+    "campusZone": "west-campus",
+    "centroid": {
+      "lat": 30.4434204,
+      "lon": -84.3051898
+    },
+    "accessPoints": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Parking Garage 3 — Spirit Way — structure centre, pedestrian exits not yet surveyed",
+        "point": {
+          "lat": 30.4434204,
+          "lon": -84.3051898
+        }
+      }
+    ],
+    "rules": [
+      {
+        "id": "base-permit-required",
+        "window": {
+          "daysOfWeek": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday"
+          ],
+          "startTime": "00:00",
+          "endTime": "24:00"
+        },
+        "mode": "permit-required",
+        "allows": [
+          "faculty-staff",
+          "ada-accessible"
+        ],
+        "enforcementNote": "MANDATORY CATCH-ALL, DELIBERATELY THE RESTRICTIVE READING. FSU publishes when students and visitors MAY park in a garage; it does not publish a general statement that a garage is open at every other moment. Rather than infer permission from silence, this base rule asserts the narrowest thing the sources support, and the rules after it widen access for the windows FSU does state. A moment that reaches this rule and no other is a moment the shipped data cannot vouch for: treat it as \"permit holders only, and check the posted signs\", not as \"you are fine\"."
+      },
+      {
+        "id": "student-garage-hours",
+        "window": {
+          "daysOfWeek": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday"
+          ],
+          "startTime": "05:45",
+          "endTime": "24:00"
+        },
+        "mode": "permit-required",
+        "allows": [
+          "student-commuter",
+          "student-resident",
+          "faculty-staff",
+          "motorcycle-scooter",
+          "ada-accessible"
+        ],
+        "enforcementNote": "FSU Transportation & Parking Services states, of garages: \"Students may park in Student (W) White Spaces from 5:45 AM to Midnight, unless denoted by signage.\" THE PHRASE \"UNLESS DENOTED BY SIGNAGE\" IS PART OF THE RULE, NOT A DISCLAIMER — a posted sign at the specific space overrides everything in this record. SOURCE CONFLICT, NOT RESOLVED HERE: the same site's general parking page states students may park in Student (W) White Spaces \"Monday - Friday, 7:30 AM - 4:30 PM\", which is a much narrower window than 5:45 AM to Midnight. One statement is about garages and the other about student spaces generally, and FSU does not say which governs a white space inside a garage. This rule encodes the wider garage-specific wording because that is the page about garages; a student relying on the 4:30 PM to Midnight portion of it should confirm against the signs."
+      },
+      {
+        "id": "friday-evening-open",
+        "window": {
+          "daysOfWeek": [
+            "friday"
+          ],
+          "startTime": "22:00",
+          "endTime": "24:00"
+        },
+        "mode": "open-to-all",
+        "enforcementNote": "FSU states: \"Open parking is available on campus from 10:00 PM on Friday through 11:59 PM on Sunday.\" This is the Friday-night portion of that span. It sits after the student-hours rule so that it shadows it for those two hours."
+      },
+      {
+        "id": "weekend-open",
+        "window": {
+          "daysOfWeek": [
+            "saturday",
+            "sunday"
+          ],
+          "startTime": "00:00",
+          "endTime": "24:00"
+        },
+        "mode": "open-to-all",
+        "enforcementNote": "The Saturday and Sunday portion of FSU's \"open parking ... from 10:00 PM on Friday through 11:59 PM on Sunday\". FSU adds, without giving dates: \"Open weekend parking varies during home football games.\" NO HOME-GAME DATES ARE ENCODED IN THIS RELEASE, so on a home football Saturday this rule is wrong and will tell a student the garage is open when it may be closed, reserved, or a tow-away zone. See DATA-GAPS.md. Any answer about a Saturday in football season must say this out loud."
+      }
+    ],
+    "servesBuildings": [
+      "PDB",
+      "TUL",
+      "STB"
+    ],
+    "notes": "FSU building number 4006; street address 1122 SPIRIT WAY. Vehicle clearance 8'-3\" on the first floor and 7'-2\" on upper floors. FSU also states that back-in parking hang-tags are not valid in garages and that vehicles must park nose-in. NOT ENCODED, BECAUSE IT COULD NOT BE SOURCED FROM A PAGE FETCHED FOR THIS BUILD: which floors of the garage are reserved for which permit colour. Several third-party summaries state the first floor of every FSU garage is faculty/staff (R and RP) and the upper floors are student (W), but that sentence does not appear on the FSU pages retrieved here, so this record does not assert it. The rules below are therefore about the garage as a whole and cannot tell a student which deck to use.",
+    "provenance": {
+      "sourceUrl": "https://transportation.fsu.edu/parking",
+      "retrievedOn": "2026-08-27",
+      "method": "fetched",
+      "confidence": "medium",
+      "note": "Rules quoted from https://transportation.fsu.edu/parking and https://transportation.fsu.edu/parking/permits. Official name, FSU building number 4006 and street address from https://www.facilities.fsu.edu/portal/building/?bldg=4006. Coordinate from the OpenStreetMap polygon \"way/Parking Garage #3\", paired by address. Confidence is \"medium\" rather than \"high\" for a specific reason: the two FSU pages disagree about the hours students may use white spaces (07:30-16:30 versus 05:45-24:00), FSU publishes no home-football-game dates, and no per-floor permit split could be sourced. The disagreement is recorded in the rule notes rather than resolved. Capacity, payment methods, EV spaces, vehicle entrances and real pedestrian exits are all absent because no fetched page gave them."
+    },
+    "source": {
+      "url": "https://transportation.fsu.edu/parking",
+      "label": "FSU Transportation & Parking Services — Parking",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "estimated"
+    }
+  },
+  {
+    "id": "pg4-call-street-garage",
+    "name": "Parking Garage 4 — Call Street",
+    "aliases": [
+      "pg4",
+      "garage 4",
+      "call street garage",
+      "the call street deck"
+    ],
+    "zoneType": "garage",
+    "campusZone": "east-campus",
+    "centroid": {
+      "lat": 30.4440424,
+      "lon": -84.2890971
+    },
+    "accessPoints": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Parking Garage 4 — Call Street — structure centre, pedestrian exits not yet surveyed",
+        "point": {
+          "lat": 30.4440424,
+          "lon": -84.2890971
+        }
+      }
+    ],
+    "rules": [
+      {
+        "id": "base-permit-required",
+        "window": {
+          "daysOfWeek": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday"
+          ],
+          "startTime": "00:00",
+          "endTime": "24:00"
+        },
+        "mode": "permit-required",
+        "allows": [
+          "faculty-staff",
+          "ada-accessible"
+        ],
+        "enforcementNote": "MANDATORY CATCH-ALL, DELIBERATELY THE RESTRICTIVE READING. FSU publishes when students and visitors MAY park in a garage; it does not publish a general statement that a garage is open at every other moment. Rather than infer permission from silence, this base rule asserts the narrowest thing the sources support, and the rules after it widen access for the windows FSU does state. A moment that reaches this rule and no other is a moment the shipped data cannot vouch for: treat it as \"permit holders only, and check the posted signs\", not as \"you are fine\"."
+      },
+      {
+        "id": "student-garage-hours",
+        "window": {
+          "daysOfWeek": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday"
+          ],
+          "startTime": "05:45",
+          "endTime": "24:00"
+        },
+        "mode": "permit-required",
+        "allows": [
+          "student-commuter",
+          "student-resident",
+          "faculty-staff",
+          "motorcycle-scooter",
+          "ada-accessible"
+        ],
+        "enforcementNote": "FSU Transportation & Parking Services states, of garages: \"Students may park in Student (W) White Spaces from 5:45 AM to Midnight, unless denoted by signage.\" THE PHRASE \"UNLESS DENOTED BY SIGNAGE\" IS PART OF THE RULE, NOT A DISCLAIMER — a posted sign at the specific space overrides everything in this record. SOURCE CONFLICT, NOT RESOLVED HERE: the same site's general parking page states students may park in Student (W) White Spaces \"Monday - Friday, 7:30 AM - 4:30 PM\", which is a much narrower window than 5:45 AM to Midnight. One statement is about garages and the other about student spaces generally, and FSU does not say which governs a white space inside a garage. This rule encodes the wider garage-specific wording because that is the page about garages; a student relying on the 4:30 PM to Midnight portion of it should confirm against the signs."
+      },
+      {
+        "id": "friday-evening-open",
+        "window": {
+          "daysOfWeek": [
+            "friday"
+          ],
+          "startTime": "22:00",
+          "endTime": "24:00"
+        },
+        "mode": "open-to-all",
+        "enforcementNote": "FSU states: \"Open parking is available on campus from 10:00 PM on Friday through 11:59 PM on Sunday.\" This is the Friday-night portion of that span. It sits after the student-hours rule so that it shadows it for those two hours."
+      },
+      {
+        "id": "weekend-open",
+        "window": {
+          "daysOfWeek": [
+            "saturday",
+            "sunday"
+          ],
+          "startTime": "00:00",
+          "endTime": "24:00"
+        },
+        "mode": "open-to-all",
+        "enforcementNote": "The Saturday and Sunday portion of FSU's \"open parking ... from 10:00 PM on Friday through 11:59 PM on Sunday\". FSU adds, without giving dates: \"Open weekend parking varies during home football games.\" NO HOME-GAME DATES ARE ENCODED IN THIS RELEASE, so on a home football Saturday this rule is wrong and will tell a student the garage is open when it may be closed, reserved, or a tow-away zone. See DATA-GAPS.md. Any answer about a Saturday in football season must say this out loud."
+      }
+    ],
+    "servesBuildings": [
+      "FAB",
+      "HMU",
+      "HEC",
+      "KMU",
+      "KRB",
+      "CRM"
+    ],
+    "notes": "FSU building number 4014; street address 504 W CALL ST. Vehicle clearance 8'-3\" on the first floor and 7'-0\" on upper floors. FSU also states that back-in parking hang-tags are not valid in garages and that vehicles must park nose-in. NOT ENCODED, BECAUSE IT COULD NOT BE SOURCED FROM A PAGE FETCHED FOR THIS BUILD: which floors of the garage are reserved for which permit colour. Several third-party summaries state the first floor of every FSU garage is faculty/staff (R and RP) and the upper floors are student (W), but that sentence does not appear on the FSU pages retrieved here, so this record does not assert it. The rules below are therefore about the garage as a whole and cannot tell a student which deck to use.",
+    "provenance": {
+      "sourceUrl": "https://transportation.fsu.edu/parking",
+      "retrievedOn": "2026-08-27",
+      "method": "fetched",
+      "confidence": "medium",
+      "note": "Rules quoted from https://transportation.fsu.edu/parking and https://transportation.fsu.edu/parking/permits. Official name, FSU building number 4014 and street address from https://www.facilities.fsu.edu/portal/building/?bldg=4014. Coordinate from the OpenStreetMap polygon \"way/Call Street Garage\", paired by name. Confidence is \"medium\" rather than \"high\" for a specific reason: the two FSU pages disagree about the hours students may use white spaces (07:30-16:30 versus 05:45-24:00), FSU publishes no home-football-game dates, and no per-floor permit split could be sourced. The disagreement is recorded in the rule notes rather than resolved. Capacity, payment methods, EV spaces, vehicle entrances and real pedestrian exits are all absent because no fetched page gave them."
+    },
+    "source": {
+      "url": "https://transportation.fsu.edu/parking",
+      "label": "FSU Transportation & Parking Services — Parking",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "estimated"
+    }
+  },
+  {
+    "id": "pg5-st-augustine-street-garage",
+    "name": "Parking Garage 5 — St. Augustine Street",
+    "aliases": [
+      "pg5",
+      "garage 5",
+      "st augustine garage",
+      "saint augustine street garage",
+      "the st aug garage"
+    ],
+    "zoneType": "garage",
+    "campusZone": "east-campus",
+    "centroid": {
+      "lat": 30.4379878,
+      "lon": -84.290205
+    },
+    "accessPoints": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Parking Garage 5 — St. Augustine Street — structure centre, pedestrian exits not yet surveyed",
+        "point": {
+          "lat": 30.4379878,
+          "lon": -84.290205
+        }
+      }
+    ],
+    "rules": [
+      {
+        "id": "base-permit-required",
+        "window": {
+          "daysOfWeek": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday"
+          ],
+          "startTime": "00:00",
+          "endTime": "24:00"
+        },
+        "mode": "permit-required",
+        "allows": [
+          "faculty-staff",
+          "ada-accessible"
+        ],
+        "enforcementNote": "MANDATORY CATCH-ALL, DELIBERATELY THE RESTRICTIVE READING. FSU publishes when students and visitors MAY park in a garage; it does not publish a general statement that a garage is open at every other moment. Rather than infer permission from silence, this base rule asserts the narrowest thing the sources support, and the rules after it widen access for the windows FSU does state. A moment that reaches this rule and no other is a moment the shipped data cannot vouch for: treat it as \"permit holders only, and check the posted signs\", not as \"you are fine\"."
+      },
+      {
+        "id": "student-garage-hours",
+        "window": {
+          "daysOfWeek": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday"
+          ],
+          "startTime": "05:45",
+          "endTime": "24:00"
+        },
+        "mode": "permit-required",
+        "allows": [
+          "student-commuter",
+          "student-resident",
+          "faculty-staff",
+          "motorcycle-scooter",
+          "ada-accessible"
+        ],
+        "enforcementNote": "FSU Transportation & Parking Services states, of garages: \"Students may park in Student (W) White Spaces from 5:45 AM to Midnight, unless denoted by signage.\" THE PHRASE \"UNLESS DENOTED BY SIGNAGE\" IS PART OF THE RULE, NOT A DISCLAIMER — a posted sign at the specific space overrides everything in this record. SOURCE CONFLICT, NOT RESOLVED HERE: the same site's general parking page states students may park in Student (W) White Spaces \"Monday - Friday, 7:30 AM - 4:30 PM\", which is a much narrower window than 5:45 AM to Midnight. One statement is about garages and the other about student spaces generally, and FSU does not say which governs a white space inside a garage. This rule encodes the wider garage-specific wording because that is the page about garages; a student relying on the 4:30 PM to Midnight portion of it should confirm against the signs."
+      },
+      {
+        "id": "friday-evening-open",
+        "window": {
+          "daysOfWeek": [
+            "friday"
+          ],
+          "startTime": "22:00",
+          "endTime": "24:00"
+        },
+        "mode": "open-to-all",
+        "enforcementNote": "FSU states: \"Open parking is available on campus from 10:00 PM on Friday through 11:59 PM on Sunday.\" This is the Friday-night portion of that span. It sits after the student-hours rule so that it shadows it for those two hours."
+      },
+      {
+        "id": "weekend-open",
+        "window": {
+          "daysOfWeek": [
+            "saturday",
+            "sunday"
+          ],
+          "startTime": "00:00",
+          "endTime": "24:00"
+        },
+        "mode": "open-to-all",
+        "enforcementNote": "The Saturday and Sunday portion of FSU's \"open parking ... from 10:00 PM on Friday through 11:59 PM on Sunday\". FSU adds, without giving dates: \"Open weekend parking varies during home football games.\" NO HOME-GAME DATES ARE ENCODED IN THIS RELEASE, so on a home football Saturday this rule is wrong and will tell a student the garage is open when it may be closed, reserved, or a tow-away zone. See DATA-GAPS.md. Any answer about a Saturday in football season must say this out loud."
+      }
+    ],
+    "servesBuildings": [
+      "DIF",
+      "WMS",
+      "CRM"
+    ],
+    "notes": "FSU building number 4025; street address 501 S COPELAND ST. Vehicle clearance 8'-2\" on the first floor and 7'-0\" on upper floors. FSU also states that back-in parking hang-tags are not valid in garages and that vehicles must park nose-in. NOT ENCODED, BECAUSE IT COULD NOT BE SOURCED FROM A PAGE FETCHED FOR THIS BUILD: which floors of the garage are reserved for which permit colour. Several third-party summaries state the first floor of every FSU garage is faculty/staff (R and RP) and the upper floors are student (W), but that sentence does not appear on the FSU pages retrieved here, so this record does not assert it. The rules below are therefore about the garage as a whole and cannot tell a student which deck to use.",
+    "provenance": {
+      "sourceUrl": "https://transportation.fsu.edu/parking",
+      "retrievedOn": "2026-08-27",
+      "method": "fetched",
+      "confidence": "medium",
+      "note": "Rules quoted from https://transportation.fsu.edu/parking and https://transportation.fsu.edu/parking/permits. Official name, FSU building number 4025 and street address from https://www.facilities.fsu.edu/portal/building/?bldg=4025. Coordinate from the OpenStreetMap polygon \"way/Saint Augustine Street Garage\", paired by name. Confidence is \"medium\" rather than \"high\" for a specific reason: the two FSU pages disagree about the hours students may use white spaces (07:30-16:30 versus 05:45-24:00), FSU publishes no home-football-game dates, and no per-floor permit split could be sourced. The disagreement is recorded in the rule notes rather than resolved. Capacity, payment methods, EV spaces, vehicle entrances and real pedestrian exits are all absent because no fetched page gave them."
+    },
+    "source": {
+      "url": "https://transportation.fsu.edu/parking",
+      "label": "FSU Transportation & Parking Services — Parking",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "estimated"
+    }
+  },
+  {
+    "id": "pg6-west-pensacola-street-garage",
+    "name": "Parking Garage 6 — West Pensacola Street",
+    "aliases": [
+      "pg6",
+      "garage 6",
+      "pensacola garage",
+      "west pensacola street garage"
+    ],
+    "zoneType": "garage",
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.437992,
+      "lon": -84.2998178
+    },
+    "accessPoints": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Parking Garage 6 — West Pensacola Street — structure centre, pedestrian exits not yet surveyed",
+        "point": {
+          "lat": 30.437992,
+          "lon": -84.2998178
+        }
+      }
+    ],
+    "rules": [
+      {
+        "id": "base-permit-required",
+        "window": {
+          "daysOfWeek": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday"
+          ],
+          "startTime": "00:00",
+          "endTime": "24:00"
+        },
+        "mode": "permit-required",
+        "allows": [
+          "faculty-staff",
+          "ada-accessible"
+        ],
+        "enforcementNote": "MANDATORY CATCH-ALL, DELIBERATELY THE RESTRICTIVE READING. FSU publishes when students and visitors MAY park in a garage; it does not publish a general statement that a garage is open at every other moment. Rather than infer permission from silence, this base rule asserts the narrowest thing the sources support, and the rules after it widen access for the windows FSU does state. A moment that reaches this rule and no other is a moment the shipped data cannot vouch for: treat it as \"permit holders only, and check the posted signs\", not as \"you are fine\"."
+      },
+      {
+        "id": "student-garage-hours",
+        "window": {
+          "daysOfWeek": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday"
+          ],
+          "startTime": "05:45",
+          "endTime": "24:00"
+        },
+        "mode": "permit-required",
+        "allows": [
+          "student-commuter",
+          "student-resident",
+          "faculty-staff",
+          "motorcycle-scooter",
+          "ada-accessible"
+        ],
+        "enforcementNote": "FSU Transportation & Parking Services states, of garages: \"Students may park in Student (W) White Spaces from 5:45 AM to Midnight, unless denoted by signage.\" THE PHRASE \"UNLESS DENOTED BY SIGNAGE\" IS PART OF THE RULE, NOT A DISCLAIMER — a posted sign at the specific space overrides everything in this record. SOURCE CONFLICT, NOT RESOLVED HERE: the same site's general parking page states students may park in Student (W) White Spaces \"Monday - Friday, 7:30 AM - 4:30 PM\", which is a much narrower window than 5:45 AM to Midnight. One statement is about garages and the other about student spaces generally, and FSU does not say which governs a white space inside a garage. This rule encodes the wider garage-specific wording because that is the page about garages; a student relying on the 4:30 PM to Midnight portion of it should confirm against the signs."
+      },
+      {
+        "id": "friday-evening-open",
+        "window": {
+          "daysOfWeek": [
+            "friday"
+          ],
+          "startTime": "22:00",
+          "endTime": "24:00"
+        },
+        "mode": "open-to-all",
+        "enforcementNote": "FSU states: \"Open parking is available on campus from 10:00 PM on Friday through 11:59 PM on Sunday.\" This is the Friday-night portion of that span. It sits after the student-hours rule so that it shadows it for those two hours."
+      },
+      {
+        "id": "weekend-open",
+        "window": {
+          "daysOfWeek": [
+            "saturday",
+            "sunday"
+          ],
+          "startTime": "00:00",
+          "endTime": "24:00"
+        },
+        "mode": "open-to-all",
+        "enforcementNote": "The Saturday and Sunday portion of FSU's \"open parking ... from 10:00 PM on Friday through 11:59 PM on Sunday\". FSU adds, without giving dates: \"Open weekend parking varies during home football games.\" NO HOME-GAME DATES ARE ENCODED IN THIS RELEASE, so on a home football Saturday this rule is wrong and will tell a student the garage is open when it may be closed, reserved, or a tow-away zone. See DATA-GAPS.md. Any answer about a Saturday in football season must say this out loud."
+      }
+    ],
+    "servesBuildings": [
+      "GME"
+    ],
+    "notes": "FSU building number 4028; street address 410 WALKER ST. Vehicle clearance 8'-2\" on the first floor and 7'-2\" on upper floors. FSU also states that back-in parking hang-tags are not valid in garages and that vehicles must park nose-in. NOT ENCODED, BECAUSE IT COULD NOT BE SOURCED FROM A PAGE FETCHED FOR THIS BUILD: which floors of the garage are reserved for which permit colour. Several third-party summaries state the first floor of every FSU garage is faculty/staff (R and RP) and the upper floors are student (W), but that sentence does not appear on the FSU pages retrieved here, so this record does not assert it. The rules below are therefore about the garage as a whole and cannot tell a student which deck to use.",
+    "provenance": {
+      "sourceUrl": "https://transportation.fsu.edu/parking",
+      "retrievedOn": "2026-08-27",
+      "method": "fetched",
+      "confidence": "medium",
+      "note": "Rules quoted from https://transportation.fsu.edu/parking and https://transportation.fsu.edu/parking/permits. Official name, FSU building number 4028 and street address from https://www.facilities.fsu.edu/portal/building/?bldg=4028. Coordinate from the OpenStreetMap polygon \"way/West Pensacola Street Garage\", paired by name. Confidence is \"medium\" rather than \"high\" for a specific reason: the two FSU pages disagree about the hours students may use white spaces (07:30-16:30 versus 05:45-24:00), FSU publishes no home-football-game dates, and no per-floor permit split could be sourced. The disagreement is recorded in the rule notes rather than resolved. Capacity, payment methods, EV spaces, vehicle entrances and real pedestrian exits are all absent because no fetched page gave them."
+    },
+    "source": {
+      "url": "https://transportation.fsu.edu/parking",
+      "label": "FSU Transportation & Parking Services — Parking",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "estimated"
+    }
+  }
+]

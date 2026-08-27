@@ -1,0 +1,2264 @@
+[
+  {
+    "id": "bel-to-hcb",
+    "from": {
+      "kind": "building-entrance",
+      "building": "BEL",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "HCB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 148.6,
+    "baseDurationSeconds": 106,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 114.3 m, multiplied by a path factor of 1.3 to give 148.6 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of BEL (Bellamy Building) and HCB (Classroom Building (HCB)), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "bel-to-lib",
+    "from": {
+      "kind": "building-entrance",
+      "building": "BEL",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "LIB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 110.6,
+    "baseDurationSeconds": 79,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 85.1 m, multiplied by a path factor of 1.3 to give 110.6 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of BEL (Bellamy Building) and LIB (Strozier Library), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "bel-to-mon",
+    "from": {
+      "kind": "building-entrance",
+      "building": "BEL",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "MON",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 180.4,
+    "baseDurationSeconds": 129,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 138.8 m, multiplied by a path factor of 1.3 to give 180.4 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of BEL (Bellamy Building) and MON (Montgomery), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "bel-to-nsu",
+    "from": {
+      "kind": "building-entrance",
+      "building": "BEL",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "NSU",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 265.6,
+    "baseDurationSeconds": 190,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 204.3 m, multiplied by a path factor of 1.3 to give 265.6 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of BEL (Bellamy Building) and NSU (New Student Union), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "bel-to-rba",
+    "from": {
+      "kind": "building-entrance",
+      "building": "BEL",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "RBA",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 115.8,
+    "baseDurationSeconds": 83,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 89.1 m, multiplied by a path factor of 1.3 to give 115.8 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of BEL (Bellamy Building) and RBA (Rovetta Building A), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "bel-to-rbb",
+    "from": {
+      "kind": "building-entrance",
+      "building": "BEL",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "RBB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 161.5,
+    "baseDurationSeconds": 115,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 124.3 m, multiplied by a path factor of 1.3 to give 161.5 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of BEL (Bellamy Building) and RBB (Rovetta Building B), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "bel-to-thc",
+    "from": {
+      "kind": "building-entrance",
+      "building": "BEL",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "THC",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 98.1,
+    "baseDurationSeconds": 70,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 75.5 m, multiplied by a path factor of 1.3 to give 98.1 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of BEL (Bellamy Building) and THC (Thagard Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "crm-to-dif",
+    "from": {
+      "kind": "building-entrance",
+      "building": "CRM",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "DIF",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 195.7,
+    "baseDurationSeconds": 140,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 150.5 m, multiplied by a path factor of 1.3 to give 195.7 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of CRM (Criminology and Criminal Justice Building) and DIF (Diffenbaugh Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "crm-to-kmu",
+    "from": {
+      "kind": "building-entrance",
+      "building": "CRM",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "KMU",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 130.8,
+    "baseDurationSeconds": 93,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 100.6 m, multiplied by a path factor of 1.3 to give 130.8 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of CRM (Criminology and Criminal Justice Building) and KMU (Kuersteiner Music Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "crm-to-krb",
+    "from": {
+      "kind": "building-entrance",
+      "building": "CRM",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "KRB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 45.6,
+    "baseDurationSeconds": 33,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 35.1 m, multiplied by a path factor of 1.3 to give 45.6 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of CRM (Criminology and Criminal Justice Building) and KRB (Kellogg Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "crm-to-wms",
+    "from": {
+      "kind": "building-entrance",
+      "building": "CRM",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "WMS",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 208.4,
+    "baseDurationSeconds": 149,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 160.3 m, multiplied by a path factor of 1.3 to give 208.4 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of CRM (Criminology and Criminal Justice Building) and WMS (Williams Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "dif-to-kmu",
+    "from": {
+      "kind": "building-entrance",
+      "building": "DIF",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "KMU",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 325.9,
+    "baseDurationSeconds": 233,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 250.7 m, multiplied by a path factor of 1.3 to give 325.9 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of DIF (Diffenbaugh Building) and KMU (Kuersteiner Music Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "dif-to-krb",
+    "from": {
+      "kind": "building-entrance",
+      "building": "DIF",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "KRB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 240.8,
+    "baseDurationSeconds": 172,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 185.2 m, multiplied by a path factor of 1.3 to give 240.8 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of DIF (Diffenbaugh Building) and KRB (Kellogg Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "dif-to-wms",
+    "from": {
+      "kind": "building-entrance",
+      "building": "DIF",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "WMS",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 79.7,
+    "baseDurationSeconds": 57,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 61.3 m, multiplied by a path factor of 1.3 to give 79.7 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of DIF (Diffenbaugh Building) and WMS (Williams Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "fab-to-hec",
+    "from": {
+      "kind": "building-entrance",
+      "building": "FAB",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "HEC",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 266.4,
+    "baseDurationSeconds": 190,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 204.9 m, multiplied by a path factor of 1.3 to give 266.4 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of FAB (Fine Arts Building) and HEC (Hecht House), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "fab-to-hmu",
+    "from": {
+      "kind": "building-entrance",
+      "building": "FAB",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "HMU",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 239.2,
+    "baseDurationSeconds": 171,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 184.0 m, multiplied by a path factor of 1.3 to give 239.2 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of FAB (Fine Arts Building) and HMU (Housewright Music Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "fab-to-kmu",
+    "from": {
+      "kind": "building-entrance",
+      "building": "FAB",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "KMU",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 322.4,
+    "baseDurationSeconds": 230,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 248.0 m, multiplied by a path factor of 1.3 to give 322.4 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of FAB (Fine Arts Building) and KMU (Kuersteiner Music Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "fab-to-krb",
+    "from": {
+      "kind": "building-entrance",
+      "building": "FAB",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "KRB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 391.6,
+    "baseDurationSeconds": 280,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 301.2 m, multiplied by a path factor of 1.3 to give 391.6 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of FAB (Fine Arts Building) and KRB (Kellogg Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "gme-to-hcb",
+    "from": {
+      "kind": "building-entrance",
+      "building": "GME",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "HCB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 396.2,
+    "baseDurationSeconds": 283,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 304.8 m, multiplied by a path factor of 1.3 to give 396.2 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of GME (The Globe) and HCB (Classroom Building (HCB)), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "gme-to-hwc",
+    "from": {
+      "kind": "building-entrance",
+      "building": "GME",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "HWC",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 147.2,
+    "baseDurationSeconds": 105,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 113.2 m, multiplied by a path factor of 1.3 to give 147.2 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of GME (The Globe) and HWC (Coburn Wellness Center), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "gme-to-mon",
+    "from": {
+      "kind": "building-entrance",
+      "building": "GME",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "MON",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 371.9,
+    "baseDurationSeconds": 266,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 286.1 m, multiplied by a path factor of 1.3 to give 371.9 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of GME (The Globe) and MON (Montgomery), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "gme-to-thc",
+    "from": {
+      "kind": "building-entrance",
+      "building": "GME",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "THC",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 392.2,
+    "baseDurationSeconds": 280,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 301.7 m, multiplied by a path factor of 1.3 to give 392.2 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of GME (The Globe) and THC (Thagard Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "hcb-to-hwc",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HCB",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "HWC",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 321.9,
+    "baseDurationSeconds": 230,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 247.6 m, multiplied by a path factor of 1.3 to give 321.9 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HCB (Classroom Building (HCB)) and HWC (Coburn Wellness Center), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "hcb-to-mon",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HCB",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "MON",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 221.6,
+    "baseDurationSeconds": 158,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 170.5 m, multiplied by a path factor of 1.3 to give 221.6 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HCB (Classroom Building (HCB)) and MON (Montgomery), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "hcb-to-nsu",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HCB",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "NSU",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 200.2,
+    "baseDurationSeconds": 143,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 154.0 m, multiplied by a path factor of 1.3 to give 200.2 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HCB (Classroom Building (HCB)) and NSU (New Student Union), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "hcb-to-thc",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HCB",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "THC",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 106.4,
+    "baseDurationSeconds": 76,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 81.9 m, multiplied by a path factor of 1.3 to give 106.4 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HCB (Classroom Building (HCB)) and THC (Thagard Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "hec-to-hmu",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HEC",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "HMU",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 173,
+    "baseDurationSeconds": 124,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 133.1 m, multiplied by a path factor of 1.3 to give 173.0 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HEC (Hecht House) and HMU (Housewright Music Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "hec-to-kmu",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HEC",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "KMU",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 260,
+    "baseDurationSeconds": 186,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 200.0 m, multiplied by a path factor of 1.3 to give 260.0 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HEC (Hecht House) and KMU (Kuersteiner Music Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "hec-to-san",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HEC",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "SAN",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 160.5,
+    "baseDurationSeconds": 115,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 123.4 m, multiplied by a path factor of 1.3 to give 160.5 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HEC (Hecht House) and SAN (Sandels Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "hmu-to-kmu",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HMU",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "KMU",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 100.8,
+    "baseDurationSeconds": 72,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 77.6 m, multiplied by a path factor of 1.3 to give 100.8 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HMU (Housewright Music Building) and KMU (Kuersteiner Music Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "hmu-to-krb",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HMU",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "KRB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 185.2,
+    "baseDurationSeconds": 132,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 142.5 m, multiplied by a path factor of 1.3 to give 185.2 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HMU (Housewright Music Building) and KRB (Kellogg Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "hmu-to-san",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HMU",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "SAN",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 219.3,
+    "baseDurationSeconds": 157,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 168.7 m, multiplied by a path factor of 1.3 to give 219.3 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HMU (Housewright Music Building) and SAN (Sandels Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "hsf-to-kmu",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HSF",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "KMU",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 255.5,
+    "baseDurationSeconds": 183,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 196.6 m, multiplied by a path factor of 1.3 to give 255.5 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HSF (Honors Scholars and Fellows) and KMU (Kuersteiner Music Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "hsf-to-lib",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HSF",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "LIB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 253.6,
+    "baseDurationSeconds": 181,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 195.1 m, multiplied by a path factor of 1.3 to give 253.6 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HSF (Honors Scholars and Fellows) and LIB (Strozier Library), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "hsf-to-san",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HSF",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "SAN",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 179.3,
+    "baseDurationSeconds": 128,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 137.9 m, multiplied by a path factor of 1.3 to give 179.3 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HSF (Honors Scholars and Fellows) and SAN (Sandels Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "hsf-to-wjb",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HSF",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "WJB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 110.8,
+    "baseDurationSeconds": 79,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 85.2 m, multiplied by a path factor of 1.3 to give 110.8 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HSF (Honors Scholars and Fellows) and WJB (Johnston Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "htl-to-lov",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HTL",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "LOV",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 322.7,
+    "baseDurationSeconds": 231,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 248.2 m, multiplied by a path factor of 1.3 to give 322.7 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HTL (Hoffman Teaching Lab) and LOV (Love Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "htl-to-mch",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HTL",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "MCH",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 223.5,
+    "baseDurationSeconds": 160,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 171.9 m, multiplied by a path factor of 1.3 to give 223.5 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HTL (Hoffman Teaching Lab) and MCH (Carothers Hall), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "htl-to-mil",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HTL",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "MIL",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 218.9,
+    "baseDurationSeconds": 156,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 168.4 m, multiplied by a path factor of 1.3 to give 218.9 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HTL (Hoffman Teaching Lab) and MIL (Harpe-Johnson Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "htl-to-osb",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HTL",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "OSB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 142.6,
+    "baseDurationSeconds": 102,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 109.7 m, multiplied by a path factor of 1.3 to give 142.6 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HTL (Hoffman Teaching Lab) and OSB (Grover Lee Rogers Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "htl-to-pdb",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HTL",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "PDB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 402.4,
+    "baseDurationSeconds": 287,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 309.6 m, multiplied by a path factor of 1.3 to give 402.4 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HTL (Hoffman Teaching Lab) and PDB (Psychology Department Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "htl-to-scn",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HTL",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "SCN",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 161.7,
+    "baseDurationSeconds": 115,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 124.3 m, multiplied by a path factor of 1.3 to give 161.7 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HTL (Hoffman Teaching Lab) and SCN (Duxbury Hall), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "htl-to-stb",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HTL",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "STB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 620.2,
+    "baseDurationSeconds": 443,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 477.1 m, multiplied by a path factor of 1.3 to give 620.2 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HTL (Hoffman Teaching Lab) and STB (Stone Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "htl-to-tul",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HTL",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "TUL",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 297.3,
+    "baseDurationSeconds": 212,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 228.7 m, multiplied by a path factor of 1.3 to give 297.3 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HTL (Hoffman Teaching Lab) and TUL (Tully Gym), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "hwc-to-mil",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HWC",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "MIL",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 258.6,
+    "baseDurationSeconds": 185,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 198.9 m, multiplied by a path factor of 1.3 to give 258.6 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HWC (Coburn Wellness Center) and MIL (Harpe-Johnson Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "hwc-to-scn",
+    "from": {
+      "kind": "building-entrance",
+      "building": "HWC",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "SCN",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 309,
+    "baseDurationSeconds": 221,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 237.7 m, multiplied by a path factor of 1.3 to give 309.0 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of HWC (Coburn Wellness Center) and SCN (Duxbury Hall), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "kmu-to-krb",
+    "from": {
+      "kind": "building-entrance",
+      "building": "KMU",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "KRB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 85.2,
+    "baseDurationSeconds": 61,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 65.6 m, multiplied by a path factor of 1.3 to give 85.2 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of KMU (Kuersteiner Music Building) and KRB (Kellogg Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "kmu-to-san",
+    "from": {
+      "kind": "building-entrance",
+      "building": "KMU",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "SAN",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 250.1,
+    "baseDurationSeconds": 179,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 192.4 m, multiplied by a path factor of 1.3 to give 250.1 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of KMU (Kuersteiner Music Building) and SAN (Sandels Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "krb-to-wjb",
+    "from": {
+      "kind": "building-entrance",
+      "building": "KRB",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "WJB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 297.8,
+    "baseDurationSeconds": 213,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 229.1 m, multiplied by a path factor of 1.3 to give 297.8 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of KRB (Kellogg Building) and WJB (Johnston Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "krb-to-wms",
+    "from": {
+      "kind": "building-entrance",
+      "building": "KRB",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "WMS",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 248.5,
+    "baseDurationSeconds": 177,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 191.1 m, multiplied by a path factor of 1.3 to give 248.5 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of KRB (Kellogg Building) and WMS (Williams Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "lib-to-mon",
+    "from": {
+      "kind": "building-entrance",
+      "building": "LIB",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "MON",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 201.7,
+    "baseDurationSeconds": 144,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 155.2 m, multiplied by a path factor of 1.3 to give 201.7 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of LIB (Strozier Library) and MON (Montgomery), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "lib-to-rba",
+    "from": {
+      "kind": "building-entrance",
+      "building": "LIB",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "RBA",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 108.5,
+    "baseDurationSeconds": 77,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 83.5 m, multiplied by a path factor of 1.3 to give 108.5 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of LIB (Strozier Library) and RBA (Rovetta Building A), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "lib-to-rbb",
+    "from": {
+      "kind": "building-entrance",
+      "building": "LIB",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "RBB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 201.9,
+    "baseDurationSeconds": 144,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 155.3 m, multiplied by a path factor of 1.3 to give 201.9 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of LIB (Strozier Library) and RBB (Rovetta Building B), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "lib-to-san",
+    "from": {
+      "kind": "building-entrance",
+      "building": "LIB",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "SAN",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 223,
+    "baseDurationSeconds": 159,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 171.5 m, multiplied by a path factor of 1.3 to give 223.0 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of LIB (Strozier Library) and SAN (Sandels Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "lib-to-thc",
+    "from": {
+      "kind": "building-entrance",
+      "building": "LIB",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "THC",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 183.2,
+    "baseDurationSeconds": 131,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 140.9 m, multiplied by a path factor of 1.3 to give 183.2 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of LIB (Strozier Library) and THC (Thagard Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "lov-to-mch",
+    "from": {
+      "kind": "building-entrance",
+      "building": "LOV",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "MCH",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 99.2,
+    "baseDurationSeconds": 71,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 76.3 m, multiplied by a path factor of 1.3 to give 99.2 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of LOV (Love Building) and MCH (Carothers Hall), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "lov-to-nsu",
+    "from": {
+      "kind": "building-entrance",
+      "building": "LOV",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "NSU",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 336.5,
+    "baseDurationSeconds": 240,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 258.9 m, multiplied by a path factor of 1.3 to give 336.5 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of LOV (Love Building) and NSU (New Student Union), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "lov-to-osb",
+    "from": {
+      "kind": "building-entrance",
+      "building": "LOV",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "OSB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 303,
+    "baseDurationSeconds": 216,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 233.1 m, multiplied by a path factor of 1.3 to give 303.0 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of LOV (Love Building) and OSB (Grover Lee Rogers Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "lov-to-stb",
+    "from": {
+      "kind": "building-entrance",
+      "building": "LOV",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "STB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 726.7,
+    "baseDurationSeconds": 519,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 559.0 m, multiplied by a path factor of 1.3 to give 726.7 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of LOV (Love Building) and STB (Stone Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "mch-to-osb",
+    "from": {
+      "kind": "building-entrance",
+      "building": "MCH",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "OSB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 216.8,
+    "baseDurationSeconds": 155,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 166.8 m, multiplied by a path factor of 1.3 to give 216.8 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of MCH (Carothers Hall) and OSB (Grover Lee Rogers Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "mch-to-scn",
+    "from": {
+      "kind": "building-entrance",
+      "building": "MCH",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "SCN",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 293,
+    "baseDurationSeconds": 209,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 225.4 m, multiplied by a path factor of 1.3 to give 293.0 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of MCH (Carothers Hall) and SCN (Duxbury Hall), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "mch-to-stb",
+    "from": {
+      "kind": "building-entrance",
+      "building": "MCH",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "STB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 681.7,
+    "baseDurationSeconds": 487,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 524.4 m, multiplied by a path factor of 1.3 to give 681.7 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of MCH (Carothers Hall) and STB (Stone Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "mil-to-osb",
+    "from": {
+      "kind": "building-entrance",
+      "building": "MIL",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "OSB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 163.6,
+    "baseDurationSeconds": 117,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 125.9 m, multiplied by a path factor of 1.3 to give 163.6 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of MIL (Harpe-Johnson Building) and OSB (Grover Lee Rogers Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "mil-to-scn",
+    "from": {
+      "kind": "building-entrance",
+      "building": "MIL",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "SCN",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 84.9,
+    "baseDurationSeconds": 61,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 65.3 m, multiplied by a path factor of 1.3 to give 84.9 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of MIL (Harpe-Johnson Building) and SCN (Duxbury Hall), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "mil-to-tul",
+    "from": {
+      "kind": "building-entrance",
+      "building": "MIL",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "TUL",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 210.2,
+    "baseDurationSeconds": 150,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 161.7 m, multiplied by a path factor of 1.3 to give 210.2 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of MIL (Harpe-Johnson Building) and TUL (Tully Gym), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "mon-to-thc",
+    "from": {
+      "kind": "building-entrance",
+      "building": "MON",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "THC",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 120.2,
+    "baseDurationSeconds": 86,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 92.5 m, multiplied by a path factor of 1.3 to give 120.2 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of MON (Montgomery) and THC (Thagard Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "nsu-to-rba",
+    "from": {
+      "kind": "building-entrance",
+      "building": "NSU",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "RBA",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 282.9,
+    "baseDurationSeconds": 202,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 217.6 m, multiplied by a path factor of 1.3 to give 282.9 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of NSU (New Student Union) and RBA (Rovetta Building A), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "nsu-to-rbb",
+    "from": {
+      "kind": "building-entrance",
+      "building": "NSU",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "RBB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 202.7,
+    "baseDurationSeconds": 145,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 155.9 m, multiplied by a path factor of 1.3 to give 202.7 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of NSU (New Student Union) and RBB (Rovetta Building B), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "osb-to-scn",
+    "from": {
+      "kind": "building-entrance",
+      "building": "OSB",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "SCN",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 78.9,
+    "baseDurationSeconds": 56,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 60.7 m, multiplied by a path factor of 1.3 to give 78.9 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of OSB (Grover Lee Rogers Building) and SCN (Duxbury Hall), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "osb-to-tul",
+    "from": {
+      "kind": "building-entrance",
+      "building": "OSB",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "TUL",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 337.1,
+    "baseDurationSeconds": 241,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 259.3 m, multiplied by a path factor of 1.3 to give 337.1 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of OSB (Grover Lee Rogers Building) and TUL (Tully Gym), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "pdb-to-scn",
+    "from": {
+      "kind": "building-entrance",
+      "building": "PDB",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "SCN",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 542.4,
+    "baseDurationSeconds": 387,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 417.2 m, multiplied by a path factor of 1.3 to give 542.4 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of PDB (Psychology Department Building) and SCN (Duxbury Hall), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "pdb-to-stb",
+    "from": {
+      "kind": "building-entrance",
+      "building": "PDB",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "STB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 285.9,
+    "baseDurationSeconds": 204,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 219.9 m, multiplied by a path factor of 1.3 to give 285.9 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of PDB (Psychology Department Building) and STB (Stone Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "pdb-to-tul",
+    "from": {
+      "kind": "building-entrance",
+      "building": "PDB",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "TUL",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 459.3,
+    "baseDurationSeconds": 328,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 353.3 m, multiplied by a path factor of 1.3 to give 459.3 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of PDB (Psychology Department Building) and TUL (Tully Gym), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "rba-to-rbb",
+    "from": {
+      "kind": "building-entrance",
+      "building": "RBA",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "RBB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 97.5,
+    "baseDurationSeconds": 70,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 75.0 m, multiplied by a path factor of 1.3 to give 97.5 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of RBA (Rovetta Building A) and RBB (Rovetta Building B), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "rba-to-thc",
+    "from": {
+      "kind": "building-entrance",
+      "building": "RBA",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "THC",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 213.9,
+    "baseDurationSeconds": 153,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 164.5 m, multiplied by a path factor of 1.3 to give 213.9 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of RBA (Rovetta Building A) and THC (Thagard Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "san-to-wjb",
+    "from": {
+      "kind": "building-entrance",
+      "building": "SAN",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "WJB",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 290.1,
+    "baseDurationSeconds": 207,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 223.1 m, multiplied by a path factor of 1.3 to give 290.1 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of SAN (Sandels Building) and WJB (Johnston Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "scn-to-tul",
+    "from": {
+      "kind": "building-entrance",
+      "building": "SCN",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "TUL",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 269.4,
+    "baseDurationSeconds": 192,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 207.2 m, multiplied by a path factor of 1.3 to give 269.4 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of SCN (Duxbury Hall) and TUL (Tully Gym), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  },
+  {
+    "id": "wjb-to-wms",
+    "from": {
+      "kind": "building-entrance",
+      "building": "WJB",
+      "entrance": "centroid-stand-in"
+    },
+    "to": {
+      "kind": "building-entrance",
+      "building": "WMS",
+      "entrance": "centroid-stand-in"
+    },
+    "bidirectional": true,
+    "distanceMeters": 287.9,
+    "baseDurationSeconds": 206,
+    "durationSource": "estimated",
+    "paceAssumption": {
+      "metersPerSecond": 1.4,
+      "profile": "average"
+    },
+    "notes": "Estimate, not a measurement. Straight-line centre-to-centre distance 221.5 m, multiplied by a path factor of 1.3 to give 287.9 m of assumed walking, divided by 1.4 m/s. It excludes time spent inside either building, stairs and lifts, waiting at crossings, and class-change crowding, so it is an optimistic floor rather than a realistic door-to-door time. Do not tell a student they will \"make it\" on the strength of this number alone.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/space/buildings/",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Haversine distance between the shipped centroids of WJB (Johnston Building) and WMS (Williams Building), scaled by PATH_FACTOR=1.3 and divided by WALK_SPEED_MPS=1.4. Earth radius 6371008.8 m. Both input centroids are themselves cross-source joins (see buildings.json provenance), and neither endpoint is a real door, so this edge inherits their error as well as the model's. No edge in this file has been walked with a stopwatch."
+    }
+  }
+]

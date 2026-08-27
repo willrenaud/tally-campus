@@ -66,6 +66,10 @@
     "source": {
       "$ref": "common.defs.schema.json#/$defs/sourceAttribution",
       "description": "Which published FSU academic calendar this was transcribed from and when. Calendars are revised, so an answer about a deadline should hedge when this is old."
+    },
+    "provenance": {
+      "$ref": "common.defs.schema.json#/$defs/provenance",
+      "description": "Per-record audit trail: which page this record was read from, on what date, by what method, and how much to trust it. REQUIRED on every shipped record. A record that cannot name a source it was actually fetched from, or a documented computation over records that were, does not belong in the data directory at all; it belongs in DATA-GAPS.md."
     }
   },
   "required": [
@@ -74,7 +78,8 @@
     "startDate",
     "endDate",
     "classesBeginDate",
-    "classesEndDate"
+    "classesEndDate",
+    "provenance"
   ],
   "additionalProperties": false,
   "$defs": {

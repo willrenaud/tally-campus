@@ -1,0 +1,1426 @@
+[
+  {
+    "code": "BEL",
+    "name": "Bellamy Building",
+    "aliases": [
+      "bel",
+      "bellamy",
+      "the bel",
+      "the bellamy"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4432651,
+      "lon": -84.2958913
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Bellamy Building — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4432651,
+          "lon": -84.2958913
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 7,
+    "typicalClassroomFloors": [
+      0,
+      1,
+      2,
+      4
+    ],
+    "notes": "FSU building number 0008, FSU space zone \"ZONE C\", street address 113 COLLEGIATE LOOP. FSU's room inventory lists 34 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0008",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose name matches after case and punctuation normalisation. The OSM polygon carries no address tag, so the pairing rests on the name alone. OpenStreetMap element(s): way/865077781 \"Bellamy\" (https://www.openstreetmap.org/way/865077781). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0008",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "CRM",
+    "name": "Criminology and Criminal Justice Building",
+    "aliases": [
+      "criminology and criminal justice",
+      "crm",
+      "the criminology and criminal justice",
+      "the crm"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4413472,
+      "lon": -84.2913485
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Criminology and Criminal Justice Building — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4413472,
+          "lon": -84.2913485
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 4,
+    "typicalClassroomFloors": [
+      2
+    ],
+    "notes": "FSU building number 0005, FSU space zone \"ZONE C\", street address 112 S COPELAND ST. FSU's room inventory lists 2 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0005",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "high",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose addr:housenumber and addr:street match the FSU street address exactly. Two independent sources agree on the address, so the pairing is not a guess. OpenStreetMap element(s): way/137489141 \"Criminology and Criminal Justice Building\" (https://www.openstreetmap.org/way/137489141). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0005",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "DIF",
+    "name": "Diffenbaugh Building",
+    "aliases": [
+      "dif",
+      "diffenbaugh",
+      "the dif",
+      "the diffenbaugh"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.439995,
+      "lon": -84.2912747
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Diffenbaugh Building — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.439995,
+          "lon": -84.2912747
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 5,
+    "typicalClassroomFloors": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "notes": "FSU building number 0002, FSU space zone \"ZONE C\", street address 625 UNIVERSITY WAY. FSU's room inventory lists 25 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0002",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "high",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose addr:housenumber and addr:street match the FSU street address exactly. Two independent sources agree on the address, so the pairing is not a guess. OpenStreetMap element(s): way/127100106 \"Diffenbaugh Building\" (https://www.openstreetmap.org/way/127100106). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0002",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "FAB",
+    "name": "Fine Arts Building",
+    "aliases": [
+      "fab",
+      "fine arts",
+      "the fab",
+      "the fine arts"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4441392,
+      "lon": -84.2901641
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Fine Arts Building — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4441392,
+          "lon": -84.2901641
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 4,
+    "typicalClassroomFloors": [
+      2,
+      3
+    ],
+    "notes": "FSU building number 0007, FSU space zone \"ZONE C\", street address 530 W CALL ST. FSU's room inventory lists 4 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0007",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "high",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose addr:housenumber and addr:street match the FSU street address exactly. Two independent sources agree on the address, so the pairing is not a guess. OpenStreetMap element(s): way/137486344 \"Fine Arts\" (https://www.openstreetmap.org/way/137486344). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0007",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "GME",
+    "name": "The Globe",
+    "aliases": [
+      "global and multicultural center",
+      "gme",
+      "the gme"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4407804,
+      "lon": -84.2985688
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "The Globe — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4407804,
+          "lon": -84.2985688
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 3,
+    "typicalClassroomFloors": [
+      2,
+      3
+    ],
+    "notes": "FSU building number 4031, FSU space zone \"UNION+\", street address 110 S WOODWARD AVE. FSU's room inventory lists 5 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=4031",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "high",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose addr:housenumber and addr:street match the FSU street address exactly. Two independent sources agree on the address, so the pairing is not a guess. OpenStreetMap element(s): way/155076131 \"Global and Multicultural Center\" (https://www.openstreetmap.org/way/155076131). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=4031",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "HCB",
+    "name": "Classroom Building (HCB)",
+    "aliases": [
+      "classroom",
+      "classroom building",
+      "hcb",
+      "the classroom",
+      "the hcb"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4432029,
+      "lon": -84.2970816
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Classroom Building (HCB) — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4432029,
+          "lon": -84.2970816
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 3,
+    "typicalClassroomFloors": [
+      1,
+      2,
+      3
+    ],
+    "notes": "FSU building number 4009, FSU space zone \"ZONE C\", street address 989 LEARNING WAY. FSU's room inventory lists 24 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=4009",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose name matches after case and punctuation normalisation. The OSM polygon carries no address tag, so the pairing rests on the name alone. OpenStreetMap element(s): way/107499000 \"Classroom Building (HCB)\" (https://www.openstreetmap.org/way/107499000). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=4009",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "HEC",
+    "name": "Hecht House",
+    "aliases": [
+      "hec",
+      "hecht",
+      "the hec",
+      "the hecht"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4439129,
+      "lon": -84.2922856
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Hecht House — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4439129,
+          "lon": -84.2922856
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 3,
+    "typicalClassroomFloors": [
+      2,
+      3
+    ],
+    "notes": "FSU building number 0294, FSU space zone \"ZONE C\", street address 634 W CALL ST. FSU's room inventory lists 10 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0294",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose name matches after case and punctuation normalisation. The OSM polygon carries no address tag, so the pairing rests on the name alone. OpenStreetMap element(s): way/127094929 \"Hecht House\" (https://www.openstreetmap.org/way/127094929). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0294",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "HMU",
+    "name": "Housewright Music Building",
+    "aliases": [
+      "hmu",
+      "housewright building, college of music",
+      "housewright music",
+      "the hmu",
+      "the housewright music"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4429364,
+      "lon": -84.2914824
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Housewright Music Building — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4429364,
+          "lon": -84.2914824
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 2,
+    "typicalClassroomFloors": [
+      0,
+      1
+    ],
+    "notes": "FSU building number 0054, FSU space zone \"ZONE C\", street address 122 N COPELAND ST. FSU's room inventory lists 3 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0054",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "high",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose addr:housenumber and addr:street match the FSU street address exactly. Two independent sources agree on the address, so the pairing is not a guess. OpenStreetMap element(s): way/80792346 \"Housewright Building, College of Music\" (https://www.openstreetmap.org/way/80792346). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0054",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "HSF",
+    "name": "Honors Scholars and Fellows",
+    "aliases": [
+      "honors, scholars and fellows building",
+      "hsf",
+      "the hsf"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4419432,
+      "lon": -84.2935411
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Honors Scholars and Fellows — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4419432,
+          "lon": -84.2935411
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 4,
+    "typicalClassroomFloors": [
+      2,
+      3
+    ],
+    "notes": "FSU building number 4029, FSU space zone \"ZONE C\", street address 127 HONORS WAY. FSU's room inventory lists 5 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=4029",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose name matches after case and punctuation normalisation. The OSM polygon carries no address tag, so the pairing rests on the name alone. OpenStreetMap element(s): way/132305295 \"Honors, Scholars and Fellows Building\" (https://www.openstreetmap.org/way/132305295). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=4029",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "HTL",
+    "name": "Hoffman Teaching Lab",
+    "aliases": [
+      "hoffman teaching",
+      "hoffman teaching labs",
+      "htl",
+      "the hoffman teaching",
+      "the htl"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4444189,
+      "lon": -84.3011046
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Hoffman Teaching Lab — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4444189,
+          "lon": -84.3011046
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 5,
+    "typicalClassroomFloors": [
+      2
+    ],
+    "notes": "FSU building number 0035, FSU space zone \"ZONE A\", street address 101 CHIEFTAN WAY. FSU's room inventory lists 6 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0035",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "high",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose addr:housenumber and addr:street match the FSU street address exactly. Two independent sources agree on the address, so the pairing is not a guess. OpenStreetMap element(s): way/155076172 \"Hoffman Teaching Labs\" (https://www.openstreetmap.org/way/155076172). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0035",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "HWC",
+    "name": "Coburn Wellness Center",
+    "aliases": [
+      "coburn wellness",
+      "hwc",
+      "the coburn wellness",
+      "the hwc",
+      "wellness building"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.441724,
+      "lon": -84.2990131
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Coburn Wellness Center — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.441724,
+          "lon": -84.2990131
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 6,
+    "typicalClassroomFloors": [
+      1,
+      2,
+      3
+    ],
+    "notes": "FSU building number 4030, FSU space zone \"UNION+\", street address 960 LEARNING WAY. FSU's room inventory lists 8 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=4030",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "low",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from an OpenStreetMap polygon whose name is similar but NOT identical to the FSU official name. The pairing is plausible and unconfirmed. Treat the coordinate as approximate and see DATA-GAPS.md. OpenStreetMap element(s): way/431915205 \"Wellness Building\" (https://www.openstreetmap.org/way/431915205). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=4030",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "KMU",
+    "name": "Kuersteiner Music Building",
+    "aliases": [
+      "kmu",
+      "kuersteiner building, college of music",
+      "kuersteiner music",
+      "the kmu",
+      "the kuersteiner music"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4422396,
+      "lon": -84.2915196
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Kuersteiner Music Building — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4422396,
+          "lon": -84.2915196
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 4,
+    "typicalClassroomFloors": [
+      0,
+      2
+    ],
+    "notes": "FSU building number 0089, FSU space zone \"ZONE C\", street address 114 N COPELAND ST. FSU's room inventory lists 6 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0089",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "high",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose addr:housenumber and addr:street match the FSU street address exactly. Two independent sources agree on the address, so the pairing is not a guess. OpenStreetMap element(s): way/80792352 \"Kuersteiner Building, College of Music\" (https://www.openstreetmap.org/way/80792352). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0089",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "KRB",
+    "name": "Kellogg Building",
+    "aliases": [
+      "kellogg",
+      "kellogg research building",
+      "krb",
+      "the kellogg",
+      "the krb"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4416562,
+      "lon": -84.2914211
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Kellogg Building — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4416562,
+          "lon": -84.2914211
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 5,
+    "typicalClassroomFloors": [
+      1,
+      2
+    ],
+    "notes": "FSU building number 0006, FSU space zone \"ZONE C\", street address 108 S COPELAND ST. FSU's room inventory lists 3 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0006",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "high",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose addr:housenumber and addr:street match the FSU street address exactly. Two independent sources agree on the address, so the pairing is not a guess. OpenStreetMap element(s): way/80792358 \"Kellogg Research Building\" (https://www.openstreetmap.org/way/80792358). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0006",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "LIB",
+    "name": "Strozier Library",
+    "aliases": [
+      "lib",
+      "robert manning strozier library",
+      "strozier",
+      "the lib",
+      "the strozier"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4431544,
+      "lon": -84.295013
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Strozier Library — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4431544,
+          "lon": -84.295013
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 7,
+    "typicalClassroomFloors": [
+      0
+    ],
+    "notes": "FSU building number 0134, FSU space zone \"ZONE C\", street address 116 HONORS WAY. FSU's room inventory lists 1 room of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0134",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose name matches after case and punctuation normalisation. The OSM polygon carries no address tag, so the pairing rests on the name alone. OpenStreetMap element(s): way/106455325 \"Robert Manning Strozier Library\" (https://www.openstreetmap.org/way/106455325). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0134",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "LOV",
+    "name": "Love Building",
+    "aliases": [
+      "lov",
+      "love",
+      "the lov",
+      "the love"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.446112,
+      "lon": -84.2994166
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Love Building — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.446112,
+          "lon": -84.2994166
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 5,
+    "typicalClassroomFloors": [
+      1,
+      2,
+      3
+    ],
+    "notes": "FSU building number 0116, FSU space zone \"ZONE A\", street address 1017 ACADEMIC WAY. FSU's room inventory lists 12 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0116",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose name matches after case and punctuation normalisation. The OSM polygon carries no address tag, so the pairing rests on the name alone. OpenStreetMap element(s): way/134801311 \"Love\" (https://www.openstreetmap.org/way/134801311). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0116",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "MCH",
+    "name": "Carothers Hall",
+    "aliases": [
+      "carothers",
+      "mch",
+      "the carothers",
+      "the mch"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4455807,
+      "lon": -84.299921
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Carothers Hall — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4455807,
+          "lon": -84.299921
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 4,
+    "typicalClassroomFloors": [
+      2,
+      3
+    ],
+    "notes": "FSU building number 0055, FSU space zone \"ZONE A\", street address 1021 ATOMIC WAY. FSU's room inventory lists 7 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0055",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose name matches after case and punctuation normalisation. The OSM polygon carries no address tag, so the pairing rests on the name alone. OpenStreetMap element(s): way/134801006 \"Carothers\" (https://www.openstreetmap.org/way/134801006). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0055",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "MIL",
+    "name": "Harpe-Johnson Building",
+    "aliases": [
+      "harpe-johnson",
+      "mil",
+      "the harpe-johnson",
+      "the mil"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4430123,
+      "lon": -84.3004531
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Harpe-Johnson Building — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4430123,
+          "lon": -84.3004531
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 2,
+    "typicalClassroomFloors": [
+      1,
+      2
+    ],
+    "notes": "FSU building number 0121, FSU space zone \"ZONE B\", street address 103 VARSITY WAY. FSU's room inventory lists 3 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0121",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "high",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose addr:housenumber and addr:street match the FSU street address exactly. Two independent sources agree on the address, so the pairing is not a guess. OpenStreetMap element(s): way/155076156 \"Harpe-Johnson\" (https://www.openstreetmap.org/way/155076156). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0121",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "MON",
+    "name": "Montgomery",
+    "aliases": [
+      "mon",
+      "the mon"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4420182,
+      "lon": -84.2959527
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Montgomery — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4420182,
+          "lon": -84.2959527
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 5,
+    "typicalClassroomFloors": [
+      0,
+      1
+    ],
+    "notes": "FSU building number 0025, FSU space zone \"ZONE C\", street address 130 COLLEGIATE LOOP. FSU's room inventory lists 4 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0025",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose name matches after case and punctuation normalisation. The OSM polygon carries no address tag, so the pairing rests on the name alone. OpenStreetMap element(s): way/107498816 \"Montgomery\" (https://www.openstreetmap.org/way/107498816). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0025",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "NSU",
+    "name": "New Student Union",
+    "aliases": [
+      "new student",
+      "nsu",
+      "student union",
+      "the new student",
+      "the nsu"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4445592,
+      "lon": -84.2974047
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "New Student Union — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4445592,
+          "lon": -84.2974047
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 4,
+    "notes": "FSU building number 4018, FSU space zone \"UNION+\", street address 75 N WOODWARD AVE. FSU's room inventory lists 0 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release. It ships despite holding no scheduled classrooms because it is a destination students routinely walk to between classes.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=4018",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "high",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose addr:housenumber and addr:street match the FSU street address exactly. Two independent sources agree on the address, so the pairing is not a guess. OpenStreetMap element(s): way/858902887 \"Student Union\" (https://www.openstreetmap.org/way/858902887). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=4018",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "OSB",
+    "name": "Grover Lee Rogers Building",
+    "aliases": [
+      "grover lee rogers",
+      "osb",
+      "rogers",
+      "the grover lee rogers",
+      "the osb"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4440836,
+      "lon": -84.3000286
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Grover Lee Rogers Building — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4440836,
+          "lon": -84.3000286
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 6,
+    "typicalClassroomFloors": [
+      1,
+      3
+    ],
+    "notes": "FSU building number 0036, FSU space zone \"ZONE A\", street address 117 N WOODWARD AVE. FSU's room inventory lists 3 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0036",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "high",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose addr:housenumber and addr:street match the FSU street address exactly. Two independent sources agree on the address, so the pairing is not a guess. OpenStreetMap element(s): way/155076177 \"Rogers\" (https://www.openstreetmap.org/way/155076177). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0036",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "PDB",
+    "name": "Psychology Department Building",
+    "aliases": [
+      "pdb",
+      "psychology building a",
+      "psychology building b",
+      "psychology department",
+      "the pdb",
+      "the psychology department"
+    ],
+    "campusZone": "west-campus",
+    "centroid": {
+      "lat": 30.4450776,
+      "lon": -84.304242
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Psychology Department Building — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4450776,
+          "lon": -84.304242
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 5,
+    "typicalClassroomFloors": [
+      1
+    ],
+    "notes": "FSU building number 4004, FSU space zone \"ZONE A\", street address 1107 W CALL ST. FSU's room inventory lists 4 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=4004",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "low",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; the FSU record corresponds to SEVERAL OpenStreetMap polygons (separate wings of one complex) and the coordinate shipped here is the arithmetic mean of their centres. That midpoint may fall between the wings rather than inside either. See DATA-GAPS.md. OpenStreetMap element(s): way/155915591 \"Psychology Building A\" + way/155915596 \"Psychology Building B\" (https://www.openstreetmap.org/way/155915591, https://www.openstreetmap.org/way/155915596). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=4004",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "RBA",
+    "name": "Rovetta Building A",
+    "aliases": [
+      "rba",
+      "rovetta business a",
+      "the rba"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4438686,
+      "lon": -84.2952806
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Rovetta Building A — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4438686,
+          "lon": -84.2952806
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 5,
+    "typicalClassroomFloors": [
+      1,
+      2
+    ],
+    "notes": "FSU building number 0023, FSU space zone \"ZONE C\", street address 821 ACADEMIC WAY. FSU's room inventory lists 16 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0023",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose name matches after case and punctuation normalisation. The OSM polygon carries no address tag, so the pairing rests on the name alone. OpenStreetMap element(s): way/127081019 \"Rovetta Business A\" (https://www.openstreetmap.org/way/127081019). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0023",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "RBB",
+    "name": "Rovetta Building B",
+    "aliases": [
+      "rbb",
+      "rovetta business b",
+      "the rbb"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4443793,
+      "lon": -84.2957914
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Rovetta Building B — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4443793,
+          "lon": -84.2957914
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 3,
+    "typicalClassroomFloors": [
+      1,
+      3
+    ],
+    "notes": "FSU building number 0052, FSU space zone \"ZONE C\", street address 821 ACADEMIC WAY. FSU's room inventory lists 5 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0052",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose name matches after case and punctuation normalisation. The OSM polygon carries no address tag, so the pairing rests on the name alone. OpenStreetMap element(s): way/127081016 \"Rovetta Business B\" (https://www.openstreetmap.org/way/127081016). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0052",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "SAN",
+    "name": "Sandels Building",
+    "aliases": [
+      "san",
+      "sandels",
+      "the san",
+      "the sandels"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4431528,
+      "lon": -84.2932239
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Sandels Building — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4431528,
+          "lon": -84.2932239
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 4,
+    "typicalClassroomFloors": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "notes": "FSU building number 0135, FSU space zone \"ZONE C\", street address 120 CONVOCATION WAY. FSU's room inventory lists 8 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0135",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose name matches after case and punctuation normalisation. The OSM polygon carries no address tag, so the pairing rests on the name alone. OpenStreetMap element(s): way/80792345 \"Sandels\" (https://www.openstreetmap.org/way/80792345). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0135",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "SCN",
+    "name": "Duxbury Hall",
+    "aliases": [
+      "duxbury",
+      "scn",
+      "the duxbury",
+      "the scn"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4435741,
+      "lon": -84.3002547
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Duxbury Hall — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4435741,
+          "lon": -84.3002547
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 4,
+    "typicalClassroomFloors": [
+      2
+    ],
+    "notes": "FSU building number 0040, FSU space zone \"ZONE B\", street address 98 VARSITY WAY. FSU's room inventory lists 6 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0040",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "high",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose addr:housenumber and addr:street match the FSU street address exactly. Two independent sources agree on the address, so the pairing is not a guess. OpenStreetMap element(s): way/155076137 \"Duxbury Hall\" (https://www.openstreetmap.org/way/155076137). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0040",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "STB",
+    "name": "Stone Building",
+    "aliases": [
+      "stb",
+      "stone",
+      "the stb",
+      "the stone"
+    ],
+    "campusZone": "west-campus",
+    "centroid": {
+      "lat": 30.4468829,
+      "lon": -84.3051787
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Stone Building — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4468829,
+          "lon": -84.3051787
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 4,
+    "typicalClassroomFloors": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "notes": "FSU building number 0050, FSU space zone \"ZONE A\", street address 1114 W CALL ST. FSU's room inventory lists 14 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0050",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "high",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose addr:housenumber and addr:street match the FSU street address exactly. Two independent sources agree on the address, so the pairing is not a guess. OpenStreetMap element(s): way/155076140 \"Stone\" (https://www.openstreetmap.org/way/155076140). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0050",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "THC",
+    "name": "Thagard Building",
+    "aliases": [
+      "thagard",
+      "thc",
+      "the thagard",
+      "the thc"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.442752,
+      "lon": -84.2964066
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Thagard Building — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.442752,
+          "lon": -84.2964066
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 4,
+    "typicalClassroomFloors": [
+      1,
+      2,
+      3
+    ],
+    "notes": "FSU building number 0028, FSU space zone \"ZONE C\", street address 109 COLLEGIATE LOOP. FSU's room inventory lists 5 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0028",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose name matches after case and punctuation normalisation. The OSM polygon carries no address tag, so the pairing rests on the name alone. OpenStreetMap element(s): way/107498813 \"Thagard\" (https://www.openstreetmap.org/way/107498813). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0028",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "TUL",
+    "name": "Tully Gym",
+    "aliases": [
+      "the tul",
+      "the tully",
+      "tul",
+      "tully",
+      "tully gymnasium"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4425277,
+      "lon": -84.3020431
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Tully Gym — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4425277,
+          "lon": -84.3020431
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 2,
+    "typicalClassroomFloors": [
+      0,
+      2
+    ],
+    "notes": "FSU building number 0132, FSU space zone \"ZONE B\", street address 139 CHIEFTAN WAY. FSU's room inventory lists 5 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0132",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "high",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose addr:housenumber and addr:street match the FSU street address exactly. Two independent sources agree on the address, so the pairing is not a guess. OpenStreetMap element(s): way/155076129 \"Tully Gymnasium\" (https://www.openstreetmap.org/way/155076129). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0132",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "WJB",
+    "name": "Johnston Building",
+    "aliases": [
+      "johnston",
+      "the johnston",
+      "the wjb",
+      "wjb"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4411984,
+      "lon": -84.293751
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Johnston Building — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4411984,
+          "lon": -84.293751
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 4,
+    "typicalClassroomFloors": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "notes": "FSU building number 0017, FSU space zone \"ZONE C\", street address 143 HONORS WAY. FSU's room inventory lists 13 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0017",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "low",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; the FSU record corresponds to SEVERAL OpenStreetMap polygons (separate wings of one complex) and the coordinate shipped here is the arithmetic mean of their centres. That midpoint may fall between the wings rather than inside either. See DATA-GAPS.md. OpenStreetMap element(s): way/127094041 \"Johnston\" + way/127094465 \"Johnston\" (https://www.openstreetmap.org/way/127094041, https://www.openstreetmap.org/way/127094465). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0017",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "WMS",
+    "name": "Williams Building",
+    "aliases": [
+      "the williams",
+      "the wms",
+      "williams",
+      "wms"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4399906,
+      "lon": -84.291914
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Williams Building — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4399906,
+          "lon": -84.291914
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 4,
+    "typicalClassroomFloors": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "notes": "FSU building number 0003, FSU space zone \"ZONE C\", street address 631 UNIVERSITY WAY. FSU's room inventory lists 20 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0003",
+      "retrievedOn": "2026-08-27",
+      "method": "computed",
+      "confidence": "high",
+      "note": "Identity, official name and floor counts read from the FSU Building Portal; coordinate taken from the OpenStreetMap building polygon whose addr:housenumber and addr:street match the FSU street address exactly. Two independent sources agree on the address, so the pairing is not a guess. OpenStreetMap element(s): way/127100109 \"Williams Building\" (https://www.openstreetmap.org/way/127100109). No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0003",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  }
+]

@@ -66,6 +66,12 @@
     }
   ],
   "notes": "ILLUSTRATIVE PLACEHOLDER RECORD. Distances, durations, and crowd multipliers are invented. Replace with measured data before shipping.",
+  "provenance": {
+    "retrievedOn": "2026-08-27",
+    "method": "unverified",
+    "confidence": "low",
+    "note": "Illustrative example, not real campus data. method \"unverified\" is the correct label for an invented record and is exactly what tools/validate-data.mjs refuses to let into plugins/fsu-schedule/data/. Examples are allowed to carry it; shipped records are not."
+  },
   "source": {
     "label": "Placeholder example, not a real source",
     "retrievedAt": "2026-08-27T10:00:00-04:00",

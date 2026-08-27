@@ -15,8 +15,12 @@
     },
     "courseCode": {
       "type": "string",
-      "pattern": "^[A-Z]{3}[0-9]{4}[A-Zr]?$",
-      "description": "The course number under Florida's statewide course numbering system: a three-letter prefix, four digits, and an optional single-character suffix, with no space. Examples: \"ENC1101\", \"BSC2010L\" where the L marks the lab, \"MAC2311\". The lowercase \"r\" suffix marks a repeatable course in FSU's catalog. Importers must strip any space between prefix and number and uppercase the prefix before storing."
+      "pattern": "^[A-Z]{3}[0-9]{4}[A-Za-z]{0,2}$",
+      "description": "The course number as printed on the student's schedule: a three-letter prefix, four digits, and up to two optional letter suffixes, with no space. Examples: \"ENC1101\", \"BSC2010L\" where the L marks the lab, \"MAC2311\". Florida's statewide course numbering system (SCNS) is stricter than this pattern, but an importer that rejects a real schedule is worse than one that accepts an odd course code: cross-listed, experimental, special-topics, and graduate offerings routinely carry numbers that do not fit the canonical form, and a student whose import fails gets nothing at all. So the pattern is deliberately permissive and canonicalNumbering carries the stricter judgement as a flag instead. Importers must strip any space between prefix and number and uppercase the prefix before storing."
+    },
+    "canonicalNumbering": {
+      "type": "boolean",
+      "description": "True when courseCode fits the canonical Florida statewide course numbering (SCNS) form: three uppercase letters, four digits, and at most one single-character suffix (an uppercase letter such as the lab \"L\", or the lowercase \"r\" repeatable marker). False when the code is well-formed enough to store but does not fit that form, which happens with special-topics, experimental, and some cross-listed offerings. Omit when the importer did not evaluate it. This field exists so a non-conforming code can be flagged and hedged about rather than rejected at import; nothing downstream should refuse to route a meeting because this is false."
     },
     "section": {
       "type": "string",
