@@ -1,0 +1,112 @@
+{
+  "termCode": "2026-fall",
+  "displayName": "Fall 2026",
+  "timezone": "America/New_York",
+  "startDate": "2026-08-24",
+  "endDate": "2026-12-11",
+  "classesBeginDate": "2026-08-24",
+  "classesEndDate": "2026-12-04",
+  "deadlines": [
+    {
+      "id": "drop-add-ends",
+      "type": "drop-add",
+      "date": "2026-08-28",
+      "time": "23:59",
+      "description": "Last day to add a course or drop without a fee liability."
+    },
+    {
+      "id": "tuition-due",
+      "type": "tuition-payment",
+      "date": "2026-09-11",
+      "time": "17:00",
+      "description": "Tuition and fees due to avoid a late payment fee."
+    },
+    {
+      "id": "first-half-withdrawal",
+      "type": "course-withdrawal",
+      "date": "2026-09-18",
+      "time": "23:59",
+      "description": "Last day to withdraw from a first-seven-weeks course.",
+      "appliesToSession": "first-half"
+    },
+    {
+      "id": "full-term-withdrawal",
+      "type": "course-withdrawal",
+      "date": "2026-10-30",
+      "time": "23:59",
+      "description": "Last day to withdraw from a full-term course with a W on the transcript."
+    },
+    {
+      "id": "term-withdrawal",
+      "type": "term-withdrawal",
+      "date": "2026-12-04",
+      "time": "17:00",
+      "description": "Last day to withdraw from all courses for the term."
+    },
+    {
+      "id": "graduation-application",
+      "type": "graduation-application",
+      "date": "2026-09-25",
+      "description": "Deadline to apply for December graduation."
+    }
+  ],
+  "nonClassDays": [
+    {
+      "id": "labor-day",
+      "name": "Labor Day",
+      "type": "holiday",
+      "startDate": "2026-09-07",
+      "endDate": "2026-09-07",
+      "classesCancelled": true,
+      "campusClosed": true
+    },
+    {
+      "id": "thanksgiving-break",
+      "name": "Thanksgiving Break",
+      "type": "break",
+      "startDate": "2026-11-25",
+      "endDate": "2026-11-27",
+      "classesCancelled": true,
+      "campusClosed": false
+    },
+    {
+      "id": "reading-day",
+      "name": "Reading Day",
+      "type": "reading-day",
+      "startDate": "2026-12-07",
+      "endDate": "2026-12-07",
+      "classesCancelled": true,
+      "campusClosed": false
+    }
+  ],
+  "finals": {
+    "startDate": "2026-12-08",
+    "endDate": "2026-12-11",
+    "note": "Exam blocks are assigned from the published final exam grid and generally do not fall at the course's normal meeting time. A weekly schedule expanded into this week will be wrong."
+  },
+  "sessions": [
+    {
+      "code": "full-term",
+      "name": "Full Term",
+      "startDate": "2026-08-24",
+      "endDate": "2026-12-04"
+    },
+    {
+      "code": "first-half",
+      "name": "First Seven Weeks",
+      "startDate": "2026-08-24",
+      "endDate": "2026-10-09"
+    },
+    {
+      "code": "second-half",
+      "name": "Second Seven Weeks",
+      "startDate": "2026-10-12",
+      "endDate": "2026-12-04"
+    }
+  ],
+  "source": {
+    "label": "ILLUSTRATIVE PLACEHOLDER. Every date here is invented and internally consistent only. Replace with the published FSU academic calendar before shipping.",
+    "retrievedAt": "2026-08-27T10:00:00-04:00",
+    "confidence": "unknown"
+  }
+}

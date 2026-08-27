@@ -1,0 +1,33 @@
+{
+  "id": "enc1101-0001-lecture-mwf",
+  "termCode": "2026-fall",
+  "courseCode": "ENC1101",
+  "section": "0001",
+  "classNumber": "10432",
+  "title": "Freshman Composition and Rhetoric",
+  "instructors": [
+    {
+      "name": "Placeholder, A.",
+      "role": "primary"
+    }
+  ],
+  "credits": 3,
+  "meetingType": "lecture",
+  "deliveryMode": "in-person",
+  "daysOfWeek": [
+    "monday",
+    "wednesday",
+    "friday"
+  ],
+  "startTime": "09:05",
+  "endTime": "09:55",
+  "location": {
+    "buildingCode": "HCB",
+    "room": "0216",
+    "floor": 2,
+    "buildingCodeRaw": "HCB 216",
+    "preferredEntranceId": "north-plaza"
+  },
+  "partOfTerm": "full-term",
+  "notes": "ILLUSTRATIVE PLACEHOLDER RECORD. Course number, instructor, and room are invented. This is the plain case: one section, one weekly pattern, one room. See student-schedule.example.json for the messy cases the schema also has to handle."
+}

@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "0.1.0",
+  "termCode": "2026-fall",
+  "displayName": "Fall 2026",
+  "meetings": [
+    {
+      "id": "enc1101-0001-lecture-mwf",
+      "termCode": "2026-fall",
+      "courseCode": "ENC1101",
+      "section": "0001",
+      "classNumber": "10432",
+      "title": "Freshman Composition and Rhetoric",
+      "instructors": [
+        {
+          "name": "Placeholder, A.",
+          "role": "primary"
+        }
+      ],
+      "credits": 3,
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "monday",
+        "wednesday",
+        "friday"
+      ],
+      "startTime": "09:05",
+      "endTime": "09:55",
+      "location": {
+        "buildingCode": "HCB",
+        "room": "0216",
+        "floor": 2,
+        "preferredEntranceId": "north-plaza"
+      },
+      "partOfTerm": "full-term"
+    },
+    {
+      "id": "bsc2010-0003-lecture-mw",
+      "termCode": "2026-fall",
+      "courseCode": "BSC2010",
+      "section": "0003",
+      "title": "Biological Science I",
+      "instructors": [
+        {
+          "name": "Placeholder, B.",
+          "role": "primary"
+        },
+        {
+          "name": "Placeholder, C.",
+          "role": "co-instructor"
+        }
+      ],
+      "credits": 3,
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "monday",
+        "wednesday"
+      ],
+      "startTime": "10:10",
+      "endTime": "11:00",
+      "location": {
+        "buildingCode": "HCB",
+        "room": "0101",
+        "floor": 1
+      },
+      "partOfTerm": "full-term",
+      "notes": "Same section as the Friday recitation below, in a different building. Two meeting records, one section."
+    },
+    {
+      "id": "bsc2010-0003-recitation-f",
+      "termCode": "2026-fall",
+      "courseCode": "BSC2010",
+      "section": "0003",
+      "title": "Biological Science I",
+      "instructors": [
+        {
+          "name": "Placeholder, D.",
+          "role": "teaching-assistant"
+        }
+      ],
+      "credits": 3,
+      "meetingType": "recitation",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "friday"
+      ],
+      "startTime": "10:10",
+      "endTime": "11:00",
+      "location": {
+        "buildingCode": "WMS",
+        "room": "0308",
+        "floor": 3
+      },
+      "partOfTerm": "full-term",
+      "notes": "The messy case the schema exists for: the same section meets in a different building on a different day. The Friday walk from ENC1101 in HCB is a different problem from the Monday one."
+    },
+    {
+      "id": "bsc2010l-0021-lab-biweekly",
+      "termCode": "2026-fall",
+      "courseCode": "BSC2010L",
+      "section": "0021",
+      "title": "Biological Science I Laboratory",
+      "instructors": [],
+      "credits": 1,
+      "meetingType": "lab",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "thursday"
+      ],
+      "startTime": "13:20",
+      "endTime": "16:05",
+      "location": {
+        "buildingCode": "WMS",
+        "room": "0012",
+        "floor": 0
+      },
+      "recurrence": {
+        "frequency": "biweekly",
+        "anchorDate": "2026-08-27",
+        "exceptDates": [
+          "2026-11-26"
+        ]
+      },
+      "partOfTerm": "full-term",
+      "notes": "Biweekly lab. The anchorDate is the first actual meeting, which is the only thing that says which Thursday is an on week."
+    },
+    {
+      "id": "sta2023-0007-online-async",
+      "termCode": "2026-fall",
+      "courseCode": "STA2023",
+      "section": "0007",
+      "title": "Fundamental Business Statistics",
+      "instructors": [
+        {
+          "name": "Placeholder, E.",
+          "role": "unknown"
+        }
+      ],
+      "credits": 3,
+      "meetingType": "lecture",
+      "deliveryMode": "online-asynchronous",
+      "location": null,
+      "onlineMeeting": {
+        "platform": "canvas",
+        "note": "Weekly modules open Monday and close Sunday night."
+      },
+      "partOfTerm": "full-term",
+      "notes": "Asynchronous: no days, no times, null location. Any conflict check must skip it rather than treat it as a block at midnight."
+    },
+    {
+      "id": "idh2003-0002-seminar-secondhalf",
+      "termCode": "2026-fall",
+      "courseCode": "IDH2003",
+      "section": "0002",
+      "title": "Honors Colloquium",
+      "instructors": [
+        {
+          "name": "Placeholder, F.",
+          "role": "primary"
+        }
+      ],
+      "credits": 1,
+      "meetingType": "seminar",
+      "deliveryMode": "online-synchronous",
+      "daysOfWeek": [
+        "tuesday"
+      ],
+      "startTime": "17:15",
+      "endTime": "18:30",
+      "location": null,
+      "onlineMeeting": {
+        "platform": "zoom",
+        "note": "Link posted in the course site."
+      },
+      "partOfTerm": "second-half",
+      "notes": "Runs only in the second seven weeks, so it cannot conflict with anything that ends on 2026-10-09."
+    }
+  ],
+  "preferences": {
+    "walkingPaceMetersPerSecond": 1.5,
+    "requiresAccessibleRoutes": false,
+    "defaultTransportMode": "walk",
+    "parkingPermits": [
+      "student-commuter"
+    ],
+    "homeBuildingCode": "HCB",
+    "minimumTransitBufferMinutes": 3
+  },
+  "import": {
+    "sourceFormat": "html-paste",
+    "sourceLabel": "ILLUSTRATIVE PLACEHOLDER. Invented schedule, not a real student's.",
+    "importedAt": "2026-08-27T10:14:02-04:00",
+    "importerVersion": "0.1.0",
+    "sourceChecksum": "0000000000000000000000000000000000000000000000000000000000000000",
+    "warnings": [
+      {
+        "code": "missing-instructor",
+        "message": "The lab section listed its instructor as Staff, so no instructor was recorded.",
+        "meetingId": "bsc2010l-0021-lab-biweekly",
+        "rawValue": "Staff"
+      }
+    ]
+  }
+}

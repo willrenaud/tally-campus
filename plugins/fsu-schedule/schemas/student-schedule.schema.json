@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fsu-campus.example/schemas/v0/student-schedule.schema.json",
+  "title": "Student schedule",
+  "description": "The one file that belongs to the user rather than to the campus: their imported class schedule for a term, plus the preferences that change how answers are computed for them, plus a record of where the schedule came from. Everything else in this plugin is static data shipped with the plugin and identical for every student; this is the only per-user document, and it is persisted at ${CLAUDE_PLUGIN_DATA}/schedules/<termCode>.json so that it survives plugin updates. The import block exists so that a schedule can always be traced back to what produced it: an import from a pasted HTML table is a different quality of data from a hand-entered one, and when a building code fails to resolve, the warnings recorded here are what make the failure diagnosable months later.",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "The version of this schema the document was written against, so that a later plugin release can migrate an older stored schedule instead of rejecting it. Set to the plugin version at the time of writing."
+    },
+    "termCode": {
+      "$ref": "common.defs.schema.json#/$defs/termCode",
+      "description": "The term this schedule covers. One file per term. Every meeting in this document must carry the same termCode."
+    },
+    "meetings": {
+      "type": "array",
+      "description": "Every meeting block in the student's schedule for the term, including online and asynchronous ones. Remember that a single course section may contribute several entries, one per distinct day-and-location pattern; group by (courseCode, section) to recover courses. An empty array is valid and means the import found nothing, which is a state worth reporting rather than treating as an error.",
+      "items": {
+        "$ref": "course-meeting.schema.json"
+      },
+      "default": []
+    },
+    "preferences": {
+      "$ref": "#/$defs/preferences",
+      "description": "How this student moves around campus and what they are allowed to park with. These change the answer, not just its presentation: the same two back-to-back classes are comfortably reachable at one walking pace and impossible at another."
+    },
+    "import": {
+      "$ref": "#/$defs/importProvenance",
+      "description": "Where this schedule came from and when."
+    },
+    "displayName": {
+      "type": "string",
+      "description": "Optional label the student gives this schedule, for example \"Fall 2026 (after swapping labs)\". Purely cosmetic."
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "termCode",
+    "meetings",
+    "import"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "importProvenance": {
+      "type": "object",
+      "description": "A record of the import that produced this document. Kept so that stale schedules can be spotted, so a re-import can be offered when the source format changes, and so that partial or lossy imports are visible rather than silent.",
+      "properties": {
+        "sourceFormat": {
+          "type": "string",
+          "enum": [
+            "ics",
+            "csv",
+            "html-paste",
+            "text-paste",
+            "pdf",
+            "screenshot-ocr",
+            "manual-entry",
+            "migrated"
+          ],
+          "description": "What kind of artifact was imported. This is the strongest single signal of how much to trust the result: an ICS feed carries exact times, whereas \"screenshot-ocr\" and \"text-paste\" routinely mangle room numbers and should make an answer hedge. \"migrated\" means the document was upgraded from an earlier schemaVersion rather than imported fresh."
+        },
+        "sourceLabel": {
+          "type": "string",
+          "description": "Human-readable description of the specific source, for example \"Student Central detailed schedule, pasted\" or the name of the uploaded file."
+        },
+        "importedAt": {
+          "$ref": "common.defs.schema.json#/$defs/timestamp",
+          "description": "When the import ran, as an RFC 3339 timestamp with an explicit UTC offset. This is a real instant rather than a wall-clock time, which is why it is the one field in the model that is a full datetime."
+        },
+        "importerVersion": {
+          "type": "string",
+          "description": "Version of the fsu-schedule plugin that performed the import, so a bug in a specific importer can be traced to the documents it produced."
+        },
+        "sourceChecksum": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "Lowercase hex SHA-256 of the raw source text. Lets a re-import detect that nothing has changed and skip rewriting the file, and lets two schedules be compared without storing the original."
+        },
+        "warnings": {
+          "type": "array",
+          "description": "Problems encountered during import that did not stop it: a building code with no matching building record, an ambiguous time, a row that could not be parsed. Recording them here rather than dropping them is what allows an answer to say which parts of the schedule it is unsure about.",
+          "items": {
+            "$ref": "#/$defs/importWarning"
+          },
+          "default": []
+        }
+      },
+      "required": [
+        "sourceFormat",
+        "importedAt"
+      ],
+      "additionalProperties": false
+    },
+    "importWarning": {
+      "type": "object",
+      "description": "One thing the importer could not fully resolve.",
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "unknown-building-code",
+            "unparsed-row",
+            "ambiguous-time",
+            "missing-instructor",
+            "missing-room",
+            "assumed-delivery-mode",
+            "duplicate-meeting",
+            "unmapped-session",
+            "other"
+          ],
+          "description": "Machine-readable warning kind, so warnings can be counted and grouped without reading their messages."
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "description": "What went wrong, in terms the student could act on."
+        },
+        "meetingId": {
+          "$ref": "common.defs.schema.json#/$defs/slug",
+          "description": "The id of the meeting this warning concerns, when it is about a specific one."
+        },
+        "rawValue": {
+          "type": "string",
+          "description": "The source text that could not be resolved, kept verbatim for diagnosis."
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "additionalProperties": false
+    },
+    "preferences": {
+      "type": "object",
+      "description": "Per-student settings that feed routing and parking answers.",
+      "properties": {
+        "walkingPaceMetersPerSecond": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 4,
+          "description": "The student's own walking pace, used to rescale every walk edge from the pace its duration was recorded at. Roughly 1.4 is unhurried and 1.8 is hurried. Setting this well is what makes a between-classes feasibility answer trustworthy for this particular person rather than for an average one."
+        },
+        "requiresAccessibleRoutes": {
+          "type": "boolean",
+          "default": false,
+          "description": "When true, routing must use only walk edges marked wheelchairAccessible and only building entrances marked wheelchairAccessible, and must never quietly fall back to a shorter inaccessible route. A route that cannot be built under this constraint should be reported as unavailable rather than approximated."
+        },
+        "defaultTransportMode": {
+          "type": "string",
+          "enum": [
+            "walk",
+            "bike",
+            "scooter",
+            "drive",
+            "bus",
+            "wheelchair"
+          ],
+          "default": "walk",
+          "description": "How the student usually gets between classes. Only \"walk\" and \"wheelchair\" are served by the walk graph as it stands; the other values are recorded so that an answer can say the estimate assumes walking rather than silently applying it to a cyclist."
+        },
+        "parkingPermits": {
+          "type": "array",
+          "description": "Which permit classes the student actually holds. Without this, a parking answer can only list every rule; with it, the answer narrows to the lots this student may legally use at the time they are asking about. Values come from the same closed set the parking rules are written against.",
+          "items": {
+            "$ref": "parking-zone.schema.json#/$defs/permitClass"
+          },
+          "uniqueItems": true,
+          "default": []
+        },
+        "homeBuildingCode": {
+          "$ref": "common.defs.schema.json#/$defs/buildingCode",
+          "description": "The residence hall or usual starting building the student's day begins from, when they have one. Gives the first walk of the day an origin."
+        },
+        "minimumTransitBufferMinutes": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Slack in minutes the student wants left over on top of a computed walking time before calling a transition comfortable. A student who needs to stop for coffee or use a lift sets this higher, and it moves the line between \"you can make it\" and \"you cannot\"."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

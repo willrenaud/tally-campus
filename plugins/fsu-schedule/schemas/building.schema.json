@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fsu-campus.example/schemas/v0/building.schema.json",
+  "title": "FSU building",
+  "description": "One Florida State University building, keyed by the building code that appears on a student's class schedule. Buildings are static shipped data, not per-user data. A building is deliberately NOT modelled as a single point: walking time between two classes depends on which door you leave by, so the routable geometry of a building is its list of entrances, and the centroid is only a coarse fallback for display and for distance sorting. Entrance ids declared here are the anchors that walk-edge records point at.",
+  "type": "object",
+  "properties": {
+    "code": {
+      "$ref": "common.defs.schema.json#/$defs/buildingCode",
+      "description": "The official FSU building code, uppercase, exactly as printed on a class schedule. Primary key: unique across the building dataset."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The building's full official name, for example \"Health and Wellness Center\". Use FSU's own naming; put the informal names students actually say in aliases instead."
+    },
+    "aliases": {
+      "type": "array",
+      "description": "Other names students actually say out loud, so a question like \"where's my class in the Wellness Center?\" resolves to this building. Include common misspellings, dropped words, initialisms, old names the building was known by, and nicknames. Matching is expected to be case-insensitive, so store these in lowercase. Do not repeat the value of code or name here.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+    "campusZone": {
+      "type": "string",
+      "enum": [
+        "academic-core",
+        "north-campus",
+        "south-campus",
+        "east-campus",
+        "west-campus",
+        "southwest-campus",
+        "innovation-park",
+        "panama-city",
+        "off-campus"
+      ],
+      "description": "Which broad area of FSU the building sits in. These zones are defined by this plugin for grouping and for sanity-checking routes; they are not official FSU administrative designations. \"academic-core\" is the walkable classroom cluster around Landis Green. A route whose endpoints are in different zones almost always needs more than a ten-minute passing period, so the zone pair is a cheap first-pass feasibility check before any edge routing runs."
+    },
+    "centroid": {
+      "$ref": "common.defs.schema.json#/$defs/geoPoint",
+      "description": "A representative point inside the building footprint. Use this for map display and for coarse \"which buildings are near me\" sorting ONLY. Never compute a walking estimate from centroids: use entrances and walk edges, because centroid-to-centroid distance systematically underestimates real walking time by ignoring which door you leave by and where the sidewalks actually run."
+    },
+    "entrances": {
+      "type": "array",
+      "description": "Every public entrance worth routing to or from, in no particular order. At least one is required, because a building with no entrance cannot participate in the walk graph. When only one door is known, record that one and mark its confidence honestly rather than inventing others.",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/entrance"
+      }
+    },
+    "floorCount": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Number of above-ground floors. Used to add a vertical-travel penalty when a class is on an upper floor: reaching a fifth-floor room can cost more than the walk between two neighbouring buildings."
+    },
+    "elevatorCount": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of public passenger elevators. Zero in a multi-floor building is a strong accessibility signal and also a queueing signal during class changes."
+    },
+    "typicalClassroomFloors": {
+      "type": "array",
+      "description": "Which floors actually hold general-purpose classrooms, when that is narrower than the whole building. Lets a vertical-travel estimate be made before the specific room is known.",
+      "items": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "uniqueItems": true
+    },
+    "notes": {
+      "type": "string",
+      "description": "Free-text caveats about this building that do not fit another field, for example a wing that is locked outside business hours or long-running construction that closes a plaza."
+    },
+    "source": {
+      "$ref": "common.defs.schema.json#/$defs/sourceAttribution",
+      "description": "Where this building record came from and when it was last checked."
+    }
+  },
+  "required": [
+    "code",
+    "name",
+    "campusZone",
+    "centroid",
+    "entrances"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "entrance": {
+      "type": "object",
+      "description": "One door into the building, with its own coordinate. This is the unit walk edges connect, so its id must stay stable across data releases.",
+      "properties": {
+        "id": {
+          "$ref": "common.defs.schema.json#/$defs/slug",
+          "description": "Stable identifier for this entrance, unique within this building only (not globally). Walk edges reference it as the pair (building code, entrance id). Prefer a descriptive slug such as \"north-plaza\" over a bare number, so the reference stays readable."
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "description": "How a student would recognize this door in one phrase, for example \"North doors facing Landis Green\" or \"Ground-floor entrance under the breezeway\". This string is what gets read back in an answer, so make it landmark-relative rather than architectural."
+        },
+        "point": {
+          "$ref": "common.defs.schema.json#/$defs/geoPoint",
+          "description": "Coordinate of the door itself, at the threshold rather than at the building centre."
+        },
+        "facing": {
+          "type": "string",
+          "enum": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "description": "Which compass direction the door opens toward. Used to pick a plausible entrance when the walk graph has no edge for the exact pair, and to phrase directions naturally (\"leave by the south doors\")."
+        },
+        "entranceType": {
+          "type": "string",
+          "enum": [
+            "main",
+            "secondary",
+            "breezeway",
+            "courtyard",
+            "skywalk",
+            "tunnel",
+            "loading",
+            "emergency-exit-only"
+          ],
+          "description": "What kind of opening this is. \"emergency-exit-only\" and \"loading\" doors MUST NOT be used as route endpoints for students; they are recorded so that map data stays complete and so a router can explicitly exclude them."
+        },
+        "wheelchairAccessible": {
+          "type": "boolean",
+          "description": "True when this door can be used by a wheelchair user without assistance: step-free approach, and a powered or otherwise openable door. False means there is a step, a heavy manual door, or stairs on the approach. When a building's only accessible door differs from its main door, that difference is the whole reason entrances are modelled as a list."
+        },
+        "accessNote": {
+          "type": "string",
+          "description": "Why access is limited, when it is. Typical values describe card-swipe restrictions, doors locked outside business hours, or a ramp on the far side of the building."
+        },
+        "openWindows": {
+          "type": "array",
+          "description": "When this door is unlocked, if it is not unlocked whenever the building is open. Omit entirely when the door follows normal building hours. An evening class behind a door that locks at 17:00 is a real routing failure, which is why this is per-entrance rather than per-building.",
+          "items": {
+            "$ref": "common.defs.schema.json#/$defs/timeWindow"
+          }
+        },
+        "confidence": {
+          "$ref": "common.defs.schema.json#/$defs/confidence",
+          "description": "How trustworthy this entrance's coordinate and accessibility flag are."
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "point"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

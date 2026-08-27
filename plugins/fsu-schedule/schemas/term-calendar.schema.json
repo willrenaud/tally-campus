@@ -1,0 +1,267 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fsu-campus.example/schemas/v0/term-calendar.schema.json",
+  "title": "Term calendar",
+  "description": "The academic calendar for one FSU term: when classes run, when the deadlines fall, which days are off, and when finals happen. Static shipped data, one record per term, joined to everything else by termCode. It is the piece that turns a weekly recurring schedule into actual dates, so \"what's due this week?\" and \"is there class on Monday?\" both bottom out here. Every deadline carries a machine-readable type so that deadlines can be filtered without string matching on their descriptions, and every dated entry is an ISO-8601 date in America/New_York, with an optional wall-clock time for deadlines that expire partway through the day.",
+  "type": "object",
+  "properties": {
+    "termCode": {
+      "$ref": "common.defs.schema.json#/$defs/termCode",
+      "description": "The term this calendar describes. Primary key."
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "description": "How FSU names the term in prose, for example \"Fall 2026\"."
+    },
+    "timezone": {
+      "const": "America/New_York",
+      "default": "America/New_York",
+      "description": "The timezone every date and time in this record is interpreted in. Fixed to a single value because all FSU campuses observe US Eastern time. It is stated explicitly rather than assumed so that a consumer converting to absolute instants has the zone in hand, and so that daylight-saving transitions during the term are resolved against a named zone rather than a fixed offset."
+    },
+    "startDate": {
+      "$ref": "common.defs.schema.json#/$defs/date",
+      "description": "First official day of the term as the university defines it, which may precede the first day of classes."
+    },
+    "endDate": {
+      "$ref": "common.defs.schema.json#/$defs/date",
+      "description": "Last official day of the term, normally the end of finals or commencement."
+    },
+    "classesBeginDate": {
+      "$ref": "common.defs.schema.json#/$defs/date",
+      "description": "First day classes actually meet. This, not startDate, is what a recurring meeting expands from."
+    },
+    "classesEndDate": {
+      "$ref": "common.defs.schema.json#/$defs/date",
+      "description": "Last day of regular classes, before reading days and finals. Recurring meetings stop here."
+    },
+    "deadlines": {
+      "type": "array",
+      "description": "Dated deadlines for the term. The array is heterogeneous by design and is meant to be filtered on the type field, never parsed out of descriptions.",
+      "items": {
+        "$ref": "#/$defs/deadline"
+      },
+      "default": []
+    },
+    "nonClassDays": {
+      "type": "array",
+      "description": "Days and ranges when regular classes do not meet: holidays, breaks, reading days, and full campus closures. A recurring meeting must be suppressed on any date covered here, which is the main reason this record is needed to answer scheduling questions at all.",
+      "items": {
+        "$ref": "#/$defs/nonClassPeriod"
+      },
+      "default": []
+    },
+    "finals": {
+      "$ref": "#/$defs/finalsPeriod",
+      "description": "The final examination period. Kept as its own object rather than as a nonClassDays entry because classes do not meet but the campus is at its busiest, and exam blocks do not follow the term's normal meeting pattern."
+    },
+    "sessions": {
+      "type": "array",
+      "description": "Sub-sessions within the term, which supply the date ranges that a course meeting's partOfTerm value refers to. Fall and spring have seven-week first and second halves; summer has the lettered sessions. Without these, two courses in the same time slot in different halves of a term look like a conflict when they never overlap.",
+      "items": {
+        "$ref": "#/$defs/session"
+      },
+      "default": []
+    },
+    "source": {
+      "$ref": "common.defs.schema.json#/$defs/sourceAttribution",
+      "description": "Which published FSU academic calendar this was transcribed from and when. Calendars are revised, so an answer about a deadline should hedge when this is old."
+    }
+  },
+  "required": [
+    "termCode",
+    "displayName",
+    "startDate",
+    "endDate",
+    "classesBeginDate",
+    "classesEndDate"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "deadlineType": {
+      "type": "string",
+      "enum": [
+        "registration-opens",
+        "registration-closes",
+        "drop-add",
+        "late-registration",
+        "tuition-payment",
+        "drop-without-penalty",
+        "course-withdrawal",
+        "term-withdrawal",
+        "pass-fail-election",
+        "audit-election",
+        "grade-forgiveness",
+        "incomplete-resolution",
+        "graduation-application",
+        "final-grades-due",
+        "other"
+      ],
+      "description": "A closed set of deadline kinds so deadlines can be filtered programmatically. The two a student asks about most are \"drop-add\", the end of the add/drop window at the start of term, and \"course-withdrawal\", the last day to withdraw from a single course; \"term-withdrawal\" is the different and heavier act of withdrawing from every course. \"drop-without-penalty\" is kept separate from \"course-withdrawal\" because dropping inside the early window leaves no transcript mark while withdrawing later does. Use \"other\" only when no listed type fits, and put the specifics in description."
+    },
+    "deadline": {
+      "type": "object",
+      "description": "One dated deadline.",
+      "properties": {
+        "id": {
+          "$ref": "common.defs.schema.json#/$defs/slug",
+          "description": "Stable identifier, unique within the term."
+        },
+        "type": {
+          "$ref": "#/$defs/deadlineType",
+          "description": "The machine-readable kind of deadline."
+        },
+        "date": {
+          "$ref": "common.defs.schema.json#/$defs/date",
+          "description": "The day the deadline falls on, in America/New_York."
+        },
+        "time": {
+          "$ref": "common.defs.schema.json#/$defs/timeOfDay",
+          "description": "Wall-clock time the deadline expires, when it is not end of day. Many FSU deadlines expire at \"23:59\" and some administrative ones at \"17:00\". When absent, treat the deadline as expiring at the end of the stated date, and say so rather than implying a precision the data does not have."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The deadline in the university's own words, for the student to read."
+        },
+        "appliesToSession": {
+          "type": "string",
+          "description": "The code of the session in this term's sessions array that the deadline applies to. Omit for a deadline that applies to the whole term. Half-term and summer-session courses have their own, much earlier, drop and withdrawal dates, and applying the full-term date to them is a costly error."
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Link to the official page describing this deadline or the form that satisfies it."
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "date",
+        "description"
+      ],
+      "additionalProperties": false
+    },
+    "nonClassPeriod": {
+      "type": "object",
+      "description": "A day or run of days when classes do not meet. Single days are expressed with startDate and endDate equal.",
+      "properties": {
+        "id": {
+          "$ref": "common.defs.schema.json#/$defs/slug",
+          "description": "Stable identifier, unique within the term."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "What the period is called, for example \"Thanksgiving Break\" or \"Labor Day\"."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "holiday",
+            "break",
+            "reading-day",
+            "no-class-day",
+            "campus-closed",
+            "emergency-closure"
+          ],
+          "description": "The kind of non-class period. \"holiday\" is an observed university holiday; \"break\" is a multi-day recess such as spring break; \"reading-day\" is the study day between the end of classes and finals, when classes do not meet but the campus is open; \"no-class-day\" covers days classes are cancelled while offices stay open; \"campus-closed\" means buildings are shut, which also makes every parking and routing answer moot; \"emergency-closure\" covers hurricane and weather closures added after publication."
+        },
+        "startDate": {
+          "$ref": "common.defs.schema.json#/$defs/date",
+          "description": "First day of the period, inclusive."
+        },
+        "endDate": {
+          "$ref": "common.defs.schema.json#/$defs/date",
+          "description": "Last day of the period, inclusive. Equal to startDate for a single day."
+        },
+        "classesCancelled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether regular classes are suppressed on these dates. Nearly always true; false exists for days that are administratively notable but on which classes still meet."
+        },
+        "campusClosed": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether buildings are closed too. Distinct from classesCancelled: on a reading day classes do not meet but the library is full."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "type",
+        "startDate",
+        "endDate"
+      ],
+      "additionalProperties": false
+    },
+    "finalsPeriod": {
+      "type": "object",
+      "description": "The final examination period for the term.",
+      "properties": {
+        "startDate": {
+          "$ref": "common.defs.schema.json#/$defs/date",
+          "description": "First day of finals, inclusive."
+        },
+        "endDate": {
+          "$ref": "common.defs.schema.json#/$defs/date",
+          "description": "Last day of finals, inclusive."
+        },
+        "note": {
+          "type": "string",
+          "description": "How exam times are assigned, and where the official exam grid is published. Exam blocks generally do not fall at the course's normal meeting time, so a schedule expanded from weekly meetings is wrong for this week and an answer should say so rather than guess."
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Link to the published final exam schedule."
+        }
+      },
+      "required": [
+        "startDate",
+        "endDate"
+      ],
+      "additionalProperties": false
+    },
+    "session": {
+      "type": "object",
+      "description": "A sub-session of the term, supplying the dates that a course meeting's partOfTerm refers to.",
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "full-term",
+            "first-half",
+            "second-half",
+            "session-a",
+            "session-b",
+            "session-c",
+            "session-d",
+            "session-e",
+            "session-f"
+          ],
+          "description": "Session identifier, drawn from the same value set as a course meeting's partOfTerm so the two join directly. The value \"custom\" is deliberately absent here: a custom range is stated on the meeting itself, not registered as a session."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human-readable session name, for example \"First Seven Weeks\"."
+        },
+        "startDate": {
+          "$ref": "common.defs.schema.json#/$defs/date",
+          "description": "First day of classes in this session."
+        },
+        "endDate": {
+          "$ref": "common.defs.schema.json#/$defs/date",
+          "description": "Last day of classes in this session."
+        }
+      },
+      "required": [
+        "code",
+        "startDate",
+        "endDate"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

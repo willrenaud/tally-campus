@@ -1,0 +1,159 @@
+{
+  "id": "example-north-garage",
+  "name": "Illustrative North Parking Garage",
+  "aliases": [
+    "north garage",
+    "the north deck"
+  ],
+  "zoneType": "garage",
+  "campusZone": "academic-core",
+  "centroid": {
+    "lat": 30.4437,
+    "lon": -84.2998
+  },
+  "accessPoints": [
+    {
+      "id": "southeast-stairwell",
+      "label": "Southeast stairwell and lift, ground level",
+      "point": {
+        "lat": 30.4434,
+        "lon": -84.2995
+      },
+      "wheelchairAccessible": true,
+      "verticalTransit": "stairs-and-elevator"
+    },
+    {
+      "id": "northwest-stairs",
+      "label": "Northwest stairs only, ground level",
+      "point": {
+        "lat": 30.444,
+        "lon": -84.3002
+      },
+      "wheelchairAccessible": false,
+      "verticalTransit": "stairs"
+    }
+  ],
+  "vehicleEntrances": [
+    {
+      "label": "Vehicle entrance from the north side street",
+      "point": {
+        "lat": 30.4441,
+        "lon": -84.2997
+      },
+      "direction": "entry-and-exit",
+      "gated": true
+    }
+  ],
+  "rules": [
+    {
+      "id": "weekday-permit-hours",
+      "window": {
+        "daysOfWeek": [
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday",
+          "friday"
+        ],
+        "startTime": "07:30",
+        "endTime": "16:30"
+      },
+      "mode": "permit-required",
+      "allows": [
+        "student-commuter",
+        "faculty-staff",
+        "ada-accessible"
+      ],
+      "priority": 0,
+      "appliesOnAcademicBreaks": false,
+      "enforcementNote": "Patrolled through the morning. A citation is issued rather than a warning, and the posted signage at the vehicle entrance is the authority if it disagrees with the published map."
+    },
+    {
+      "id": "weekday-evening-open",
+      "window": {
+        "daysOfWeek": [
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday",
+          "friday"
+        ],
+        "startTime": "16:30",
+        "endTime": "24:00"
+      },
+      "mode": "open-to-all",
+      "priority": 0,
+      "enforcementNote": "No permit needed after enforcement hours end. This is the window that makes a single permitRequired boolean wrong for this garage."
+    },
+    {
+      "id": "weekday-overnight-open",
+      "window": {
+        "daysOfWeek": [
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday",
+          "friday"
+        ],
+        "startTime": "00:00",
+        "endTime": "07:30"
+      },
+      "mode": "open-to-all",
+      "priority": 0,
+      "enforcementNote": "The overnight half of the open window. It is a separate rule because a window may not wrap past midnight."
+    },
+    {
+      "id": "weekend-open",
+      "window": {
+        "daysOfWeek": [
+          "saturday",
+          "sunday"
+        ],
+        "startTime": "00:00",
+        "endTime": "24:00"
+      },
+      "mode": "open-to-all",
+      "priority": 0,
+      "enforcementNote": "Open all weekend except when a game-day rule overrides."
+    },
+    {
+      "id": "home-game-closure",
+      "window": {
+        "daysOfWeek": [
+          "saturday"
+        ],
+        "startTime": "00:00",
+        "endTime": "24:00"
+      },
+      "mode": "event-restricted",
+      "allows": [
+        "reserved"
+      ],
+      "priority": 100,
+      "effectiveFrom": "2026-09-05",
+      "effectiveTo": "2026-09-05",
+      "enforcementNote": "Home football Saturday: reserved for permit holders and towed otherwise. Priority 100 means this rule wins over the everyday weekend rule for that date without the weekend rule having to be edited."
+    }
+  ],
+  "capacity": {
+    "totalSpaces": 900,
+    "adaSpaces": 18,
+    "confidence": "estimated",
+    "typicalFullBy": "09:30",
+    "fillNote": "Fills from the lower decks up. Arriving after the 09:30 class change usually means the top deck or nothing."
+  },
+  "servesBuildings": [
+    "HCB",
+    "WMS"
+  ],
+  "paymentMethods": [
+    "permit-only"
+  ],
+  "evChargingSpaces": 4,
+  "notes": "ILLUSTRATIVE PLACEHOLDER RECORD. This garage does not exist. The rule windows, permit classes, capacity, and game-day override are invented to demonstrate the time-windowed rule model. Replace with verified FSU Transportation and Parking Services data before shipping.",
+  "source": {
+    "label": "Placeholder example, not a real source",
+    "retrievedAt": "2026-08-27T10:00:00-04:00",
+    "confidence": "unknown"
+  }
+}

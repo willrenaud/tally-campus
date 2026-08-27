@@ -1,0 +1,485 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fsu-campus.example/schemas/v0/course-meeting.schema.json",
+  "title": "Course meeting",
+  "description": "ONE meeting block of one course section: a single combination of weekday set, time range, and location. A course section is not one record here, it is one or more. That is deliberate and it is what makes the messy real cases representable. A section that lectures Monday and Wednesday in one building and holds recitation Friday in another is two records sharing the same courseCode and section. A lecture with a separate lab is two records with different meetingType values. A biweekly lab is one record whose recurrence says so. An asynchronous online section is one record with no days, no times, and a null location. Grouping is by the pair (courseCode, section) within a term; nothing about a course lives outside its meetings in this model except what term-calendar supplies. All times are 24-hour \"HH:MM\" wall-clock strings and all dates are ISO-8601, both in America/New_York.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "$ref": "common.defs.schema.json#/$defs/slug",
+      "description": "Stable identifier for this meeting block, unique within the student's schedule. Generated at import; used to reference a specific block in an answer, such as which of a course's two blocks a conflict involves."
+    },
+    "termCode": {
+      "$ref": "common.defs.schema.json#/$defs/termCode",
+      "description": "Which term this meeting belongs to. Joins to the term-calendar record that supplies the term's start and end dates, its breaks, and its finals week."
+    },
+    "courseCode": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}[0-9]{4}[A-Zr]?$",
+      "description": "The course number under Florida's statewide course numbering system: a three-letter prefix, four digits, and an optional single-character suffix, with no space. Examples: \"ENC1101\", \"BSC2010L\" where the L marks the lab, \"MAC2311\". The lowercase \"r\" suffix marks a repeatable course in FSU's catalog. Importers must strip any space between prefix and number and uppercase the prefix before storing."
+    },
+    "section": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9-]{1,8}$",
+      "description": "The section identifier as printed on the schedule, for example \"0001\" or \"01\". Stored as a string, never a number, because leading zeros are significant and some sections are not numeric at all."
+    },
+    "classNumber": {
+      "type": "string",
+      "pattern": "^[0-9]{4,6}$",
+      "description": "The registration reference number the student used to enrol, when the import source carries it. Useful for unambiguously identifying a section, since (courseCode, section) can be reused across terms."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The course title as it appears on the schedule, for example \"Freshman Composition and Rhetoric\"."
+    },
+    "instructors": {
+      "type": "array",
+      "description": "Who teaches this meeting block. An array rather than a single string because team-taught courses are ordinary, and because the person leading a lab is often not the person lecturing, which is precisely the sort of difference a per-meeting record should preserve. May be empty when the source lists the instructor as staff or to-be-announced.",
+      "items": {
+        "$ref": "#/$defs/instructor"
+      },
+      "default": []
+    },
+    "credits": {
+      "type": "number",
+      "minimum": 0,
+      "multipleOf": 0.5,
+      "description": "Credit hours for the section as a whole, not for this individual meeting block. When a section has several blocks the value is repeated on each; summing credits across a schedule therefore requires deduplicating by (courseCode, section) first."
+    },
+    "meetingType": {
+      "type": "string",
+      "enum": [
+        "lecture",
+        "lab",
+        "recitation",
+        "discussion",
+        "studio",
+        "seminar",
+        "clinical",
+        "field",
+        "exam",
+        "other"
+      ],
+      "description": "What kind of session this block is. The distinction matters for answers as well as display: a lab that runs three hours and ends across campus constrains the rest of the day differently from a fifty-minute lecture."
+    },
+    "deliveryMode": {
+      "type": "string",
+      "enum": [
+        "in-person",
+        "online-synchronous",
+        "online-asynchronous",
+        "hybrid",
+        "hyflex"
+      ],
+      "description": "How the meeting is delivered. This field governs which other fields are required, enforced by the conditional rules at the bottom of this schema. \"in-person\", \"hybrid\", and \"hyflex\" require a physical location and a scheduled time. \"online-synchronous\" requires a scheduled time but has no location. \"online-asynchronous\" has neither: no days, no times, and a null location. Treating asynchronous sections as ordinary meetings with a blank room is the classic import bug, and it produces phantom conflicts, so the schema rejects it outright."
+    },
+    "daysOfWeek": {
+      "$ref": "common.defs.schema.json#/$defs/dayOfWeekList",
+      "description": "The weekdays this block meets. Absent for asynchronous sections. FSU schedules abbreviate these as M/T/W/R/F, where R is Thursday; importers must expand those letters to the long lowercase names."
+    },
+    "startTime": {
+      "$ref": "common.defs.schema.json#/$defs/timeOfDay",
+      "description": "Wall-clock start time in America/New_York, 24-hour \"HH:MM\". FSU's standard period starts fall on times like \"09:05\" and \"09:45\"."
+    },
+    "endTime": {
+      "$ref": "common.defs.schema.json#/$defs/timeOfDay",
+      "description": "Wall-clock end time in America/New_York, exclusive. Must be later than startTime; no meeting block crosses midnight. The gap between one block's endTime and the next block's startTime is the passing period that walk routing has to fit into."
+    },
+    "location": {
+      "description": "Where this block physically meets, or null when it has no physical location. Null and absent both mean online; a null is preferred at import so that the absence is explicit rather than accidental.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/location"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "onlineMeeting": {
+      "$ref": "#/$defs/onlineMeeting",
+      "description": "Connection details for an online block. Applies to synchronous and hybrid modes; may also be present for asynchronous sections that use a fixed course space."
+    },
+    "recurrence": {
+      "$ref": "#/$defs/recurrence",
+      "description": "How the block repeats across the term. Omit for the ordinary case of \"every week the term is in session\", which is the assumed default. Set it for biweekly labs, one-off sessions, and blocks with a handful of exceptions."
+    },
+    "partOfTerm": {
+      "type": "string",
+      "enum": [
+        "full-term",
+        "first-half",
+        "second-half",
+        "session-a",
+        "session-b",
+        "session-c",
+        "session-d",
+        "session-e",
+        "session-f",
+        "custom"
+      ],
+      "default": "full-term",
+      "description": "Which slice of the term the block runs for. FSU runs seven-week halves in fall and spring and lettered sessions in summer, so a schedule can hold two courses in the same time slot that never actually collide because one ends before the other begins. Any conflict check that ignores this field will report false conflicts. When set to \"custom\", dateRange must be supplied; otherwise the dates come from the matching session in the term-calendar record."
+    },
+    "dateRange": {
+      "$ref": "#/$defs/dateRange",
+      "description": "Explicit first and last meeting dates. Required when partOfTerm is \"custom\"; otherwise optional and, when present, overrides the dates implied by partOfTerm."
+    },
+    "notes": {
+      "type": "string",
+      "description": "Free-text detail carried over from the source schedule, such as a room change announced mid-term or an unusual attendance requirement."
+    }
+  },
+  "required": [
+    "id",
+    "termCode",
+    "courseCode",
+    "section",
+    "title",
+    "deliveryMode"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "title": "Scheduled modes need days and times",
+      "description": "Every mode except asynchronous meets at a known time, so days and both times are mandatory.",
+      "if": {
+        "properties": {
+          "deliveryMode": {
+            "enum": [
+              "in-person",
+              "online-synchronous",
+              "hybrid",
+              "hyflex"
+            ]
+          }
+        },
+        "required": [
+          "deliveryMode"
+        ]
+      },
+      "then": {
+        "required": [
+          "daysOfWeek",
+          "startTime",
+          "endTime"
+        ],
+        "properties": {
+          "daysOfWeek": {
+            "$ref": "common.defs.schema.json#/$defs/dayOfWeekList"
+          },
+          "startTime": {
+            "$ref": "common.defs.schema.json#/$defs/timeOfDay"
+          },
+          "endTime": {
+            "$ref": "common.defs.schema.json#/$defs/timeOfDay"
+          }
+        }
+      }
+    },
+    {
+      "title": "Physical modes need a location",
+      "description": "In-person, hybrid, and hyflex blocks occupy a real room, so location must be present and must be an object rather than null.",
+      "if": {
+        "properties": {
+          "deliveryMode": {
+            "enum": [
+              "in-person",
+              "hybrid",
+              "hyflex"
+            ]
+          }
+        },
+        "required": [
+          "deliveryMode"
+        ]
+      },
+      "then": {
+        "required": [
+          "location"
+        ],
+        "properties": {
+          "location": {
+            "$ref": "#/$defs/location"
+          }
+        }
+      }
+    },
+    {
+      "title": "Fully online modes have no room",
+      "description": "A synchronous or asynchronous online block must set location to null. Carrying a placeholder building code such as \"ONLINE\" or \"WEB\" is what makes a router try to walk a student to a room that does not exist.",
+      "if": {
+        "properties": {
+          "deliveryMode": {
+            "enum": [
+              "online-synchronous",
+              "online-asynchronous"
+            ]
+          }
+        },
+        "required": [
+          "deliveryMode"
+        ]
+      },
+      "then": {
+        "properties": {
+          "location": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "title": "Asynchronous blocks have no schedule at all",
+      "description": "Days and times must be absent entirely, not blank, so that a conflict check cannot accidentally compare an asynchronous section against a real one. The subschemas below are the boolean false, which makes the property invalid whenever it is present.",
+      "if": {
+        "properties": {
+          "deliveryMode": {
+            "const": "online-asynchronous"
+          }
+        },
+        "required": [
+          "deliveryMode"
+        ]
+      },
+      "then": {
+        "properties": {
+          "daysOfWeek": false,
+          "startTime": false,
+          "endTime": false
+        }
+      }
+    },
+    {
+      "title": "Custom term slices need explicit dates",
+      "description": "When partOfTerm is \"custom\" there is no session in the term calendar to look the dates up from, so they must be stated here.",
+      "if": {
+        "properties": {
+          "partOfTerm": {
+            "const": "custom"
+          }
+        },
+        "required": [
+          "partOfTerm"
+        ]
+      },
+      "then": {
+        "required": [
+          "dateRange"
+        ],
+        "properties": {
+          "dateRange": {
+            "$ref": "#/$defs/dateRange"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "instructor": {
+      "type": "object",
+      "description": "One person teaching this block.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The instructor's name as printed on the schedule. Sources vary between \"Last, First\" and \"First Last\"; store whatever the source gave rather than guessing at a reordering."
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "primary",
+            "co-instructor",
+            "teaching-assistant",
+            "unknown"
+          ],
+          "default": "unknown",
+          "description": "This person's role in the block. Most import sources do not distinguish, so \"unknown\" is the honest default rather than assuming \"primary\"."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Contact address, when the source provides one."
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "location": {
+      "type": "object",
+      "description": "A physical room. Kept deliberately thin: it names the building and room, and everything about how to reach that building lives in the building and walk-edge datasets rather than being duplicated here.",
+      "properties": {
+        "buildingCode": {
+          "$ref": "common.defs.schema.json#/$defs/buildingCode",
+          "description": "The building code as printed on the schedule. Joins to a building record. A code with no matching building record is a data gap that should be surfaced, not silently dropped, because it means routing to this class is impossible."
+        },
+        "room": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Room identifier as printed, for example \"0103\" or \"216A\". A string, not a number, because leading zeros and letter suffixes are both common."
+        },
+        "floor": {
+          "type": "integer",
+          "description": "Floor the room is on, when it is known or can be derived from the room number. Feeds the vertical-travel penalty; reaching a fifth-floor room can cost more than the walk between two adjacent buildings."
+        },
+        "buildingCodeRaw": {
+          "type": "string",
+          "description": "The building string exactly as it appeared in the import source, before normalization. Kept so that a bad or ambiguous mapping can be diagnosed later without re-importing."
+        },
+        "preferredEntranceId": {
+          "$ref": "common.defs.schema.json#/$defs/slug",
+          "description": "The entrance of that building which is the sensible door for this specific room, when it is not the main one. Optional refinement: a router will otherwise pick whichever entrance yields the fastest route."
+        }
+      },
+      "required": [
+        "buildingCode",
+        "room"
+      ],
+      "additionalProperties": false
+    },
+    "onlineMeeting": {
+      "type": "object",
+      "description": "How to join an online block.",
+      "properties": {
+        "platform": {
+          "type": "string",
+          "enum": [
+            "zoom",
+            "microsoft-teams",
+            "canvas",
+            "webex",
+            "google-meet",
+            "other",
+            "unknown"
+          ],
+          "description": "Which conferencing platform the block uses."
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Join link. Treated as per-user data and never included in shipped campus data."
+        },
+        "note": {
+          "type": "string",
+          "description": "Anything else needed to join, such as where in the course site the link is posted."
+        }
+      },
+      "additionalProperties": false
+    },
+    "recurrence": {
+      "type": "object",
+      "description": "How the block repeats. The default when this object is omitted is weekly for the whole of the block's term slice.",
+      "properties": {
+        "frequency": {
+          "type": "string",
+          "enum": [
+            "weekly",
+            "biweekly",
+            "one-time",
+            "irregular"
+          ],
+          "default": "weekly",
+          "description": "The repeat pattern. \"biweekly\" is the alternating-week lab case: the block meets on its listed days every other week. \"one-time\" is a single session, such as a scheduled final exam. \"irregular\" means the block meets only on the dates listed in additionalDates, and daysOfWeek is then merely descriptive."
+        },
+        "anchorDate": {
+          "$ref": "common.defs.schema.json#/$defs/date",
+          "description": "The date of the FIRST actual meeting. Required for biweekly frequency and pointless to omit for it: without an anchor there is no way to tell which of two alternating weeks is the on week, and a fifty-percent chance of telling a student to attend on the wrong Thursday is worse than saying nothing. Also used for \"one-time\" to state the single date."
+        },
+        "intervalWeeks": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Weeks between occurrences, for the rare pattern that is neither weekly nor every-other-week. Redundant with frequency for the common cases; when both are present intervalWeeks wins."
+        },
+        "exceptDates": {
+          "type": "array",
+          "description": "Dates on which the block would otherwise occur but does not, beyond the holidays already listed in the term calendar. Use for one-off cancellations and instructor absences; do not duplicate university holidays here.",
+          "items": {
+            "$ref": "common.defs.schema.json#/$defs/date"
+          },
+          "uniqueItems": true
+        },
+        "additionalDates": {
+          "type": "array",
+          "description": "Extra dates the block meets outside its normal pattern, such as a make-up session. The complete list of meeting dates when frequency is \"irregular\".",
+          "items": {
+            "$ref": "common.defs.schema.json#/$defs/date"
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "frequency": {
+                "enum": [
+                  "biweekly",
+                  "one-time"
+                ]
+              }
+            },
+            "required": [
+              "frequency"
+            ]
+          },
+          "then": {
+            "required": [
+              "anchorDate"
+            ],
+            "properties": {
+              "anchorDate": {
+                "$ref": "common.defs.schema.json#/$defs/date"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "frequency": {
+                "const": "irregular"
+              }
+            },
+            "required": [
+              "frequency"
+            ]
+          },
+          "then": {
+            "required": [
+              "additionalDates"
+            ],
+            "properties": {
+              "additionalDates": {
+                "type": "array",
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "dateRange": {
+      "type": "object",
+      "description": "An explicit first and last meeting date for the block.",
+      "properties": {
+        "firstMeetingDate": {
+          "$ref": "common.defs.schema.json#/$defs/date",
+          "description": "Date of the first meeting, inclusive."
+        },
+        "lastMeetingDate": {
+          "$ref": "common.defs.schema.json#/$defs/date",
+          "description": "Date of the last meeting, inclusive. Must be on or after firstMeetingDate."
+        }
+      },
+      "required": [
+        "firstMeetingDate",
+        "lastMeetingDate"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

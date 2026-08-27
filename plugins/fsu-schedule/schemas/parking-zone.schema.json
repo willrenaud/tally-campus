@@ -1,0 +1,354 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fsu-campus.example/schemas/v0/parking-zone.schema.json",
+  "title": "FSU parking zone",
+  "description": "One FSU parking area: a surface lot, a garage, a metered block, or a park-and-ride site. Static shipped data. The central design point is that permit eligibility is TIME-DEPENDENT, never a single boolean. A lot that is permit-only from 07:30 to 16:30 on weekdays and open to anyone afterward cannot be represented by a permitRequired flag, and getting that wrong is the difference between a free space and a citation. So eligibility lives entirely in the rules array: a list of windowed rules, each naming its days, its start and exclusive end in America/New_York wall-clock time, who may park, and how it is enforced. Answering \"can I park here at 14:00 on a Tuesday?\" means selecting the rules whose window and effective date range contain that moment and taking the one with the highest priority. When no rule matches, the answer is unknown rather than permitted; the data does not assert an open default.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "$ref": "common.defs.schema.json#/$defs/slug",
+      "description": "Globally unique, stable identifier for this zone. Referenced by walk edges through parkingAccessRef."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The zone's official name as FSU Transportation and Parking Services publishes it, for example \"Traditions Way Parking Garage\"."
+    },
+    "aliases": {
+      "type": "array",
+      "description": "What students actually call it, lowercase, so \"the call street garage\" resolves. Include garage numbers, old names, and nearby-landmark nicknames.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true,
+      "default": []
+    },
+    "zoneType": {
+      "type": "string",
+      "enum": [
+        "garage",
+        "surface-lot",
+        "street-metered",
+        "reserved-lot",
+        "park-and-ride",
+        "loading-zone"
+      ],
+      "description": "The physical form of the parking. Garages behave differently from surface lots for routing, because you must add the time to descend from an upper deck to the pedestrian exit."
+    },
+    "campusZone": {
+      "type": "string",
+      "enum": [
+        "academic-core",
+        "north-campus",
+        "south-campus",
+        "east-campus",
+        "west-campus",
+        "southwest-campus",
+        "innovation-park",
+        "panama-city",
+        "off-campus"
+      ],
+      "description": "Which broad campus area the parking sits in, matching the zone enum used by buildings."
+    },
+    "centroid": {
+      "$ref": "common.defs.schema.json#/$defs/geoPoint",
+      "description": "A representative point for map display. As with buildings, do not route from this; route from an access point."
+    },
+    "accessPoints": {
+      "type": "array",
+      "description": "The pedestrian ways out of this parking area, each a node in the walk graph. A garage with a stairwell on each corner has several, and which one you use changes the walk by minutes. At least one is required so the zone can be routed from.",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/accessPoint"
+      }
+    },
+    "vehicleEntrances": {
+      "type": "array",
+      "description": "Where cars get in. Separate from accessPoints because the driving entrance and the walking exit are frequently on opposite sides, and directions need both.",
+      "items": {
+        "$ref": "#/$defs/vehicleEntrance"
+      }
+    },
+    "rules": {
+      "type": "array",
+      "description": "The complete, ordered-by-nothing set of time-windowed parking rules for this zone. At least one rule is required: a zone with no rules asserts nothing and must never be reported as parkable. Rules may overlap deliberately, for example a football-game-day closure layered over the ordinary weekday rule; overlap is resolved by priority, highest wins.",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/parkingRule"
+      }
+    },
+    "capacity": {
+      "$ref": "#/$defs/capacity",
+      "description": "How many spaces the zone holds, and how reliable that count is."
+    },
+    "servesBuildings": {
+      "type": "array",
+      "description": "Building codes this zone is a sensible place to park for, ordered from nearest to furthest on foot. This is a curated hint, not a computed result: it lets the plugin answer \"where do I park for a 14:00 in HCB\" by narrowing candidates before running the walk graph, and it captures local knowledge that geometry misses, such as a closer lot being useless because a fence blocks the direct path.",
+      "items": {
+        "$ref": "common.defs.schema.json#/$defs/buildingCode"
+      },
+      "uniqueItems": true
+    },
+    "paymentMethods": {
+      "type": "array",
+      "description": "How you pay when a rule's mode is \"paid\" or \"metered\". Empty or omitted for permit-only zones.",
+      "items": {
+        "type": "string",
+        "enum": [
+          "permit-only",
+          "coin-meter",
+          "card-meter",
+          "mobile-app",
+          "pay-station",
+          "gate-ticket",
+          "free"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "evChargingSpaces": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of EV charging spaces, when the zone has any."
+    },
+    "notes": {
+      "type": "string",
+      "description": "Free-text caveats, for example that the top deck closes in bad weather or that enforcement is unusually aggressive here."
+    },
+    "source": {
+      "$ref": "common.defs.schema.json#/$defs/sourceAttribution",
+      "description": "Where these rules came from and when they were last checked. Parking rules change between academic years, so a stale retrievedAt is a reason to hedge in an answer."
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "zoneType",
+    "centroid",
+    "accessPoints",
+    "rules"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "permitClass": {
+      "type": "string",
+      "enum": [
+        "student-commuter",
+        "student-resident",
+        "faculty-staff",
+        "reserved",
+        "service-vehicle",
+        "visitor-paid",
+        "metered-paid",
+        "park-and-ride",
+        "motorcycle-scooter",
+        "ada-accessible",
+        "state-vehicle",
+        "anyone"
+      ],
+      "description": "A normalized category of person or permit that may park. These are this plugin's categories, not FSU's exact permit product names; the data build step maps FSU's published permit names onto them so that rules stay comparable year to year. \"ada-accessible\" means a state-issued disabled placard or plate, which is governed by law rather than by FSU permit rules. \"anyone\" means no permit or payment is required at all."
+    },
+    "accessPoint": {
+      "type": "object",
+      "description": "A pedestrian exit from the parking area, usable as a walk-graph node.",
+      "properties": {
+        "id": {
+          "$ref": "common.defs.schema.json#/$defs/slug",
+          "description": "Stable identifier, unique within this zone only. Walk edges reference the pair (zone id, access point id)."
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "description": "How a student would recognize it, for example \"Northwest stairwell, ground level\"."
+        },
+        "point": {
+          "$ref": "common.defs.schema.json#/$defs/geoPoint",
+          "description": "Coordinate of the exit at street level."
+        },
+        "wheelchairAccessible": {
+          "type": "boolean",
+          "description": "Whether this exit is step-free, which for a garage usually means it has a working lift rather than only stairs."
+        },
+        "verticalTransit": {
+          "type": "string",
+          "enum": [
+            "at-grade",
+            "stairs",
+            "elevator",
+            "stairs-and-elevator",
+            "ramp"
+          ],
+          "description": "How you get from the parking deck down to this exit. For a garage this is where a meaningful chunk of the walking time hides."
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "point"
+      ],
+      "additionalProperties": false
+    },
+    "vehicleEntrance": {
+      "type": "object",
+      "description": "Where a car enters or leaves the zone.",
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Street-relative description, for example \"Entrance from Traditions Way, southbound only\"."
+        },
+        "point": {
+          "$ref": "common.defs.schema.json#/$defs/geoPoint",
+          "description": "Coordinate of the vehicle entrance."
+        },
+        "direction": {
+          "type": "string",
+          "enum": [
+            "entry",
+            "exit",
+            "entry-and-exit"
+          ],
+          "description": "Whether cars can come in here, go out here, or both."
+        },
+        "gated": {
+          "type": "boolean",
+          "description": "Whether a gate arm or booth controls this entrance, which adds queueing time at peak."
+        }
+      },
+      "required": [
+        "label",
+        "point"
+      ],
+      "additionalProperties": false
+    },
+    "parkingRule": {
+      "type": "object",
+      "description": "One time-windowed statement about who may park in this zone. A rule is the atomic unit of parking eligibility; a zone's full behaviour is the layering of all its rules.",
+      "properties": {
+        "id": {
+          "$ref": "common.defs.schema.json#/$defs/slug",
+          "description": "Stable identifier, unique within this zone. Lets an answer cite which rule it applied."
+        },
+        "window": {
+          "$ref": "common.defs.schema.json#/$defs/timeWindow",
+          "description": "The recurring weekly window this rule governs, in America/New_York wall-clock time, with an exclusive end. A rule covering all day every day is written as all seven days from \"00:00\" to \"24:00\"."
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "permit-required",
+            "paid",
+            "open-to-all",
+            "time-limited",
+            "event-restricted",
+            "closed",
+            "tow-away"
+          ],
+          "description": "What kind of restriction applies inside the window. \"open-to-all\" means park free without a permit. \"time-limited\" means anyone may park but only for maxStayMinutes. \"event-restricted\" means the zone is reserved for an event, typically a home football game. \"tow-away\" is stricter than \"closed\": vehicles present are removed, not just ticketed."
+        },
+        "allows": {
+          "type": "array",
+          "description": "Which permit classes may park inside the window. Required whenever mode is \"permit-required\". A holder of any listed class may park; the list is a union, not a conjunction. Note that ada-accessible parking is generally permitted wherever a state placard is valid regardless of this list, so a rule that omits it is not asserting the opposite.",
+          "items": {
+            "$ref": "#/$defs/permitClass"
+          },
+          "uniqueItems": true
+        },
+        "maxStayMinutes": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "Longest permitted stay in minutes, when mode is \"time-limited\" or when a paid zone caps duration."
+        },
+        "ratePerHourUsd": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Hourly cost in US dollars when mode is \"paid\". Omit for permit-only or free windows."
+        },
+        "priority": {
+          "type": "integer",
+          "default": 0,
+          "description": "Tie-breaker for overlapping rules: when more than one rule matches a moment, the one with the highest priority applies and the others are ignored entirely. Ordinary recurring rules should stay at 0; a football-game-day closure or a construction restriction should be given a higher priority so it overrides the everyday rule without that rule having to be edited. Two matching rules at equal priority is a data error, and a consumer SHOULD surface it rather than pick arbitrarily."
+        },
+        "effectiveFrom": {
+          "$ref": "common.defs.schema.json#/$defs/date",
+          "description": "First date this rule applies, inclusive. Omit for a rule with no start bound. Use this for rules that only exist during a given term or during a construction project."
+        },
+        "effectiveTo": {
+          "$ref": "common.defs.schema.json#/$defs/date",
+          "description": "Last date this rule applies, inclusive. Omit for an open-ended rule."
+        },
+        "appliesOnAcademicBreaks": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether the rule still holds on days the term calendar marks as a holiday or break. Enforcement is commonly relaxed when classes are not meeting, and setting this false lets that be expressed without duplicating the rule. Evaluating it requires the matching term-calendar record."
+        },
+        "enforcementNote": {
+          "type": "string",
+          "description": "How the rule is actually enforced in practice, in the words a student needs: who patrols, how often, what the citation is, and whether the posted sign disagrees with the published policy. This is the field that turns a technically-correct answer into a useful one."
+        }
+      },
+      "required": [
+        "id",
+        "window",
+        "mode"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "permit-required"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          },
+          "then": {
+            "required": [
+              "allows"
+            ],
+            "properties": {
+              "allows": {
+                "type": "array",
+                "minItems": 1,
+                "description": "A permit-required window must name at least one permit class; an empty list would assert that nobody at all may park, which is what mode \"closed\" is for."
+              }
+            }
+          }
+        }
+      ]
+    },
+    "capacity": {
+      "type": "object",
+      "description": "How much parking the zone holds. Treated as a hint: counts drift, and how full the lot is at 09:00 matters more than the total. Model that separately from the raw count.",
+      "properties": {
+        "totalSpaces": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Approximate total number of spaces."
+        },
+        "adaSpaces": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of designated accessible spaces."
+        },
+        "confidence": {
+          "$ref": "common.defs.schema.json#/$defs/confidence",
+          "description": "How reliable totalSpaces is. Most published lot counts are estimates."
+        },
+        "typicalFullBy": {
+          "$ref": "common.defs.schema.json#/$defs/timeOfDay",
+          "description": "The wall-clock time on a normal class day by which this zone is usually full. This is the single most useful capacity number for a student, far more than the total: it turns \"there are 900 spaces\" into \"do not bother arriving after 09:30\"."
+        },
+        "fillNote": {
+          "type": "string",
+          "description": "Free-text detail about when and why the zone fills."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://code.claude.com/schema/marketplace.json",
+  "name": "fsu-campus",
+  "description": "Claude Code plugins for navigating Florida State University: schedules, walking routes, parking, and the academic calendar.",
+  "version": "0.1.0",
+  "owner": {
+    "name": "TODO"
+  },
+  "plugins": [
+    {
+      "name": "fsu-schedule",
+      "displayName": "FSU Schedule",
+      "source": "./plugins/fsu-schedule",
+      "description": "Import your FSU class schedule once, then ask Claude about walking times between classes, parking, conflicts, and deadlines.",
+      "version": "0.1.0",
+      "author": {
+        "name": "TODO"
+      },
+      "license": "MIT",
+      "keywords": [
+        "fsu",
+        "florida-state",
+        "university",
+        "schedule",
+        "campus",
+        "parking"
+      ],
+      "category": "productivity",
+      "tags": [
+        "education",
+        "campus",
+        "scheduling"
+      ]
+    }
+  ]
+}
