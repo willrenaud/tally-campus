@@ -7,7 +7,8 @@ actually fetched, or computed from records that were, or it does not ship — so
 that could not be sourced ended up here instead of in the data. A gap listed here is safer than a
 plausible-looking guess in `data/`, which is the whole point.
 
-Data was collected **2026-08-27**. Sources used: the
+Data was collected **2026-08-27**, with a second pass on **2026-08-28** that added two buildings,
+seven parking blackout dates, and a link to the exam grid. Sources used: the
 [FSU Building Information Portal](https://www.facilities.fsu.edu/space/buildings/), the FSU room-lookup
 service behind it, [FSU Transportation & Parking Services](https://transportation.fsu.edu/parking),
 the [FSU Registrar's Fall 2026 Academic Calendar](https://registrar.fsu.edu/fall-2026-academic-calendar),
@@ -17,7 +18,7 @@ and OpenStreetMap via the Overpass API.
 
 ## 1. No real entrances exist. Every building routes from its centre.
 
-**The single biggest gap, and it affects all 30 buildings.** Each building in `buildings.json`
+**The single biggest gap, and it affects all 32 buildings.** Each building in `buildings.json`
 carries exactly one entrance whose id is `centroid-stand-in`, placed at the building's centroid and
 labelled as not being a door.
 
@@ -45,9 +46,16 @@ record by street address where possible and by name otherwise. The join method a
 recorded per record in `provenance.note`.
 
 Confidence ladder as shipped: **15 buildings `high`** (FSU street address and OSM `addr:*` tags match
-exactly), **12 `medium`** (name match only, OSM polygon carries no address), **3 `low`** (see below).
+exactly), **14 `medium`** (name match only, OSM polygon carries no address, or the two sources
+disagree about the street), **3 `low`** (see below).
 
 ## 3. The three low-confidence building coordinates
+
+Plus two `medium` records whose weakness is worth naming here even though they cleared the bar:
+`LAW`'s OSM element sits on West Pensacola Street while FSU gives 425 W Jefferson St, so the two
+sources disagree about the street and only geometry ties them together; and `DSL`'s coordinate is a
+**point-of-interest node inside the building**, not a polygon centroid — the only coordinate in the
+file derived that way, and offset from the building's true centre by an unknown amount.
 
 | Code | Building | Problem |
 | --- | --- | --- |
@@ -57,17 +65,32 @@ exactly), **12 `medium`** (name match only, OSM polygon carries no address), **3
 
 ## 4. Classroom buildings on main campus that did not ship
 
-30 buildings ship, holding **261 of the 421** rooms FSU types as `(110) CLASSROOM` across its
-main-campus space zones. 33 buildings with at least one classroom did not ship. The ones worth adding
+32 buildings ship, holding **273 of the 421** rooms FSU types as `(110) CLASSROOM` across its
+main-campus space zones. 31 buildings with at least one classroom did not ship. The ones worth adding
 next, in order:
 
 | Code | Classrooms | Building | Why it is missing |
 | --- | --- | --- | --- |
-| `WCB` | 24 | Herbert Wertheim Center for Business Excellence | No OpenStreetMap polygon under FSU's address (402 W Gaines St) or under any matching name. Recent construction; OSM has not caught up. **This is the largest single omission** — a 24-classroom building students are timetabled into. |
-| `LAW` | 9 | B.K. Roberts Hall, College of Law | No OSM match by address (425 W Jefferson St) or name. |
-| `DSL` | 3 | Dirac Science Library | No OSM match by address (110 N Woodward Ave) or name, despite being a major building. |
+| `WCB` | 24 | Herbert Wertheim Center for Business Excellence | **The largest single omission by a wide margin** — a 24-classroom building students are timetabled into. See below. |
 | `UCD` / `UCC` / `UCB` | 8 / 6 / 3 | University Center buildings D, C, B | Matched by name in OSM, but they ring Doak Campbell Stadium roughly a kilometre southwest of the academic core, and admitting them would stretch the walk graph across a gap with no sourced path. Deferred rather than rejected. |
-| `CAR`, `DOD`, `FLH`, `UPL`, `LSB`, `EOA`, `DSC`, `LON`, `FAA` | 1–2 each | various | All resolved cleanly to OSM coordinates; they simply fell below the 28-building cut. Adding them is nearly free. |
+| `CAR`, `DOD`, `FLH`, `UPL`, `LSB`, `EOA`, `DSC`, `LON`, `FAA` | 1–2 each | various | All resolved cleanly to OSM coordinates; they simply fell below the original cut. Adding them is nearly free. |
+
+**`WCB` specifically.** Everything about it is sourced except the one thing needed to ship it. FSU
+gives the address as 402 W Gaines St, and an FSU News item on the January 2026 grand opening places
+it "just south of the Donald L. Tucker Civic Center, at the corner of West Gaines Street and MLK
+Boulevard, overlooking Burnette Park". That is enough to point at on a map and not enough to write a
+coordinate. What was tried: a Nominatim search for the building name returns nothing; a search for
+the street address returns two candidates about 1.5 km apart, neither of them a named building. It
+is recent construction and OpenStreetMap has not caught up. Placing it at the midpoint of two
+candidates 1.5 km apart would be a fabrication with a student walking to it, so it stays out, and
+students timetabled there will hit the import skill's unknown-building path instead — which is
+exactly the case that path exists for. **To close it:** a GPS reading at the building, or wait for
+OSM.
+
+**Closed in the 2026-08-28 pass.** `LAW` (9 classrooms) and `DSL` (3) were both listed here as
+having no OSM match. Both in fact match by *name* — the earlier pass had searched by address only,
+and neither building's OSM element carries FSU's address. Both now ship at `medium` confidence; see
+§3 for what remains weak about them.
 
 ## 5. Off-main-campus teaching sites, deliberately excluded
 
@@ -125,22 +148,56 @@ Three specific unresolved problems:
    site says *"Monday - Friday, 7:30 AM - 4:30 PM"*. FSU does not say which governs a white space
    inside a garage. The shipped rule uses the wider garage-specific wording and **records the
    conflict in its `enforcementNote` rather than resolving it**.
-2. **No home football game dates are encoded.** FSU states *"Open weekend parking varies during home
-   football games"* and publishes no dates on the parking pages. The 2026 schedule on `seminoles.com`
-   is rendered client-side and could not be read. **On a home game Saturday the shipped weekend rule
-   is wrong** and will report a garage as open when it may be closed, reserved, or a tow-away zone.
+2. **Home football dates are now encoded; what happens on them is not.** *Partially closed
+   2026-08-28.* The seven Fall 2026 home dates are in `term-calendar.json`'s `parkingBlackouts`, read
+   from the print view of the `seminoles.com` schedule (the ordinary page is client-rendered and
+   yields nothing, which is why the first pass failed). Two of the seven are not Saturdays: the Labor
+   Day Monday, 7 September, and the Friday after Thanksgiving, 27 November.
+
+   **What is still missing is everything about what the rules become.** FSU says only that *"multiple
+   campus parking areas will be closed for reserved Seminole Booster parking on home football game
+   days"*, that vehicles must be out *"by 11:59 PM the night before game day"*, and that a vehicle in
+   a reserved Garnet area *"will be towed at your expense"*. It never says which areas, or which
+   garages, or when access returns. So the shipped rules remain wrong on those dates and the dates
+   are recorded to force a **refusal**, not to enable an answer. Encoding a game-day rule would mean
+   inventing one. The night-before clause also means the blackout effectively starts on the evening
+   of the preceding day, which the date list does not currently model — a consumer should treat the
+   evening before a listed date as suspect too.
 3. **No per-floor permit split.** Third-party summaries state the first floor of every FSU garage is
    faculty/staff (R/RP) and upper floors are student (W). That sentence does not appear on any FSU
    page fetched for this build, so it is not asserted. The rules describe the garage as a whole.
 
 ## 8. Term calendar: three things the page or the schema could not carry
 
-- **No `sessions` array.** The Registrar's Fall 2026 page publishes no first-half / second-half date
-  ranges. A course meeting's `partOfTerm` therefore cannot be resolved against anything, which means
-  **half-term conflict checking does not work** — the exact false-conflict problem the field exists to
-  prevent.
-- **No final exam grid.** `finals` carries only the Dec 7–11 range. A weekly schedule expanded across
-  that week is simply wrong, and the record says so in its `note`.
+- **No `sessions` array, and it is not an oversight.** *Investigated 2026-08-28; not closeable from
+  any FSU page.* The Registrar publishes session date breakdowns for **summer terms only**:
+  [`registrar.fsu.edu/calendar/extended`](https://registrar.fsu.edu/calendar/extended) lists them for
+  summer and gives Fall 2026 as a single Aug 24 – Dec 11 span, and the Fall 2026 calendar page has no
+  session table at all. A course meeting's `partOfTerm` therefore cannot be resolved against anything
+  in a fall term, so **half-term conflict checking does not work** — the exact false-conflict problem
+  the field exists to prevent.
+
+  What changed is that the gap is now *explicit rather than silent*. `term-calendar.schema.json`
+  gained a required `sessionsStatus`, set to `"not-published"` on the shipped record, and
+  `partOfTerm` gained a written `RESOLUTION RULE` with three outcomes instead of two. A consumer can
+  now distinguish "these do not overlap" from "I cannot tell whether these overlap", and is required
+  to say the latter rather than guessing. That does not make half-term conflict checking work; it
+  makes its absence impossible to mistake for a clean answer.
+
+  Note that this also compromises `appliesToSession` on deadlines: half-term courses have their own,
+  much earlier drop and withdrawal dates, and with no sessions to attach them to, every deadline in
+  the shipped record is a full-term one.
+
+  **To close it:** find a source that states fall session ranges — a departmental calendar, a course
+  catalogue, or the Student Central schedule search — or read them off a student's own registration
+  record at import time and store them per-meeting as a `custom` `dateRange`.
+- **No final exam grid.** `finals` carries only the Dec 7–11 range. *Improved 2026-08-28:* the grid
+  does exist, at [`registrar.fsu.edu/fall-2026-exam-schedule`](https://registrar.fsu.edu/fall-2026-exam-schedule),
+  with block exams for MUT/STA/AST/PHY/BUL/CHM and the foreign languages plus full MWF and TR grids,
+  and `finals.url` now points there instead of at the academic calendar. The grid itself is still not
+  in the data, because `finalsPeriod` has only `startDate`/`endDate`/`note`/`url` and nowhere to put
+  a mapping from meeting pattern to exam block. **A schema change is the right fix.** Until then a
+  weekly schedule expanded across that week is simply wrong, and the record says so in its `note`.
 - **Homecoming Friday is a half day** — classes cancelled only after 12:00 p.m. on Nov 20 — and
   `nonClassPeriod` has no way to express a partial day. It ships with `classesCancelled: false` and the
   detail in the name, which understates it. **A schema change is the right fix**, not a data change.

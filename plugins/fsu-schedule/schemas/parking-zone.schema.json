@@ -72,7 +72,7 @@
     },
     "rules": {
       "type": "array",
-      "description": "The complete, ORDERED set of time-windowed parking rules for this zone, evaluated last-match-wins. rules[0] MUST be a catch-all: all seven days, \"00:00\" to \"24:00\", and no effectiveFrom or effectiveTo, so that every instant is covered by at least one rule. Every rule after it is an exception layered on top, and later entries shadow earlier ones where their windows overlap. Write them broadest first: the base rule, then the recurring enforcement window, then dated overrides such as a football-game-day closure. There is no tie to break, so a change to one exception never requires editing the rules underneath it.",
+      "description": "The complete, ORDERED set of time-windowed parking rules for this zone, evaluated last-match-wins. rules[0] MUST be a catch-all: all seven days, \"00:00\" to \"24:00\", and no effectiveFrom or effectiveTo, so that every instant is covered by at least one rule. Every rule after it is an exception layered on top, and later entries shadow earlier ones where their windows overlap. Write them broadest first: the base rule, then the recurring enforcement window, then dated overrides such as a football-game-day closure. There is no tie to break, so a change to one exception never requires editing the rules underneath it. BEFORE evaluating these rules for a given date, a consumer MUST check that date against the parkingBlackouts array of the term-calendar record covering it. On a blackout date these rules are known to be wrong and the only correct response is to refuse to answer; see that field for why.",
       "minItems": 1,
       "prefixItems": [
         {

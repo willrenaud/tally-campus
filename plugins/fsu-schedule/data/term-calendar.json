@@ -133,15 +133,68 @@
     "finals": {
       "startDate": "2026-12-07",
       "endDate": "2026-12-11",
-      "note": "Final Exam Week. Classes end Dec. 4 and the term ends Dec. 11. The Registrar’s Fall 2026 academic calendar page does not publish the exam block grid, so a schedule expanded from weekly meeting patterns is wrong for this week and a consumer must not present a normal weekly schedule for Dec. 7–11.",
-      "url": "https://registrar.fsu.edu/fall-2026-academic-calendar"
+      "note": "Final Exam Week. Classes end Dec. 4 and the term ends Dec. 11. Exam blocks do NOT fall at a course's normal meeting time, so a schedule expanded from weekly meeting patterns is wrong for Dec. 7-11 and a consumer must not present one. FSU publishes the block grid separately, at the url on this record; this schema has nowhere to store the grid itself, so that link is the only route to a student's actual exam times and they must be sent to it.",
+      "url": "https://registrar.fsu.edu/fall-2026-exam-schedule"
     },
+    "sessions": [],
+    "sessionsStatus": "not-published",
+    "parkingBlackouts": [
+      {
+        "date": "2026-08-29",
+        "reason": "home-football-game",
+        "name": "Florida State vs. New Mexico State (home, Saturday)",
+        "note": "A home football game at Doak Campbell Stadium. FSU Transportation & Parking Services states that \"multiple campus parking areas will be closed for reserved Seminole Booster parking on home football game days\" and requires vehicles to be out \"by 11:59 PM the night before game day\", but publishes NO list of which areas or which dates. The date comes from the football schedule; the restriction comes from the parking page; no source connects them to a specific garage. So the shipped rules in parking-zones.json cannot be evaluated for this date and a consumer must refuse rather than answer. Note also that the restriction can begin the evening BEFORE this date.",
+        "sourceUrl": "https://transportation.fsu.edu/GameDay"
+      },
+      {
+        "date": "2026-09-07",
+        "reason": "home-football-game",
+        "name": "Florida State vs. SMU (home, Monday)",
+        "note": "A home football game at Doak Campbell Stadium. FSU Transportation & Parking Services states that \"multiple campus parking areas will be closed for reserved Seminole Booster parking on home football game days\" and requires vehicles to be out \"by 11:59 PM the night before game day\", but publishes NO list of which areas or which dates. The date comes from the football schedule; the restriction comes from the parking page; no source connects them to a specific garage. So the shipped rules in parking-zones.json cannot be evaluated for this date and a consumer must refuse rather than answer. Note also that the restriction can begin the evening BEFORE this date.",
+        "sourceUrl": "https://transportation.fsu.edu/GameDay"
+      },
+      {
+        "date": "2026-09-26",
+        "reason": "home-football-game",
+        "name": "Florida State vs. Central Arkansas (home, Saturday)",
+        "note": "A home football game at Doak Campbell Stadium. FSU Transportation & Parking Services states that \"multiple campus parking areas will be closed for reserved Seminole Booster parking on home football game days\" and requires vehicles to be out \"by 11:59 PM the night before game day\", but publishes NO list of which areas or which dates. The date comes from the football schedule; the restriction comes from the parking page; no source connects them to a specific garage. So the shipped rules in parking-zones.json cannot be evaluated for this date and a consumer must refuse rather than answer. Note also that the restriction can begin the evening BEFORE this date.",
+        "sourceUrl": "https://transportation.fsu.edu/GameDay"
+      },
+      {
+        "date": "2026-10-03",
+        "reason": "home-football-game",
+        "name": "Florida State vs. Virginia (home, Saturday)",
+        "note": "A home football game at Doak Campbell Stadium. FSU Transportation & Parking Services states that \"multiple campus parking areas will be closed for reserved Seminole Booster parking on home football game days\" and requires vehicles to be out \"by 11:59 PM the night before game day\", but publishes NO list of which areas or which dates. The date comes from the football schedule; the restriction comes from the parking page; no source connects them to a specific garage. So the shipped rules in parking-zones.json cannot be evaluated for this date and a consumer must refuse rather than answer. Note also that the restriction can begin the evening BEFORE this date.",
+        "sourceUrl": "https://transportation.fsu.edu/GameDay"
+      },
+      {
+        "date": "2026-10-31",
+        "reason": "home-football-game",
+        "name": "Florida State vs. Clemson (home, Saturday)",
+        "note": "A home football game at Doak Campbell Stadium. FSU Transportation & Parking Services states that \"multiple campus parking areas will be closed for reserved Seminole Booster parking on home football game days\" and requires vehicles to be out \"by 11:59 PM the night before game day\", but publishes NO list of which areas or which dates. The date comes from the football schedule; the restriction comes from the parking page; no source connects them to a specific garage. So the shipped rules in parking-zones.json cannot be evaluated for this date and a consumer must refuse rather than answer. Note also that the restriction can begin the evening BEFORE this date.",
+        "sourceUrl": "https://transportation.fsu.edu/GameDay"
+      },
+      {
+        "date": "2026-11-21",
+        "reason": "home-football-game",
+        "name": "Florida State vs. NC State (home, Saturday)",
+        "note": "A home football game at Doak Campbell Stadium. FSU Transportation & Parking Services states that \"multiple campus parking areas will be closed for reserved Seminole Booster parking on home football game days\" and requires vehicles to be out \"by 11:59 PM the night before game day\", but publishes NO list of which areas or which dates. The date comes from the football schedule; the restriction comes from the parking page; no source connects them to a specific garage. So the shipped rules in parking-zones.json cannot be evaluated for this date and a consumer must refuse rather than answer. Note also that the restriction can begin the evening BEFORE this date.",
+        "sourceUrl": "https://transportation.fsu.edu/GameDay"
+      },
+      {
+        "date": "2026-11-27",
+        "reason": "home-football-game",
+        "name": "Florida State vs. Florida (home, Friday)",
+        "note": "A home football game at Doak Campbell Stadium. FSU Transportation & Parking Services states that \"multiple campus parking areas will be closed for reserved Seminole Booster parking on home football game days\" and requires vehicles to be out \"by 11:59 PM the night before game day\", but publishes NO list of which areas or which dates. The date comes from the football schedule; the restriction comes from the parking page; no source connects them to a specific garage. So the shipped rules in parking-zones.json cannot be evaluated for this date and a consumer must refuse rather than answer. Note also that the restriction can begin the evening BEFORE this date.",
+        "sourceUrl": "https://transportation.fsu.edu/GameDay"
+      }
+    ],
     "provenance": {
       "sourceUrl": "https://registrar.fsu.edu/fall-2026-academic-calendar",
-      "retrievedOn": "2026-08-27",
+      "retrievedOn": "2026-08-28",
       "method": "fetched",
       "confidence": "high",
-      "note": "Every date and every quoted description was read off the FSU University Registrar’s Fall 2026 Academic Calendar page. Three things on that page are deliberately NOT represented here, because the schema cannot hold them faithfully or the page does not supply them: (1) the sessions array is omitted entirely, because the page publishes no first-half / second-half or summer-session date ranges, which means a course meeting’s partOfTerm cannot be resolved and half-term conflict checking is not possible from this record; (2) Homecoming Friday is a HALF day — classes are cancelled only after 12:00 p.m. — which nonClassPeriod has no way to express, so it is recorded with classesCancelled false and the detail carried in the name; (3) no reading day appears on the page, so none is recorded. Financial-aid, housing, health-insurance, thesis and dissertation dates from the page are omitted as out of scope for a class-schedule plugin."
+      "note": "Every date and every quoted description was read off the FSU University Registrar's Fall 2026 Academic Calendar page on 2026-08-27. Revised 2026-08-28 with three additions, each from a page fetched that day.\n\nSESSIONS. sessionsStatus is \"not-published\" and sessions is empty. FSU's Registrar publishes session date ranges for SUMMER terms only — registrar.fsu.edu/calendar/extended lists them for summer and gives Fall 2026 as a single Aug 24 to Dec 11 span — and the Fall 2026 calendar page has no session table. So a course meeting's partOfTerm cannot be resolved to dates in this term, and half-term conflict checking is not possible from this record. The status field now says so explicitly rather than leaving an empty array to be misread as \"this term has no half-terms\".\n\nFINALS. The url now points at the Registrar's published Fall 2026 exam schedule rather than at the academic calendar. That page carries the block exam assignments and the MWF and TR grids. The grid itself is not transcribed because finalsPeriod has nowhere to put it; the link is the whole of what this record can offer.\n\nPARKING BLACKOUTS. Seven home football dates, read from the print view of the 2026 football schedule at seminoles.com/sports/football/schedule/2026?print=true (the ordinary page and the schedule-announcement article are rendered client-side and yield nothing to a fetch). Every listed game is at \"Tallahassee, Fla.\"; each weekday is computed from the date rather than transcribed, and two of the seven are NOT Saturdays — Sept. 7 is the Labor Day Monday and Nov. 27 is the Friday after Thanksgiving, both dates a student could otherwise be on campus. The consequence for parking comes from transportation.fsu.edu/GameDay. No rule about what parking BECOMES on those dates is recorded, because FSU publishes none.\n\nSTILL NOT REPRESENTED. Homecoming Friday is a HALF day — classes are cancelled only after 12:00 p.m. — which nonClassPeriod cannot express, so it is recorded with classesCancelled false and the detail carried in the name. No reading day appears on the page, so none is recorded. Financial-aid, housing, health-insurance, thesis and dissertation dates are omitted as out of scope for a class-schedule plugin."
     },
     "source": {
       "url": "https://registrar.fsu.edu/fall-2026-academic-calendar",

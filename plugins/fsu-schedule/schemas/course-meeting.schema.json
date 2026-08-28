@@ -101,6 +101,10 @@
         }
       ]
     },
+    "locationTba": {
+      "type": "boolean",
+      "description": "Set true when this block definitely meets somewhere physical but the source does not say where — an in-person section whose building and room both read \"TBA\", which is ordinary at FSU before a term settles. It is the ONLY way to express \"physical, location unknown\": location itself cannot carry it, because a location object requires a real buildingCode and inventing one is precisely the failure this schema exists to prevent. When true, location must be null or absent.\n\nThis is not a synonym for online. It is forbidden outright on the online delivery modes, so the guarantee that an online block never carries a fake room survives intact. Absent means the ordinary case: the location is known and is in location. A consumer seeing true must tell the student that routing, walking times and parking cannot be answered for this block, and must not silently drop the block from their schedule."
+    },
     "onlineMeeting": {
       "$ref": "#/$defs/onlineMeeting",
       "description": "Connection details for an online block. Applies to synchronous and hybrid modes; may also be present for asynchronous sections that use a fixed course space."
@@ -124,7 +128,7 @@
         "custom"
       ],
       "default": "full-term",
-      "description": "Which slice of the term the block runs for. FSU runs seven-week halves in fall and spring and lettered sessions in summer, so a schedule can hold two courses in the same time slot that never actually collide because one ends before the other begins. Any conflict check that ignores this field will report false conflicts. When set to \"custom\", dateRange must be supplied; otherwise the dates come from the matching session in the term-calendar record."
+      "description": "Which slice of the term the block runs for. A term can hold two courses in the same time slot that never actually collide because one ends before the other begins, so any conflict check that ignores this field will report false conflicts.\n\nRESOLUTION RULE. To turn this value into real dates, a consumer looks for a session whose code equals it in the term-calendar record for termCode. There are exactly THREE outcomes and a consumer must not collapse them into two:\n\n  (a) NOT APPLICABLE. This field is absent or \"full-term\". The dates are the term's own classesBeginDate to classesEndDate.\n  (b) RESOLVED. dateRange is present on this meeting, or the term calendar has a matching session. Use those dates; dateRange wins if both exist.\n  (c) UNRESOLVABLE. The value is not \"full-term\", no dateRange is present, and the term calendar has no matching session. The block's real dates are UNKNOWN. A consumer must say it cannot determine the answer. It must NOT fall back to the full term, and above all it must NOT report \"no conflict\" — \"these might not overlap\" and \"these do not overlap\" are different answers, and only one of them is safe to act on.\n\nCase (c) is not hypothetical. The term calendar's sessionsStatus field states up front whether a term is resolvable at all, and for the Fall 2026 record shipped with this plugin it is \"not-published\": FSU's Registrar publishes session date ranges for summer terms only, so every non-full-term meeting in that term falls into (c). When set to \"custom\", dateRange is required, which is the one way a student can lift their own course out of (c)."
     },
     "dateRange": {
       "$ref": "#/$defs/dateRange",
@@ -183,8 +187,8 @@
       }
     },
     {
-      "title": "Physical modes need a location",
-      "description": "In-person, hybrid, and hyflex blocks occupy a real room, so location must be present and must be an object rather than null.",
+      "title": "Physical modes need a location, or an explicit admission that there is not one yet",
+      "description": "In-person, hybrid, and hyflex blocks occupy a real room, so either location is present and is a real object, or locationTba is true. What is rejected is the third case: a physical block with no location and no acknowledgement that the location is missing, which is how a class quietly disappears from a route.",
       "if": {
         "properties": {
           "deliveryMode": {
@@ -200,19 +204,33 @@
         ]
       },
       "then": {
-        "required": [
-          "location"
-        ],
-        "properties": {
-          "location": {
-            "$ref": "#/$defs/location"
+        "anyOf": [
+          {
+            "required": [
+              "location"
+            ],
+            "properties": {
+              "location": {
+                "$ref": "#/$defs/location"
+              }
+            }
+          },
+          {
+            "required": [
+              "locationTba"
+            ],
+            "properties": {
+              "locationTba": {
+                "const": true
+              }
+            }
           }
-        }
+        ]
       }
     },
     {
       "title": "Fully online modes have no room",
-      "description": "A synchronous or asynchronous online block must set location to null. Carrying a placeholder building code such as \"ONLINE\" or \"WEB\" is what makes a router try to walk a student to a room that does not exist.",
+      "description": "A synchronous or asynchronous online block must set location to null. Carrying a placeholder building code such as \"ONLINE\" or \"WEB\" is what makes a router try to walk a student to a room that does not exist. locationTba is forbidden here for the same reason: an online block is not a block whose room is pending, and letting the two blur is how \"TBA\" becomes a building.",
       "if": {
         "properties": {
           "deliveryMode": {
@@ -224,6 +242,28 @@
         },
         "required": [
           "deliveryMode"
+        ]
+      },
+      "then": {
+        "properties": {
+          "location": {
+            "type": "null"
+          },
+          "locationTba": false
+        }
+      }
+    },
+    {
+      "title": "A TBA location is not also a known location",
+      "description": "locationTba true is a claim that nothing is known about where the block meets, so it cannot sit alongside a location object. Null or absent are both fine.",
+      "if": {
+        "properties": {
+          "locationTba": {
+            "const": true
+          }
+        },
+        "required": [
+          "locationTba"
         ]
       },
       "then": {
@@ -314,7 +354,7 @@
     },
     "location": {
       "type": "object",
-      "description": "A physical room. Kept deliberately thin: it names the building and room, and everything about how to reach that building lives in the building and walk-edge datasets rather than being duplicated here.",
+      "description": "A physical room. Kept deliberately thin: it names the building and room, and everything about how to reach that building lives in the building and walk-edge datasets rather than being duplicated here. Only buildingCode is required. An omitted room means the room is genuinely not known — an FSU schedule prints \"TBA\" in that column often enough that requiring it would reject real schedules — and an omitted room must be reported as unknown, never filled in with a placeholder.",
       "properties": {
         "buildingCode": {
           "$ref": "common.defs.schema.json#/$defs/buildingCode",
@@ -323,7 +363,7 @@
         "room": {
           "type": "string",
           "minLength": 1,
-          "description": "Room identifier as printed, for example \"0103\" or \"216A\". A string, not a number, because leading zeros and letter suffixes are both common."
+          "description": "Room identifier as printed, for example \"0103\" or \"216A\". A string, not a number, because leading zeros and letter suffixes are both common. OPTIONAL: omit it when the source says \"TBA\", is blank, or is otherwise not a room. Do not store the literal string \"TBA\" here — that is a statement about the source, not a room, and it will end up displayed to a student as though it were one. Routing works without this field, since routing targets the building; only telling the student which door and which floor degrades."
         },
         "floor": {
           "type": "integer",
@@ -339,8 +379,7 @@
         }
       },
       "required": [
-        "buildingCode",
-        "room"
+        "buildingCode"
       ],
       "additionalProperties": false
     },

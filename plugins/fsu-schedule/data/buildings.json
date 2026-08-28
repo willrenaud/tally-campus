@@ -144,6 +144,54 @@
     }
   },
   {
+    "code": "DSL",
+    "name": "Dirac Science Library",
+    "aliases": [
+      "dirac science",
+      "dirac science library",
+      "dsl",
+      "the dirac science",
+      "the dsl"
+    ],
+    "campusZone": "academic-core",
+    "centroid": {
+      "lat": 30.4450146,
+      "lon": -84.2999491
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Dirac Science Library — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4450146,
+          "lon": -84.2999491
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 4,
+    "typicalClassroomFloors": [
+      1,
+      4
+    ],
+    "notes": "FSU building number 0020, FSU space zone \"ZONE A\", street address 110 N WOODWARD AVE. FSU's room inventory lists 3 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0020",
+      "retrievedOn": "2026-08-28",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Identity, official name, address and floor data read from the FSU Building Portal and its room-lookup service; coordinate taken from the OpenStreetMap element named \"Dirac Science Library\". OpenStreetMap element(s): node/12550200644 \"Dirac Science Library\" (https://www.openstreetmap.org/node/12550200644), tagged amenity=library. This is a POINT OF INTEREST NODE INSIDE the building, not a building polygon centroid, so it names the right building but is offset from its geometric centre by an unknown amount — unlike every other coordinate in this file, which comes from a polygon. OSM gives its address as 600 Learning Way while FSU gives 110 N Woodward Ave. The pairing is corroborated by a separate Nominatim lookup of \"110 N Woodward Ave, Tallahassee, FL\", whose first result is a Starbucks (node/9961388586) 36 m away — consistent with the cafe inside this library. That lookup also returns a second, unnamed address point (way/863077705) 190 m away carrying the same street address, so the address alone does not identify the building. Confidence is medium. No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0020",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-28T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
     "code": "FAB",
     "name": "Fine Arts Building",
     "aliases": [
@@ -615,6 +663,58 @@
       "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0006",
       "label": "FSU Planning, Design & Construction — Building Information Portal",
       "retrievedAt": "2026-08-27T12:00:00-04:00",
+      "confidence": "verified"
+    }
+  },
+  {
+    "code": "LAW",
+    "name": "B.K. Roberts Hall",
+    "aliases": [
+      "b. k. roberts hall",
+      "b.k. roberts",
+      "b.k. roberts hall",
+      "b.k. roberts hall - college of law",
+      "college of law",
+      "law",
+      "the b.k. roberts",
+      "the law"
+    ],
+    "campusZone": "east-campus",
+    "centroid": {
+      "lat": 30.4391368,
+      "lon": -84.2868741
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "B.K. Roberts Hall — building centre, exact doors not yet surveyed",
+        "point": {
+          "lat": 30.4391368,
+          "lon": -84.2868741
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR. No entrance location for this building could be sourced, so the walk graph anchors on the building centre instead. Walking estimates through this node are therefore short by the distance from the centre of the building to whichever door you actually use — typically 10 to 40 metres at each end of a trip. Do not present this as \"leave by the north doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 4,
+    "typicalClassroomFloors": [
+      1,
+      2,
+      3
+    ],
+    "notes": "FSU building number 0032, FSU space zone \"ZONE D\", street address 425 W JEFFERSON ST. FSU's room inventory lists 9 rooms of type \"(110) CLASSROOM\" in this building, which is the measure used to decide what shipped in this release.",
+    "provenance": {
+      "sourceUrl": "https://www.facilities.fsu.edu/portal/building/?bldg=0032",
+      "retrievedOn": "2026-08-28",
+      "method": "computed",
+      "confidence": "medium",
+      "note": "Identity, official name, address and floor data read from the FSU Building Portal and its room-lookup service; coordinate taken from the OpenStreetMap element named \"B. K. Roberts Hall\". OpenStreetMap element(s): way/115687648 \"B. K. Roberts Hall\" (https://www.openstreetmap.org/way/115687648), tagged building=university. The pairing rests on the name: OSM places that element on West Pensacola Street while FSU gives the address as 425 W Jefferson St, so the two sources do not agree on the street. The pairing is nonetheless corroborated geometrically — a separate Nominatim lookup of \"425 W Jefferson St, Tallahassee, FL\" returns an unnamed address point (way/11046200) 60 m away, which is within the footprint of a building of this size. Confidence is medium rather than high because no single source states both the FSU identity and the coordinate. This building sits 993 m from the mean centre of the shipped set on a bearing of 116 degrees, which puts it outside the 700 m academic core and into east-campus; the nearest shipped building is DIF at 433 m, so walk estimates to it are long and cross streets this dataset does not model. No entrance was sourced for this building; the single entrance record is the centroid."
+    },
+    "source": {
+      "url": "https://www.facilities.fsu.edu/portal/building/?bldg=0032",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-28T12:00:00-04:00",
       "confidence": "verified"
     }
   },

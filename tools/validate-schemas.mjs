@@ -117,6 +117,37 @@ const acceptCases = [
       });
       return d;
     }
+  },
+  {
+    name: 'STEP 3: in-person class whose room is TBA (building known, room not)',
+    schema: 'course-meeting.schema.json',
+    build: () => {
+      const d = ex('course-meeting.example.json');
+      delete d.location.room;
+      delete d.location.floor;
+      d.location.buildingCodeRaw = 'HCB TBA';
+      return d; // an FSU schedule prints TBA in this column often enough to matter
+    }
+  },
+  {
+    name: 'STEP 3: in-person class whose location is wholly unknown, declared as such',
+    schema: 'course-meeting.schema.json',
+    build: () => {
+      const d = ex('course-meeting.example.json');
+      delete d.location;
+      d.locationTba = true;
+      return d;
+    }
+  },
+  {
+    name: 'STEP 3: term whose sessions are unpublished says so',
+    schema: 'term-calendar.schema.json',
+    build: () => {
+      const d = ex('term-calendar.example.json');
+      d.sessions = [];
+      d.sessionsStatus = 'not-published';
+      return d;
+    }
   }
 ];
 
@@ -325,6 +356,85 @@ const rejectCases = [
     build: () => {
       const d = ex('building.example.json');
       d.entrances[0].point = { lat: 40.7128, lon: -74.006 };
+      return d;
+    }
+  },
+  {
+    name: 'STEP 3: in-person class with no location and no admission that it is missing',
+    schema: 'course-meeting.schema.json',
+    build: () => {
+      const d = ex('course-meeting.example.json');
+      delete d.location;
+      return d; // silently roomless is the case locationTba exists to force open
+    }
+  },
+  {
+    name: 'STEP 3: online class smuggling a room back in via locationTba',
+    schema: 'course-meeting.schema.json',
+    build: () => {
+      const d = ex('course-meeting.example.json');
+      d.deliveryMode = 'online-synchronous';
+      d.location = null;
+      d.locationTba = true;
+      return d; // online is not "room pending"; that blur is how TBA becomes a building
+    }
+  },
+  {
+    name: 'STEP 3: locationTba true alongside a real location',
+    schema: 'course-meeting.schema.json',
+    build: () => {
+      const d = ex('course-meeting.example.json');
+      d.locationTba = true;
+      return d; // location object left in place: contradictory
+    }
+  },
+  {
+    name: 'STEP 3: location with neither a building nor a room',
+    schema: 'course-meeting.schema.json',
+    build: () => {
+      const d = ex('course-meeting.example.json');
+      d.location = { buildingCodeRaw: 'TBA' };
+      return d; // room may be dropped; buildingCode may not
+    }
+  },
+  // NOTE: "room recorded as the literal string TBA" is deliberately NOT a case here.
+  // "TBA" is a syntactically valid room string and no pattern separates it from a real
+  // room without banning real ones, so the constraint lives in the import skill and is
+  // asserted by its own tests instead.
+  {
+    name: 'STEP 3: term claiming published sessions while listing none',
+    schema: 'term-calendar.schema.json',
+    build: () => {
+      const d = ex('term-calendar.example.json');
+      d.sessions = [];
+      d.sessionsStatus = 'published';
+      return d;
+    }
+  },
+  {
+    name: 'STEP 3: term listing sessions while claiming they are unpublished',
+    schema: 'term-calendar.schema.json',
+    build: () => {
+      const d = ex('term-calendar.example.json');
+      d.sessionsStatus = 'not-published';
+      return d; // sessions array left populated
+    }
+  },
+  {
+    name: 'STEP 3: term calendar with no sessionsStatus at all',
+    schema: 'term-calendar.schema.json',
+    build: () => {
+      const d = ex('term-calendar.example.json');
+      delete d.sessionsStatus;
+      return d; // silence on resolvability is the failure mode this field removes
+    }
+  },
+  {
+    name: 'STEP 3: parking blackout with a date but no reason',
+    schema: 'term-calendar.schema.json',
+    build: () => {
+      const d = ex('term-calendar.example.json');
+      d.parkingBlackouts = [{ date: '2026-10-31' }];
       return d;
     }
   }

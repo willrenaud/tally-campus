@@ -57,9 +57,26 @@
     },
     "sessions": {
       "type": "array",
-      "description": "Sub-sessions within the term, which supply the date ranges that a course meeting's partOfTerm value refers to. Fall and spring have seven-week first and second halves; summer has the lettered sessions. Without these, two courses in the same time slot in different halves of a term look like a conflict when they never overlap.",
+      "description": "Sub-sessions within the term, which supply the date ranges that a course meeting's partOfTerm value refers to. Without these, two courses in the same time slot in different parts of a term look like a conflict when they never overlap. An EMPTY array is ambiguous on its own — it cannot distinguish a term that genuinely has no sub-sessions from one whose ranges nobody has been able to find — so sessionsStatus, not the length of this array, is what a consumer must branch on.",
       "items": {
         "$ref": "#/$defs/session"
+      },
+      "default": []
+    },
+    "sessionsStatus": {
+      "type": "string",
+      "enum": [
+        "published",
+        "not-published",
+        "not-checked"
+      ],
+      "description": "Whether this term's sub-session date ranges could be established, and therefore whether a course meeting's partOfTerm can be resolved to dates at all. This field exists because the failure is silent otherwise: an empty sessions array looks exactly like a term with no half-terms, and a consumer that cannot tell the two apart will confidently report \"no conflict\" for two courses whose real dates it does not know. \"published\" means the university publishes the ranges and they are transcribed into sessions, which must then be non-empty. \"not-published\" means the university's calendar for this term does not state them; sessions is empty and every non-full-term partOfTerm value in this term is UNRESOLVABLE. This is the state of the Fall 2026 record shipped with this plugin: the Registrar publishes session breakdowns for summer terms only. \"not-checked\" means nobody has looked; treat it exactly as cautiously as \"not-published\". See the RESOLUTION RULE on course-meeting.schema.json's partOfTerm for what a consumer must do in each case."
+    },
+    "parkingBlackouts": {
+      "type": "array",
+      "description": "Dates within this term on which the parking rules in parking-zones.json are KNOWN TO BE WRONG and must not be evaluated. It lives on the term calendar rather than on a zone because a blackout closes an unknown set of areas across the whole campus at once, so attaching it to any one zone would understate it.\n\nREFUSAL RULE. Before answering any question about parking on a date, a consumer MUST check that date against this array. If it matches, the consumer REFUSES: it states that FSU closes and reserves campus parking on that date, that it does not know which areas, and that the student must check FSU Transportation & Parking Services. It does NOT answer and hedge, and it does NOT fall back to the ordinary rules. This is deliberately asymmetric with the rest of the dataset, where a low-confidence answer is still an answer, and the reason is the consequence: FSU's own game-day page says a vehicle left in a reserved area \"will be towed at your expense\". A hedged wrong answer and a confident wrong answer end the same way.\n\nThis array deliberately does NOT encode what the rules become on these dates. FSU does not publish that, so any such rule would be invention. Recording only the dates is the whole of what can be sourced, and it is enough to refuse safely. An empty array does not mean there are no blackouts, only that none were sourced.",
+      "items": {
+        "$ref": "#/$defs/parkingBlackout"
       },
       "default": []
     },
@@ -79,7 +96,8 @@
     "endDate",
     "classesBeginDate",
     "classesEndDate",
-    "provenance"
+    "provenance",
+    "sessionsStatus"
   ],
   "additionalProperties": false,
   "$defs": {
@@ -202,7 +220,7 @@
     },
     "finalsPeriod": {
       "type": "object",
-      "description": "The final examination period for the term.",
+      "description": "The final examination period for the term. Kept as its own object rather than as a nonClassDays entry because classes do not meet but the campus is at its busiest, and exam blocks do not follow the term's normal meeting pattern. NOTE that this object holds the exam WEEK, not the exam GRID: it has nowhere to put \"the Tuesday 09:05 lecture sits its final at 15:00 on Thursday\". url is therefore the only route to a student's actual exam times, and a consumer must send them there rather than expanding their weekly schedule across these dates.",
       "properties": {
         "startDate": {
           "$ref": "common.defs.schema.json#/$defs/date",
@@ -230,7 +248,7 @@
     },
     "session": {
       "type": "object",
-      "description": "A sub-session of the term, supplying the dates that a course meeting's partOfTerm refers to.",
+      "description": "A sub-session of the term, supplying the dates that a course meeting's partOfTerm refers to. Only present when the term record's sessionsStatus is \"published\".",
       "properties": {
         "code": {
           "type": "string",
@@ -267,6 +285,81 @@
         "endDate"
       ],
       "additionalProperties": false
+    },
+    "parkingBlackout": {
+      "type": "object",
+      "description": "One date on which normal parking rules do not apply and cannot be reconstructed.",
+      "properties": {
+        "date": {
+          "$ref": "common.defs.schema.json#/$defs/date",
+          "description": "The affected date. Note that these are not only weekends: a blackout can fall on an ordinary class day."
+        },
+        "reason": {
+          "type": "string",
+          "enum": [
+            "home-football-game",
+            "other-athletic-event",
+            "special-event",
+            "construction",
+            "unknown"
+          ],
+          "description": "Why the date is blacked out, so a refusal can say something more useful than \"rules unavailable\"."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "What is happening, in the source's own words, for the student to recognise — for example \"Florida State vs. Clemson\"."
+        },
+        "note": {
+          "type": "string",
+          "description": "What the source did and did not say. In particular, whether any restriction is known to begin the night before."
+        },
+        "sourceUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "The page the date was read from."
+        }
+      },
+      "required": [
+        "date",
+        "reason"
+      ],
+      "additionalProperties": false
     }
-  }
+  },
+  "allOf": [
+    {
+      "title": "Published sessions must actually be listed",
+      "description": "sessionsStatus \"published\" is a claim that the ranges are in hand, so the array must not be empty. The reverse is also enforced: if sessions is empty the status cannot be \"published\". Nothing constrains \"not-published\" or \"not-checked\" beyond sessions being empty, which is their whole point.",
+      "if": {
+        "properties": {
+          "sessionsStatus": {
+            "const": "published"
+          }
+        },
+        "required": [
+          "sessionsStatus"
+        ]
+      },
+      "then": {
+        "required": [
+          "sessions"
+        ],
+        "properties": {
+          "sessions": {
+            "type": "array",
+            "minItems": 1
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "sessions": {
+            "type": "array",
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ]
 }

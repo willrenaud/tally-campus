@@ -104,11 +104,21 @@
       "endDate": "2026-12-04"
     }
   ],
+  "sessionsStatus": "published",
+  "parkingBlackouts": [
+    {
+      "date": "2026-10-31",
+      "reason": "home-football-game",
+      "name": "Illustrative home game",
+      "note": "Invented for this example. A consumer must REFUSE to evaluate parking on a date listed here rather than answer and hedge.",
+      "sourceUrl": "https://transportation.fsu.edu/GameDay"
+    }
+  ],
   "provenance": {
     "retrievedOn": "2026-08-27",
     "method": "unverified",
     "confidence": "low",
-    "note": "Illustrative example, not real campus data. method \"unverified\" is the correct label for an invented record and is exactly what tools/validate-data.mjs refuses to let into plugins/fsu-schedule/data/. Examples are allowed to carry it; shipped records are not."
+    "note": "Illustrative example, not real campus data. method \"unverified\" is the correct label for an invented record and is exactly what tools/validate-data.mjs refuses to let into plugins/fsu-schedule/data/. Examples are allowed to carry it; shipped records are not. The sessions array here is likewise invented, purely to show the shape a term looks like when sessionsStatus is \"published\". FSU does not publish fall session ranges, and the real Fall 2026 record in data/ is \"not-published\" with an empty sessions array."
   },
   "source": {
     "label": "ILLUSTRATIVE PLACEHOLDER. Every date here is invented and internally consistent only. Replace with the published FSU academic calendar before shipping.",

@@ -440,7 +440,8 @@ null; asynchronous additionally forbids days and times outright. Carrying a plac
 code like `"WEB"` for an online class is the classic import bug — it produces phantom conflicts and
 makes a router try to walk someone to a room that doesn't exist — so the schema rejects it.
 
-, which is looser than
+`courseCode` accepts a three-letter prefix, four digits and up to two optional letter suffixes —
+`ENC1101`, `BSC2010L`, `ISC4241C`, `MUS1010r` — which is looser than
 Florida's statewide course numbering (SCNS). Rejecting a real schedule at import is worse than
 accepting an odd course code — cross-listed, experimental, special-topics and graduate offerings
 routinely carry numbers that do not fit the canonical form, and a student whose import fails gets
@@ -448,9 +449,22 @@ nothing at all. The stricter judgement is carried as an optional `canonicalNumbe
 instead, so a non-conforming code can be flagged and hedged about rather than thrown away. Nothing
 downstream may refuse to route a meeting because that flag is false.
 
-`partOfTerm` matters more than it looks: FSU runs seven-week halves, so two courses in the same
-time slot can never actually collide if one ends before the other begins. A conflict check that
-ignores this field reports false conflicts.
+`partOfTerm` matters more than it looks: two courses in the same time slot never actually collide
+if one ends before the other begins, and a conflict check that ignores this field reports false
+conflicts. The catch is that resolving it needs the term calendar to publish session date ranges,
+and for FSU's fall terms it does not — see the `RESOLUTION RULE` in the field's own description.
+There are **three** outcomes, not two: dates known, dates known to be absent, and *dates unknown*.
+The third is the dangerous one, because "these might not overlap" and "these do not overlap" look
+identical if you only have a boolean. A consumer that cannot resolve `partOfTerm` must say it
+cannot determine the answer, never fall back to the full term, and never report "no conflict".
+
+`locationTba` is the same idea applied to rooms. An in-person section whose building and room both
+read TBA is ordinary at FSU before a term settles, and there was previously no way to say so: a
+`location` object requires a real `buildingCode`, so the only ways to store such a class were to
+invent a building or to drop the class. Both are worse than an explicit `locationTba: true`, which
+is rejected outright on the online modes so that "TBA" can never quietly become a building. In the
+same spirit `room` is optional — an omitted room means the room is genuinely unknown, and the
+literal string `"TBA"` must never be stored in it.
 
 ### `term-calendar.schema.json`
 
@@ -465,8 +479,26 @@ much earlier, withdrawal dates.
 `nonClassDays[]` covers holidays, breaks, reading days, and closures, with `classesCancelled` and
 `campusClosed` kept separate — on a reading day classes don't meet but the library is full.
 `finals` is its own object because exam blocks don't follow the term's normal meeting pattern, so a
-schedule expanded from weekly meetings is simply wrong for that week. `sessions[]` supplies the
-date ranges that a course meeting's `partOfTerm` refers to.
+schedule expanded from weekly meetings is simply wrong for that week. It holds the exam *week*, not
+the exam *grid* — there is nowhere to put "the Tuesday 09:05 lecture sits its final at 15:00 on
+Thursday" — so its `url` is the only route to a student's real exam times.
+
+`sessions[]` supplies the date ranges that a course meeting's `partOfTerm` refers to, and
+`sessionsStatus` says whether those ranges could be established at all: `published`,
+`not-published`, or `not-checked`. The status field exists because an empty `sessions` array is
+ambiguous on its own — a term with no half-terms and a term whose ranges nobody could find look
+exactly alike — and a consumer that cannot tell them apart will confidently answer "no conflict"
+about dates it does not know. `published` requires a non-empty array and the other two require an
+empty one, so the two halves cannot drift apart. FSU's shipped Fall 2026 record is `not-published`.
+
+`parkingBlackouts[]` lists dates on which the rules in `parking-zones.json` are known to be wrong.
+It sits here rather than on a zone because a blackout closes an unspecified set of areas across the
+whole campus at once. Its contract is a **refusal**, not a hedge: on a listed date a consumer says
+it cannot answer and points the student at FSU Transportation & Parking Services. That is
+deliberately harsher than the rest of the dataset, where a low-confidence answer is still an
+answer, and the reason is that the failure mode here ends with a tow truck. The array holds dates
+and nothing else — FSU does not publish what the rules *become* on those days, so any rule encoding
+that would be invention.
 
 ### `student-schedule.schema.json`
 
