@@ -1,0 +1,9 @@
+Fall 2026 | Detailed Class Schedule
+
+Class Nbr  Course      Sec    Title                                Cr   Type        Days   Time                    Room        Instructor
+10432      ENC 1101    0001   Freshman Composition and Rhetoric    3    Lecture     MWF    9:05 AM - 9:55 AM       HCB 0216    Alvarez, R.
+11207      MAC 2311    0012   Calculus with Analytic Geometry I     4    Lecture     MWF    10:10 AM - 11:00 AM     LOV 0101    Whitfield, D.
+11208      MAC 2311    0012   Calculus with Analytic Geometry I     4    Recitation  R      12:30 PM - 1:20 PM      LOV 0201    Staff
+12990      BSC 2010    0004   Biological Science I                 3    Lecture     TR     2:00 PM - 3:15 PM       BEL 0110    Okonkwo, A.
+12991      BSC 2010L   0021   Biological Science I Laboratory      1    Lab         W      1:20 PM - 4:05 PM       KRB 0308    Staff
+13554      PSY 2012    0007   General Psychology                   3    Lecture     TR     9:30 AM - 10:45 AM      WMS 0119    Brenner, K.

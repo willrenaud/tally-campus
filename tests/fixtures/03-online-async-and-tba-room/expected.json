@@ -1,0 +1,102 @@
+{
+  "schemaVersion": "0.3.0",
+  "termCode": "2026-fall",
+  "meetings": [
+    {
+      "id": "pos2041-0900-lecture-async",
+      "termCode": "2026-fall",
+      "courseCode": "POS2041",
+      "section": "0900",
+      "classNumber": "16880",
+      "title": "American National Government",
+      "instructors": [],
+      "credits": 3,
+      "meetingType": "lecture",
+      "deliveryMode": "online-asynchronous",
+      "location": null
+    },
+    {
+      "id": "sta2023-0011-lecture-mowe",
+      "termCode": "2026-fall",
+      "courseCode": "STA2023",
+      "section": "0011",
+      "classNumber": "16994",
+      "title": "Fundamental Business Statistics",
+      "instructors": [
+        {
+          "name": "Sokolov, M.",
+          "role": "primary"
+        }
+      ],
+      "credits": 3,
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "monday",
+        "wednesday"
+      ],
+      "startTime": "15:35",
+      "endTime": "16:50",
+      "location": {
+        "buildingCode": "BEL",
+        "buildingCodeRaw": "BEL TBA"
+      }
+    },
+    {
+      "id": "arh2050-0002-lecture-tuth",
+      "termCode": "2026-fall",
+      "courseCode": "ARH2050",
+      "section": "0002",
+      "classNumber": "17233",
+      "title": "Art History Survey I",
+      "instructors": [
+        {
+          "name": "Duval, C.",
+          "role": "primary"
+        }
+      ],
+      "credits": 3,
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "tuesday",
+        "thursday"
+      ],
+      "startTime": "08:00",
+      "endTime": "09:15",
+      "location": {
+        "buildingCode": "LIB",
+        "room": "0107",
+        "floor": 1,
+        "buildingCodeRaw": "LIB 0107"
+      }
+    }
+  ],
+  "import": {
+    "sourceFormat": "text-paste",
+    "sourceLabel": "Student Central detailed schedule, pasted as text",
+    "importedAt": "2026-08-30T14:00:00-04:00",
+    "importerVersion": "0.3.0",
+    "sourceChecksum": "cc9b407bffd183ab5670051a9b196d0d006be88d2c541547c35b621b747b2d3f",
+    "warnings": [
+      {
+        "code": "missing-instructor",
+        "message": "POS2041 0900 lists its instructor as \"Staff\", so no instructor is recorded for this block.",
+        "meetingId": "pos2041-0900-lecture-async",
+        "rawValue": "Staff"
+      },
+      {
+        "code": "assumed-delivery-mode",
+        "message": "POS2041 0900 shows \"TBA\" days, \"TBA\" time and a room of \"ONLINE\". That was read as online-asynchronous and confirmed with the student; the source never states a delivery mode outright.",
+        "meetingId": "pos2041-0900-lecture-async",
+        "rawValue": "TBA / TBA / ONLINE"
+      },
+      {
+        "code": "missing-room",
+        "message": "STA2023 0011 meets in BEL but the room reads \"TBA\". The building is recorded and routing to it works; the room is omitted rather than stored as the string \"TBA\".",
+        "meetingId": "sta2023-0011-lecture-mowe",
+        "rawValue": "BEL TBA"
+      }
+    ]
+  }
+}

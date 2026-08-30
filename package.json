@@ -8,7 +8,9 @@
   "scripts": {
     "validate": "node tools/validate-schemas.mjs && node tools/validate-data.mjs",
     "validate:schemas": "node tools/validate-schemas.mjs",
-    "validate:data": "node tools/validate-data.mjs"
+    "validate:data": "node tools/validate-data.mjs",
+    "test": "node tests/run-tests.mjs",
+    "test:all": "npm run validate && npm test"
   },
   "devDependencies": {
     "ajv": "^8.17.1",

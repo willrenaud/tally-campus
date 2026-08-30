@@ -1,0 +1,191 @@
+{
+  "schemaVersion": "0.3.0",
+  "termCode": "2026-fall",
+  "meetings": [
+    {
+      "id": "enc1101-0001-lecture-mowefr",
+      "termCode": "2026-fall",
+      "courseCode": "ENC1101",
+      "section": "0001",
+      "classNumber": "10432",
+      "title": "Freshman Composition and Rhetoric",
+      "instructors": [
+        {
+          "name": "Alvarez, R.",
+          "role": "primary"
+        }
+      ],
+      "credits": 3,
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "monday",
+        "wednesday",
+        "friday"
+      ],
+      "startTime": "09:05",
+      "endTime": "09:55",
+      "location": {
+        "buildingCode": "HCB",
+        "room": "0216",
+        "floor": 2,
+        "buildingCodeRaw": "HCB 0216"
+      }
+    },
+    {
+      "id": "mac2311-0012-lecture-mowefr",
+      "termCode": "2026-fall",
+      "courseCode": "MAC2311",
+      "section": "0012",
+      "classNumber": "11207",
+      "title": "Calculus with Analytic Geometry I",
+      "instructors": [
+        {
+          "name": "Whitfield, D.",
+          "role": "primary"
+        }
+      ],
+      "credits": 4,
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "monday",
+        "wednesday",
+        "friday"
+      ],
+      "startTime": "10:10",
+      "endTime": "11:00",
+      "location": {
+        "buildingCode": "LOV",
+        "room": "0101",
+        "floor": 1,
+        "buildingCodeRaw": "LOV 0101"
+      }
+    },
+    {
+      "id": "mac2311-0012-recitation-th",
+      "termCode": "2026-fall",
+      "courseCode": "MAC2311",
+      "section": "0012",
+      "classNumber": "11208",
+      "title": "Calculus with Analytic Geometry I",
+      "instructors": [],
+      "credits": 4,
+      "meetingType": "recitation",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "thursday"
+      ],
+      "startTime": "12:30",
+      "endTime": "13:20",
+      "location": {
+        "buildingCode": "LOV",
+        "room": "0201",
+        "floor": 2,
+        "buildingCodeRaw": "LOV 0201"
+      }
+    },
+    {
+      "id": "bsc2010-0004-lecture-tuth",
+      "termCode": "2026-fall",
+      "courseCode": "BSC2010",
+      "section": "0004",
+      "classNumber": "12990",
+      "title": "Biological Science I",
+      "instructors": [
+        {
+          "name": "Okonkwo, A.",
+          "role": "primary"
+        }
+      ],
+      "credits": 3,
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "tuesday",
+        "thursday"
+      ],
+      "startTime": "14:00",
+      "endTime": "15:15",
+      "location": {
+        "buildingCode": "BEL",
+        "room": "0110",
+        "floor": 1,
+        "buildingCodeRaw": "BEL 0110"
+      }
+    },
+    {
+      "id": "bsc2010l-0021-lab-we",
+      "termCode": "2026-fall",
+      "courseCode": "BSC2010L",
+      "section": "0021",
+      "classNumber": "12991",
+      "title": "Biological Science I Laboratory",
+      "instructors": [],
+      "credits": 1,
+      "meetingType": "lab",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "wednesday"
+      ],
+      "startTime": "13:20",
+      "endTime": "16:05",
+      "location": {
+        "buildingCode": "KRB",
+        "room": "0308",
+        "floor": 3,
+        "buildingCodeRaw": "KRB 0308"
+      }
+    },
+    {
+      "id": "psy2012-0007-lecture-tuth",
+      "termCode": "2026-fall",
+      "courseCode": "PSY2012",
+      "section": "0007",
+      "classNumber": "13554",
+      "title": "General Psychology",
+      "instructors": [
+        {
+          "name": "Brenner, K.",
+          "role": "primary"
+        }
+      ],
+      "credits": 3,
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "tuesday",
+        "thursday"
+      ],
+      "startTime": "09:30",
+      "endTime": "10:45",
+      "location": {
+        "buildingCode": "WMS",
+        "room": "0119",
+        "floor": 1,
+        "buildingCodeRaw": "WMS 0119"
+      }
+    }
+  ],
+  "import": {
+    "sourceFormat": "text-paste",
+    "sourceLabel": "Student Central detailed schedule, pasted as text",
+    "importedAt": "2026-08-30T14:00:00-04:00",
+    "importerVersion": "0.3.0",
+    "sourceChecksum": "276c04cde551f86a5d0c38e7d5223d73352cb67843ea27aad9f74ead2567d6eb",
+    "warnings": [
+      {
+        "code": "missing-instructor",
+        "message": "MAC2311 0012 recitation lists its instructor as \"Staff\", so no instructor is recorded for this block.",
+        "meetingId": "mac2311-0012-recitation-th",
+        "rawValue": "Staff"
+      },
+      {
+        "code": "missing-instructor",
+        "message": "BSC2010L 0021 lab lists its instructor as \"Staff\", so no instructor is recorded for this block.",
+        "meetingId": "bsc2010l-0021-lab-we",
+        "rawValue": "Staff"
+      }
+    ]
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "0.3.0",
+  "termCode": "2026-fall",
+  "meetings": [
+    {
+      "id": "bul3310-0005-lecture-mowe",
+      "termCode": "2026-fall",
+      "courseCode": "BUL3310",
+      "section": "0005",
+      "classNumber": "18410",
+      "title": "The Legal Environment of Business",
+      "instructors": [
+        {
+          "name": "Ellery, T.",
+          "role": "primary"
+        }
+      ],
+      "credits": 3,
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "monday",
+        "wednesday"
+      ],
+      "startTime": "09:30",
+      "endTime": "10:45",
+      "location": {
+        "buildingCode": "WCB",
+        "room": "1010",
+        "floor": 1,
+        "buildingCodeRaw": "WCB 1010"
+      }
+    },
+    {
+      "id": "acg2021-0016-lecture-tuth",
+      "termCode": "2026-fall",
+      "courseCode": "ACG2021",
+      "section": "0016",
+      "classNumber": "18455",
+      "title": "Introduction to Financial Accounting",
+      "instructors": [
+        {
+          "name": "Mensah, J.",
+          "role": "primary"
+        }
+      ],
+      "credits": 3,
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "tuesday",
+        "thursday"
+      ],
+      "startTime": "12:30",
+      "endTime": "13:45",
+      "location": {
+        "buildingCode": "RBA",
+        "room": "0107",
+        "floor": 1,
+        "buildingCodeRaw": "RBA 0107"
+      }
+    },
+    {
+      "id": "enc1101-0044-lecture-mowefr",
+      "termCode": "2026-fall",
+      "courseCode": "ENC1101",
+      "section": "0044",
+      "classNumber": "18990",
+      "title": "Freshman Composition and Rhetoric",
+      "instructors": [],
+      "credits": 3,
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "monday",
+        "wednesday",
+        "friday"
+      ],
+      "startTime": "11:15",
+      "endTime": "12:05",
+      "location": {
+        "buildingCode": "HCB",
+        "room": "0104",
+        "floor": 1,
+        "buildingCodeRaw": "HCB 0104"
+      }
+    }
+  ],
+  "import": {
+    "sourceFormat": "text-paste",
+    "sourceLabel": "Student Central detailed schedule, pasted as text",
+    "importedAt": "2026-08-30T14:00:00-04:00",
+    "importerVersion": "0.3.0",
+    "sourceChecksum": "7b1128e2efb4a5af1854c406236595f0eb1852c4955a5decce17f6a276be23ea",
+    "warnings": [
+      {
+        "code": "unknown-building-code",
+        "message": "BUL3310 0005 meets in WCB 1010. WCB (the Herbert Wertheim Center for Business Excellence) is not in this plugin's campus data, so walking times, between-class feasibility and parking answers are unavailable for this course. The days, time and room are stored exactly as printed and the rest of the schedule is unaffected. See DATA-GAPS.md section 4.",
+        "meetingId": "bul3310-0005-lecture-mowe",
+        "rawValue": "WCB 1010"
+      },
+      {
+        "code": "missing-instructor",
+        "message": "ENC1101 0044 lists its instructor as \"Staff\", so no instructor is recorded for this block.",
+        "meetingId": "enc1101-0044-lecture-mowefr",
+        "rawValue": "Staff"
+      }
+    ]
+  }
+}

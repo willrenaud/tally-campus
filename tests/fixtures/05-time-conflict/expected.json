@@ -1,0 +1,147 @@
+{
+  "schemaVersion": "0.3.0",
+  "termCode": "2026-fall",
+  "meetings": [
+    {
+      "id": "his2100-0003-lecture-mowe",
+      "termCode": "2026-fall",
+      "courseCode": "HIS2100",
+      "section": "0003",
+      "classNumber": "19200",
+      "title": "American History to 1877",
+      "instructors": [
+        {
+          "name": "Rothstein, P.",
+          "role": "primary"
+        }
+      ],
+      "credits": 3,
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "monday",
+        "wednesday"
+      ],
+      "startTime": "14:00",
+      "endTime": "15:15",
+      "location": {
+        "buildingCode": "BEL",
+        "room": "0132",
+        "floor": 1,
+        "buildingCodeRaw": "BEL 0132"
+      },
+      "partOfTerm": "full-term"
+    },
+    {
+      "id": "muh2051-0001-lecture-mowe",
+      "termCode": "2026-fall",
+      "courseCode": "MUH2051",
+      "section": "0001",
+      "classNumber": "19345",
+      "title": "Music Cultures of the World",
+      "instructors": [
+        {
+          "name": "Adeyemi, F.",
+          "role": "primary"
+        }
+      ],
+      "credits": 3,
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "monday",
+        "wednesday"
+      ],
+      "startTime": "14:30",
+      "endTime": "15:45",
+      "location": {
+        "buildingCode": "KMU",
+        "room": "0210",
+        "floor": 2,
+        "buildingCodeRaw": "KMU 0210"
+      },
+      "partOfTerm": "full-term"
+    },
+    {
+      "id": "rel3170-0007-lecture-tuth",
+      "termCode": "2026-fall",
+      "courseCode": "REL3170",
+      "section": "0007",
+      "classNumber": "19801",
+      "title": "Religion and Ethics",
+      "instructors": [
+        {
+          "name": "Kowalczyk, I.",
+          "role": "primary"
+        }
+      ],
+      "credits": 3,
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "tuesday",
+        "thursday"
+      ],
+      "startTime": "10:00",
+      "endTime": "11:15",
+      "location": {
+        "buildingCode": "DIF",
+        "room": "0212",
+        "floor": 2,
+        "buildingCodeRaw": "DIF 0212"
+      },
+      "partOfTerm": "first-half"
+    },
+    {
+      "id": "phi2100-0002-lecture-tuth",
+      "termCode": "2026-fall",
+      "courseCode": "PHI2100",
+      "section": "0002",
+      "classNumber": "19802",
+      "title": "Reasoning and Critical Thinking",
+      "instructors": [
+        {
+          "name": "Baptiste, N.",
+          "role": "primary"
+        }
+      ],
+      "credits": 3,
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "tuesday",
+        "thursday"
+      ],
+      "startTime": "10:00",
+      "endTime": "11:15",
+      "location": {
+        "buildingCode": "LOV",
+        "room": "0103",
+        "floor": 1,
+        "buildingCodeRaw": "LOV 0103"
+      },
+      "partOfTerm": "second-half"
+    }
+  ],
+  "import": {
+    "sourceFormat": "text-paste",
+    "sourceLabel": "Student Central detailed schedule, pasted as text",
+    "importedAt": "2026-08-30T14:00:00-04:00",
+    "importerVersion": "0.3.0",
+    "sourceChecksum": "ca23929c2fccbe2f681dd4eb0c2c695f6b259bdbda5aaaced19dba5824392712",
+    "warnings": [
+      {
+        "code": "unmapped-session",
+        "message": "REL3170 runs \"first-half\", and the 2026-fall calendar publishes no date range for that (sessionsStatus is \"not-published\"). Its real first and last meeting dates are unknown, so any question about whether it overlaps another course can only be answered \"cannot determine\".",
+        "meetingId": "rel3170-0007-lecture-tuth",
+        "rawValue": "First Half"
+      },
+      {
+        "code": "unmapped-session",
+        "message": "PHI2100 runs \"second-half\", and the 2026-fall calendar publishes no date range for that (sessionsStatus is \"not-published\"). Its real first and last meeting dates are unknown, so any question about whether it overlaps another course can only be answered \"cannot determine\".",
+        "meetingId": "phi2100-0002-lecture-tuth",
+        "rawValue": "Second Half"
+      }
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+Fall 2026 | Detailed Class Schedule
+
+Class Nbr  Course      Sec    Title                              Cr   Type      Days   Time                   Room        Instructor
+16880      POS 2041    0900   American National Government       3    Lecture   TBA    TBA                    ONLINE      Staff
+16994      STA 2023    0011   Fundamental Business Statistics    3    Lecture   MW     3:35 PM - 4:50 PM      BEL TBA     Sokolov, M.
+17233      ARH 2050    0002   Art History Survey I               3    Lecture   TR     8:00 AM - 9:15 AM      LIB 0107    Duval, C.

@@ -1,0 +1,133 @@
+{
+  "schemaVersion": "0.3.0",
+  "termCode": "2026-fall",
+  "meetings": [
+    {
+      "id": "enc1101-0001-lecture-mowefr",
+      "termCode": "2026-fall",
+      "courseCode": "ENC1101",
+      "section": "0001",
+      "classNumber": "10432",
+      "title": "Freshman Composition and Rhetoric",
+      "instructors": [
+        {
+          "name": "Alvarez, R.",
+          "role": "primary"
+        }
+      ],
+      "credits": 3,
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "monday",
+        "wednesday",
+        "friday"
+      ],
+      "startTime": "09:05",
+      "endTime": "09:55",
+      "location": {
+        "buildingCode": "HCB",
+        "room": "0216",
+        "floor": 2,
+        "buildingCodeRaw": "HCB 0216"
+      }
+    },
+    {
+      "id": "spc2608-0033-lecture-tuth",
+      "termCode": "2026-fall",
+      "courseCode": "SPC2608",
+      "section": "0033",
+      "classNumber": "14771",
+      "title": "Public Speaking: Theory and Practice for the Contemporary Speaker",
+      "instructors": [
+        {
+          "name": "Nakamura, S.",
+          "role": "primary"
+        }
+      ],
+      "credits": 3,
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "tuesday",
+        "thursday"
+      ],
+      "startTime": "11:00",
+      "endTime": "12:15",
+      "location": {
+        "buildingCode": "DIF",
+        "room": "0128",
+        "floor": 1,
+        "buildingCodeRaw": "DIF 0128"
+      }
+    },
+    {
+      "id": "chm1045-0018-lecture-mowefr",
+      "termCode": "2026-fall",
+      "courseCode": "CHM1045",
+      "section": "0018",
+      "classNumber": "15002",
+      "title": "General Chemistry I",
+      "instructors": [
+        {
+          "name": "Ferreira, L.",
+          "role": "primary"
+        }
+      ],
+      "credits": 3,
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "monday",
+        "wednesday",
+        "friday"
+      ],
+      "startTime": "13:25",
+      "endTime": "14:15",
+      "location": {
+        "buildingCode": "MCH",
+        "room": "0201",
+        "floor": 2,
+        "buildingCodeRaw": "MCH 0201"
+      }
+    },
+    {
+      "id": "chm1045l-0044-lab-fr",
+      "termCode": "2026-fall",
+      "courseCode": "CHM1045L",
+      "section": "0044",
+      "classNumber": "15003",
+      "title": "General Chemistry I Laboratory",
+      "instructors": [],
+      "credits": 1,
+      "meetingType": "lab",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "friday"
+      ],
+      "startTime": "14:30",
+      "endTime": "17:15",
+      "location": {
+        "buildingCode": "MCH",
+        "room": "0322",
+        "floor": 3,
+        "buildingCodeRaw": "MCH 0322"
+      }
+    }
+  ],
+  "import": {
+    "sourceFormat": "text-paste",
+    "sourceLabel": "Student Central detailed schedule, pasted as text across two pages",
+    "importedAt": "2026-08-30T14:00:00-04:00",
+    "importerVersion": "0.3.0",
+    "sourceChecksum": "fa183882c258521e91ea509297edbd6012ac6e52cb3ad6daf8ee7fc3be56ebbe",
+    "warnings": [
+      {
+        "code": "missing-instructor",
+        "message": "CHM1045L 0044 lab lists its instructor as \"Staff\", so no instructor is recorded for this block.",
+        "meetingId": "chm1045l-0044-lab-fr",
+        "rawValue": "Staff"
+      }
+    ]
+  }
+}

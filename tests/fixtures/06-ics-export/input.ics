@@ -1,0 +1,47 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Invented Student Information System//Class Schedule//EN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:invented-1@example.invalid
+SUMMARY:ENC 1101-0001 Freshman Composition and Rhetoric
+LOCATION:HCB 0216
+DTSTART;TZID=America/New_York:20260824T090500
+DTEND;TZID=America/New_York:20260824T095500
+RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR;UNTIL=20261204T235900
+EXDATE;TZID=America/New_York:20260907T090500
+EXDATE;TZID=America/New_York:20261111T090500
+END:VEVENT
+BEGIN:VEVENT
+UID:invented-2@example.invalid
+SUMMARY:MAC 2311-0012 Calculus with Analytic Geometry I\, Lecture
+DESCRIPTION:Bring a calculator. Attendance is taken\; see the syllabus for
+  the policy on missed quizzes and the make-up procedure that applies when
+  a documented absence overlaps a scheduled assessment.
+LOCATION:LOV 0101
+DTSTART;TZID=America/New_York:20260825T101000
+DTEND;TZID=America/New_York:20260825T110000
+RRULE:FREQ=WEEKLY;BYDAY=TU,TH;UNTIL=20261204T235900
+END:VEVENT
+BEGIN:VEVENT
+UID:invented-3@example.invalid
+SUMMARY:BSC 2010L-0021 Biological Science I Laboratory
+LOCATION:KRB 0308
+DTSTART;TZID=America/New_York:20260826T132000
+DTEND;TZID=America/New_York:20260826T160500
+RRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=WE;UNTIL=20261202T235900
+END:VEVENT
+BEGIN:VEVENT
+UID:invented-4@example.invalid
+SUMMARY:POS 2041-0900 American National Government
+DTSTART;TZID=America/New_York:20260824T000000
+DTEND;TZID=America/New_York:20260824T235900
+END:VEVENT
+BEGIN:VEVENT
+UID:invented-5@example.invalid
+SUMMARY:Advising appointment
+LOCATION:UCA 3100
+DTSTART;TZID=America/New_York:20260915T140000
+DTEND;TZID=America/New_York:20260915T143000
+END:VEVENT
+END:VCALENDAR

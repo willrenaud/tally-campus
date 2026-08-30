@@ -1,0 +1,7 @@
+Fall 2026 | Detailed Class Schedule
+
+Class Nbr  Course      Sec    Title                          Cr   Type      Days   Time                  Room        Part of Term   Instructor
+19200      HIS 2100    0003   American History to 1877       3    Lecture   MW     2:00 PM - 3:15 PM     BEL 0132    Full Term      Rothstein, P.
+19345      MUH 2051    0001   Music Cultures of the World    3    Lecture   MW     2:30 PM - 3:45 PM     KMU 0210    Full Term      Adeyemi, F.
+19801      REL 3170    0007   Religion and Ethics            3    Lecture   TR     10:00 AM - 11:15 AM   DIF 0212    First Half     Kowalczyk, I.
+19802      PHI 2100    0002   Reasoning and Critical Thinking 3   Lecture   TR     10:00 AM - 11:15 AM   LOV 0103    Second Half    Baptiste, N.
