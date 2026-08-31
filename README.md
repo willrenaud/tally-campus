@@ -11,17 +11,30 @@ A Claude Code plugin marketplace for Florida State University students.
 
 | Plugin | Version | What it does |
 | --- | --- | --- |
-| [`fsu-schedule`](plugins/fsu-schedule/) | 0.4.0 | Import your class schedule once, then ask Claude about walking times between classes, parking, conflicts, and deadlines. |
+| [`fsu-schedule`](plugins/fsu-schedule/) | 0.5.0 | Import your class schedule once, then ask Claude about walking times between classes, parking, conflicts, and deadlines. |
 
 ## Status
 
-**One skill: importing a schedule.** `fsu-schedule` 0.4.0 ships six JSON Schemas with a worked
-example of each, real FSU campus data — 32 buildings, 85 walk edges, the six parking garages, and
-the Fall 2026 academic calendar — and the
-[`import-schedule`](plugins/fsu-schedule/skills/import-schedule/SKILL.md) skill, which takes a
-paste from Student Central, an `.ics` export, a screenshot, or a spoken description and turns it
-into a validated schedule. Nothing yet *queries* that schedule; walking times, parking and conflict
-answers are the next step.
+**Three skills: import, feasibility, parking.** `fsu-schedule` 0.5.0 ships six JSON Schemas with a
+worked example of each, real FSU campus data — 32 buildings, 85 walk edges, the six parking garages,
+and the Fall 2026 academic calendar — and:
+
+- [`import-schedule`](plugins/fsu-schedule/skills/import-schedule/SKILL.md) turns a paste from
+  Student Central, an `.ics` export, a screenshot, or a spoken description into a validated schedule.
+- [`can-i-make-it`](plugins/fsu-schedule/skills/can-i-make-it/SKILL.md) answers whether the gap
+  between two classes is enough.
+- [`parking`](plugins/fsu-schedule/skills/parking/SKILL.md) answers where to park for a class.
+
+**The two query skills are built around the weakness of the data underneath them.** Walking times
+are centroid-to-centroid estimates that have never been measured and omit doors, stairs, crossings
+and class-change crowds — every omission in the optimistic direction — so `can-i-make-it` reports a
+**range** rather than a number, treats anything inside the margin of error as *tight, leave early*
+rather than *yes*, and **refuses outright** on any leg touching a building the data does not ship.
+Parking is six garages and no surface lots, so every parking answer says so, surfaces the rule's
+`enforcementNote` verbatim including FSU's unresolved disagreement with itself about student hours,
+and **refuses** on the seven home football dates rather than hedging. Both behaviours live in the
+scripts, not in prose: the refusals return before any arithmetic runs, and the only duration
+formatter in the codebase cannot emit a single number.
 
 The import is **draft-first**: it parses everything it can, shows the week back as a table with its
 assumptions listed under it, and asks only what genuinely could not be resolved. The term comes from
@@ -63,9 +76,9 @@ fsu-campus/
 │   └── fsu-schedule/                 the plugin
 │       ├── schemas/                  the data contracts
 │       ├── data/                      shipped campus data
-│       ├── skills/import-schedule/    the import skill
-│       └── scripts/                   dependency-free helpers the skill runs
-├── tools/                            validators (dev only, never shipped to users)
+│       ├── skills/                    import-schedule, can-i-make-it, parking
+│       └── scripts/                   dependency-free helpers the skills run
+├── tools/                            validators and the packer (dev only, never shipped)
 ├── tests/                            import fixtures and the test suite (dev only)
 ├── package.json                      dev dependencies for tools/ and tests/ — not the plugin
 ├── PROGRESS.md                       what each step delivered, and where the next one starts
@@ -112,6 +125,32 @@ claude --plugin-dir ./plugins/fsu-schedule
 ```
 
 Then `/reload-plugins` picks up edits without restarting.
+
+### Testing the shipped copy rather than your working tree
+
+A directory-source marketplace resolves a skill's base directory to **the directory it points at**,
+not to a versioned copy under `~/.claude/plugins/cache/`. Adding this repository as a marketplace
+therefore points the "installed" plugin straight at your working tree, and a half-finished edit is
+live in it the moment you save. That is convenient while writing a skill and useless while testing
+one.
+
+`npm run pack` fixes it by freezing the plugin into `dist/marketplace/` — a directory nobody edits —
+so you can install *that* and let the working tree move independently:
+
+```bash
+npm run pack
+# then, in Claude Code:
+#   /plugin marketplace add <the absolute path it prints>
+#   /plugin install fsu-schedule@fsu-campus
+```
+
+To test a change: `npm run pack` again, then `/plugin marketplace update fsu-campus`,
+`/plugin update fsu-schedule`, and **`/reload-plugins`**. That last step is not optional — a running
+session caches skill text and keeps serving the version it already loaded, which is how an edit can
+appear to have no effect. `dist/PACK-INFO.json` stamps every pack with the plugin version, the git
+commit, whether the tree was dirty, and a hash of the packed files, so "am I looking at a cached
+copy?" is answerable rather than a guess. `dist/` is gitignored, and `npm test` checks that the
+frozen copy is byte-identical to the source and still runs.
 
 [`NOTES-SPEC.md`](NOTES-SPEC.md) records what the current plugin docs actually say about the
 manifest schemas, skill layout, `${CLAUDE_PLUGIN_ROOT}` / `${CLAUDE_PLUGIN_DATA}`, and relative

@@ -47,4 +47,21 @@ because the whole point of fixture 04 is what happens when a code is not in
 | 04 | A course in `WCB`, which does not ship | **Must import successfully.** Failing the whole schedule over one building is the bug. |
 | 05 | Two full-term courses genuinely colliding, and two half-term courses that only appear to | One is a `CONFLICT`, the other is `CANNOT TELL`, and reporting the second as "no conflict" is the failure. |
 | 06 | `.ics` export | Folded lines, escaped commas, `BYDAY`, an `EXDATE`, and an event with no `LOCATION`. |
-| 07 | A screenshot: no sections, no titles, four of five rooms in `WCB` | **Must ask nothing.** Under 0.3.0 this input produced four blocking questions before the student saw a thing. |
+| 07 | A screenshot: no sections, no titles, four of five rooms in `WCB` | **Must ask nothing.** Under 0.3.0 this input produced four blocking questions before the student saw a thing. Doubles as the feasibility fixture where **every leg refuses**. |
+| 08 | Four back-to-back pairs, one per rung of the feasibility ladder | Not an importer fixture. Its gaps are chosen so that one lands on `comfortable`, one on `tight`, one on `no`, and one refuses for an online origin. |
+
+## Fixture 08 is a query fixture, not an import one
+
+Everything above 08 exists to pin down what the *importer* does. 08 exists to pin
+down what `can-i-make-it` does, and its gaps are not arbitrary:
+
+| Day | Pair | Gap | Why that number |
+| --- | --- | --- | --- |
+| Mon | `PDB` → `PDB` | 15 min | Same building. Still costs the fixed margin, because you still leave one room and find another. `comfortable`. |
+| Tue | `BEL` → `KRB` | 10 min | The load-bearing case. The shipped estimate is **8 min** and the margin-corrected one is **14**, so the gap fits the optimistic number and not the realistic one. Anything that reports this as "yes" has thrown the margin away. `tight`. |
+| Wed | `HCB` → `PDB` | 10 min | Shorter than even the optimistic estimate. The one verdict the data can state plainly, because the bias points the safe way. `no`. |
+| Fri | online → `BEL` | 10 min | There is no origin to walk from. `refuse`, not a guess. |
+
+If a change to `walk-edges.json` moves those durations, the Tuesday row stops
+testing what it exists to test — the assertion checks the inequality, not just the
+verdict, so it will fail loudly rather than quietly passing for the wrong reason.

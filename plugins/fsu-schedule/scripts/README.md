@@ -14,12 +14,27 @@ themselves rather than relying on `${CLAUDE_PLUGIN_ROOT}` being exported.
 | `resolve-buildings.mjs <loc>…` | `data/buildings.json` | a report on stdout | always 0 — an unknown building is a result, not a failure |
 | `review-schedule.mjs <draft>` | the draft, `data/` | a report on stdout | 0 valid, 1 invalid, 2 could not run |
 | `save-schedule.mjs <draft>` | the draft | `$CLAUDE_PLUGIN_DATA/schedules/` | 0 done, 1 invalid so nothing written, 2 could not run |
+| `can-i-make-it.mjs` | the stored schedule, `data/` | a feasibility report on stdout | 0 something answered, 2 could not run, **3 nothing was answerable** |
+| `where-to-park.mjs --building <CODE>` | `data/`, optionally the stored schedule | a parking report on stdout | 0 answered, 2 could not run, **3 refused by design** |
 
 `lib/` holds what they share: `normalize.mjs` (field parsing), `validate.mjs` (a
 hand-written schema check), `campus.mjs` (shipped data access and building
-resolution), `store.mjs` (the per-user file and the re-import policy).
+resolution), `store.mjs` (the per-user file and the re-import policy),
+`routing.mjs` (the walk graph **and the safety margin**), `feasibility.mjs` (the
+verdict ladder), `parking.mjs` (the blackout gate and rule evaluation).
 
-## Three rules these scripts follow
+## Exit code 3 means refused, and that is a result
+
+Both query scripts can exit **3**. It is not an error code. It means the honest
+answer was that there is no answer: a home football date, a building outside the
+32 that ship, a step-free routing request against data with no accessibility
+information in it.
+
+The code is distinct from 0 on purpose. A caller that only checks for zero would
+read total refusal as success, and the whole design of these two scripts is that a
+refusal must be impossible to mistake for an answer.
+
+## Four rules these scripts follow
 
 **Ambiguity is returned, never resolved.** Every function in `normalize.mjs` yields
 either a value or `{ ok: false, reason }`. `TH` in a day column, a bare `1:50` with
@@ -41,6 +56,14 @@ substitutes a building because a name looked close.
 **The write path validates for itself.** `save-schedule.mjs` re-runs the full
 validation rather than trusting that `review-schedule.mjs` already did. It is the
 only door to the filesystem, and a door that trusts its caller is not a door.
+
+**Safety lives in the code, not in the prose that calls it.** The two query
+scripts exist because a rule the model might skip is not a rule. A range is
+emitted because `formatRange()` is the only duration formatter and it physically
+cannot emit one number. A leg touching a missing building refuses because
+`evaluateLeg()` returns before it reaches any arithmetic. A blackout date never
+reaches a parking rule because `where-to-park.mjs` calls `blackoutCheck()` first
+and exits on it. None of that depends on anyone remembering to be careful.
 
 ## The one thing to watch
 

@@ -17,10 +17,26 @@ function load(file) {
 }
 
 export const buildings = () => load(path.join(DATA_DIR, 'buildings.json'));
+export const walkEdges = () => load(path.join(DATA_DIR, 'walk-edges.json'));
+export const parkingZones = () => load(path.join(DATA_DIR, 'parking-zones.json'));
 export const termCalendars = () => load(path.join(DATA_DIR, 'term-calendar.json'));
 export const parkingSchema = () => load(path.join(SCHEMA_DIR, 'parking-zone.schema.json'));
 
 export const termCalendar = (termCode) => termCalendars().find((t) => t.termCode === termCode) || null;
+
+/** The shipped building record for a code, or null. Codes are uppercase. */
+export const building = (code) => buildings().find((b) => b.code === String(code).toUpperCase()) || null;
+
+/**
+ * The shipped term-calendar record whose span contains a date, or null.
+ *
+ * Null is NOT "an ordinary day". Only Fall 2026 ships, so any date outside it has
+ * no calendar behind it -- which means its parkingBlackouts cannot be checked,
+ * which means a parking answer for that date cannot be given at all. The parking
+ * script treats null as a refusal for exactly that reason.
+ */
+export const termCalendarCovering = (date) =>
+  termCalendars().find((t) => t.startDate <= date && date <= t.endDate) || null;
 
 /** Normalise an alias or a user string to the same shape, so they can be compared. */
 const norm = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();

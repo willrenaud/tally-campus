@@ -1,0 +1,104 @@
+{
+  "schemaVersion": "0.5.0",
+  "termCode": "2026-fall",
+  "meetings": [
+    {
+      "id": "psy2012-lecture-mo",
+      "termCode": "2026-fall",
+      "courseCode": "PSY2012",
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": ["monday"],
+      "startTime": "09:05",
+      "endTime": "09:55",
+      "location": { "buildingCode": "PDB", "room": "0102", "floor": 1 }
+    },
+    {
+      "id": "psy3213-lecture-mo",
+      "termCode": "2026-fall",
+      "courseCode": "PSY3213",
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": ["monday"],
+      "startTime": "10:10",
+      "endTime": "11:00",
+      "location": { "buildingCode": "PDB", "room": "0204", "floor": 2 }
+    },
+    {
+      "id": "enc1101-lecture-tu",
+      "termCode": "2026-fall",
+      "courseCode": "ENC1101",
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": ["tuesday"],
+      "startTime": "09:30",
+      "endTime": "10:20",
+      "location": { "buildingCode": "BEL", "room": "0016" }
+    },
+    {
+      "id": "chm1045-lecture-tu",
+      "termCode": "2026-fall",
+      "courseCode": "CHM1045",
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": ["tuesday"],
+      "startTime": "10:30",
+      "endTime": "11:20",
+      "location": { "buildingCode": "KRB", "room": "0110" }
+    },
+    {
+      "id": "his2100-lecture-we",
+      "termCode": "2026-fall",
+      "courseCode": "HIS2100",
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": ["wednesday"],
+      "startTime": "11:00",
+      "endTime": "11:50",
+      "location": { "buildingCode": "HCB", "room": "0216", "floor": 2 }
+    },
+    {
+      "id": "sta2023-lecture-we",
+      "termCode": "2026-fall",
+      "courseCode": "STA2023",
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": ["wednesday"],
+      "startTime": "12:00",
+      "endTime": "12:50",
+      "location": { "buildingCode": "PDB", "room": "0102", "floor": 1 }
+    },
+    {
+      "id": "pos2041-lecture-fr",
+      "termCode": "2026-fall",
+      "courseCode": "POS2041",
+      "meetingType": "lecture",
+      "deliveryMode": "online-synchronous",
+      "daysOfWeek": ["friday"],
+      "startTime": "09:00",
+      "endTime": "09:50",
+      "location": null
+    },
+    {
+      "id": "spc2608-lecture-fr",
+      "termCode": "2026-fall",
+      "courseCode": "SPC2608",
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": ["friday"],
+      "startTime": "10:00",
+      "endTime": "10:50",
+      "location": { "buildingCode": "BEL", "room": "0016" }
+    }
+  ],
+  "import": {
+    "importedAt": "2026-08-31T10:00:00-04:00",
+    "sourceFormat": "manual-entry",
+    "warnings": [
+      {
+        "code": "missing-instructor",
+        "message": "Dictated course by course; no instructor names were given."
+      }
+    ]
+  }
+}

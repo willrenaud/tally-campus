@@ -9,35 +9,47 @@ The goal is to make questions like these answerable from structured data instead
 - *What's due this week?*
 - *Do these two courses conflict?*
 
-## Status: scaffolding only
+## Status: version 0.5.0 — three skills
 
-**Version 0.1.0. There is no working functionality yet.** This release contains the data contracts
-and nothing else — no skills, no commands, no hooks, no MCP servers, and no campus data. Installing
-it will do nothing useful. It exists so the shapes can be reviewed and argued with before anything
-is built on top of them.
-
-What is here:
+| Skill | What it does |
+| --- | --- |
+| [`import-schedule`](skills/import-schedule/SKILL.md) | Turns a Student Central paste, an `.ics` export, a screenshot, or a spoken description into a validated schedule. Draft-first: it shows your week back before it asks you anything. |
+| [`can-i-make-it`](skills/can-i-make-it/SKILL.md) | Whether the gap between two classes is enough to walk it. |
+| [`parking`](skills/parking/SKILL.md) | Where to park for a class, and what the rule at that moment actually is. |
 
 ```
 fsu-schedule/
 ├── .claude-plugin/plugin.json    manifest
-├── schemas/                      the data contracts — the substance of this release
+├── schemas/                      the data contracts
 │   ├── common.defs.schema.json   shared primitives, and the time/date policy
-│   ├── building.schema.json
-│   ├── walk-edge.schema.json
-│   ├── parking-zone.schema.json
-│   ├── course-meeting.schema.json
-│   ├── term-calendar.schema.json
-│   ├── student-schedule.schema.json
+│   ├── building.schema.json      walk-edge, parking-zone, course-meeting,
+│   ├── …                         term-calendar, student-schedule
 │   ├── examples/                 one hand-written instance per schema
 │   └── README.md                 the model explained in prose — start here
-├── data/                         empty; static campus data lands here
-├── scripts/                      empty; import and routing helpers land here
-└── skills/                       empty; skills land here
+├── data/                         32 buildings, 85 walk edges, 6 garages, Fall 2026
+├── scripts/                      dependency-free helpers the skills run
+└── skills/                       the three above
 ```
 
-Read [`schemas/README.md`](schemas/README.md) for what each schema is for, how they join, and why
-the shapes are what they are.
+Read [`schemas/README.md`](schemas/README.md) for what each schema is for and how they join, and
+[`data/README.md`](data/README.md) for where every shipped value came from.
+
+### What these answers are worth
+
+**The two query skills are deliberately unwilling to sound confident**, because the data underneath
+them does not support it:
+
+- Every walking time is computed from **building centres**, has **never been measured**, and leaves
+  out doors, stairs, road crossings and class-change crowds — all in the optimistic direction. So
+  `can-i-make-it` reports a **range**, calls anything inside the margin **tight, leave early** rather
+  than *yes*, and **refuses** any leg touching a building that is not in the shipped data rather than
+  substituting a nearby one.
+- Parking is **six garages and no surface lots**, and on FSU's seven home football dates the shipped
+  rules are known to be wrong. `parking` says the first out loud in every answer and **refuses** on
+  the second, pointing at [FSU Game Day](https://transportation.fsu.edu/GameDay).
+
+"I can't tell you" is a correct answer here. A student who gets a hedge walks faster or parks
+elsewhere; a student who gets a confident wrong answer misses a class or gets towed.
 
 ## How data will be stored
 
