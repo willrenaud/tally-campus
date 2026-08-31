@@ -34,6 +34,7 @@ import { saveSchedule, readSchedule, listTerms, archiveDir, ARCHIVE_KEEP } from 
 import { SAFETY_MARGIN, applySafetyMargin, route, formatRange } from '../plugins/fsu-schedule/scripts/lib/routing.mjs';
 import { evaluateLeg, endpointOf, legsForDay, VERDICTS } from '../plugins/fsu-schedule/scripts/lib/feasibility.mjs';
 import { blackoutCheck, ruleAt, windowMatches, dayOfWeek, nextDate, BLACKOUT_EVE_FROM } from '../plugins/fsu-schedule/scripts/lib/parking.mjs';
+import { computeZones } from '../tools/build-walk-graph.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const REPO = path.resolve(HERE, '..');
@@ -333,12 +334,12 @@ const EXPECTATIONS = {
       // THE POINT OF THIS FIXTURE: one unknown building must not fail the import.
       if (!rev.valid) return 'the import was rejected -- one unknown building must never fail a whole schedule';
       const bul = doc.meetings.find((m) => m.courseCode === 'BUL3310');
-      if (bul.location.buildingCode !== 'WCB') return 'the unknown code must be kept exactly as printed';
+      if (bul.location.buildingCode !== 'UCB') return 'the unknown code must be kept exactly as printed';
       if (bul.location.room !== '1010') return 'the room must survive even though the building is unknown';
       const other = rev.locations.filter((l) => l.status === 'resolved');
       if (other.length !== 2) return `the other ${2 - other.length} building(s) should still resolve normally`;
       const unknown = rev.locations.find((l) => l.status === 'unknown');
-      if (!unknown || unknown.code !== 'WCB') return 'WCB should be reported as unknown';
+      if (!unknown || unknown.code !== 'UCB') return 'UCB should be reported as unknown';
       return true;
     }
   },
@@ -369,7 +370,7 @@ const EXPECTATIONS = {
   // that the fixture is a legitimate schedule to ask those questions of.
   '08-back-to-back-walks': {
     input: null,
-    meetings: 8,
+    meetings: 9,
     unresolvedLocations: 0,
     blockingQuestions: 0,
     collisions: {},
@@ -379,10 +380,12 @@ const EXPECTATIONS = {
     // No input file at all: the source was an image. Nothing to checksum.
     input: null,
     meetings: 5,
-    unresolvedLocations: 4,
+    // Was 4 until step 6 shipped WCB. This fixture is the real schedule that
+    // motivated closing that gap, so the number going to zero IS the deliverable.
+    unresolvedLocations: 0,
     blockingQuestions: 0,  // THE POINT OF THIS FIXTURE
     collisions: {},
-    warningCodes: ['unknown-building-code', 'unknown-building-code', 'unknown-building-code', 'unknown-building-code'],
+    warningCodes: [],
     extra: (doc, rev) => {
       // This exact input produced FOUR blocking questions under the 0.3.0 skill,
       // before the student saw anything at all. Every one of them is now derived
@@ -726,23 +729,58 @@ const FX07 = path.join(FIXTURES, '07-screenshot-no-sections', 'expected.json');
 const FX08 = path.join(FIXTURES, '08-back-to-back-walks', 'expected.json');
 const FX05 = path.join(FIXTURES, '05-time-conflict', 'expected.json');
 
-check('WCB: EVERY leg of the step-4 screenshot schedule refuses', () => {
+/* ------------------------------------------------------------------ *
+ * WCB. Until step 6 these three assertions read the other way round: every leg
+ * of the real screenshot schedule refused, because the Wertheim Center could not
+ * be given a coordinate. Shipping it is what this reversal records, and the
+ * fixture is unchanged apart from the warnings a fresh import would no longer
+ * raise. Fixture 04 now carries the missing-building case instead.
+ * ------------------------------------------------------------------ */
+check('WCB: every leg of the real screenshot schedule now ANSWERS', () => {
   const { json } = feasibility(['--schedule', FX07]);
   if (!json.legs.length) return 'no legs were found at all; the fixture no longer exercises this';
-  const wrong = json.legs.filter((l) => l.verdict !== 'refuse' || l.reason !== 'building-not-in-data');
-  return wrong.length
-    ? `${wrong.length} leg(s) did not refuse: ${wrong.map((l) => `${l.earlier}->${l.later} ${l.verdict}`).join('; ')}`
+  const refused = json.legs.filter((l) => l.verdict === 'refuse');
+  return refused.length
+    ? `${refused.length} leg(s) still refuse: ${refused.map((l) => `${l.earlier}->${l.later} ${l.reason}`).join('; ')}`
     : true;
 });
 
-check('WCB: no walking number leaks out of a refusal', () => {
+check('WCB: a same-building leg routes, and a cross-campus one is honestly long', () => {
   const { json } = feasibility(['--schedule', FX07]);
+  const same = json.legs.find((l) => l.walk?.sameBuilding);
+  if (!same) return 'no WCB-to-WCB leg was routed';
+  const across = json.legs.find((l) => l.walk && !l.walk.sameBuilding);
+  if (!across) return 'the WCB-to-PDB leg was not routed';
+  if (across.verdict !== 'no') return `WCB to PDB in 30 minutes should not fit; got ${across.verdict}`;
+  return across.walk.path[0] === 'WCB' && across.walk.path.at(-1) === 'PDB'
+    ? true
+    : `unexpected path ${across.walk.path.join('>')}`;
+});
+
+check('WCB routes leave through LAW, its only neighbour inside the 600 m cap', () => {
+  // WCB is a leaf: nothing else ships within MAX_EDGE_M of it. Worth pinning,
+  // because if a future building lands nearby the graph around WCB changes shape
+  // and the durations move with it.
+  const r = route('WCB', 'HCB');
+  if (!r.ok) return `WCB did not route: ${r.reason}`;
+  return r.path[1] === 'LAW' ? true : `first hop was ${r.path[1]}, expected LAW`;
+});
+
+check('UCB: a leg touching a building outside the shipped data still refuses', () => {
+  const { json } = feasibility(['--schedule', path.join(FIXTURES, '04-unknown-building', 'expected.json')]);
+  if (!json.legs.length) return 'fixture 04 produced no legs, so it no longer covers this';
+  const wrong = json.legs.filter((l) => l.verdict !== 'refuse' || l.reason !== 'building-not-in-data');
+  return wrong.length ? `${wrong.length} leg(s) did not refuse: ${wrong.map((l) => l.verdict).join(', ')}` : true;
+});
+
+check('UCB: no walking number leaks out of a refusal', () => {
+  const { json } = feasibility(['--schedule', path.join(FIXTURES, '04-unknown-building', 'expected.json')]);
   const leaked = json.legs.filter((l) => l.walk || /\d+\s*min/.test(l.say));
   return leaked.length ? `a refusal carried a duration: ${JSON.stringify(leaked[0].say).slice(0, 120)}` : true;
 });
 
-check('WCB: a run where nothing was answerable exits 3, not 0', () => {
-  const r = run(CANIMAKEIT, ['--schedule', FX07, '--json']);
+check('a run where nothing was answerable exits 3, not 0', () => {
+  const r = run(CANIMAKEIT, ['--schedule', path.join(FIXTURES, '04-unknown-building', 'expected.json'), '--json']);
   return r.status === 3 ? true : `exited ${r.status}; a caller checking only for zero would read total refusal as success`;
 });
 
@@ -917,7 +955,7 @@ check('a date with no shipped calendar REFUSES rather than assuming it is clear'
 });
 
 check('a building outside the shipped data REFUSES', () => {
-  const r = park(['--building', 'WCB', '--date', '2026-09-03']);
+  const r = park(['--building', 'UCB', '--date', '2026-09-03']);
   return r.status === 3 && r.json.kind === 'building-not-in-data' ? true : `${r.status}/${r.json.kind}`;
 });
 
@@ -1060,6 +1098,252 @@ check('the pack stamp records the plugin version and whether the tree was dirty'
   (typeof packInfo.pluginVersion === 'string' && typeof packInfo.gitDirty === 'boolean' && packInfo.treeHash.length === 64)
     ? true
     : 'the stamp cannot be used to tell which copy is installed');
+
+/* ================================================================== *
+ * 9. GRAPH -- the shipped walk graph is reproducible from the centroids
+ *
+ * data/README.md says the graph is a pure function of the shipped centroids and
+ * that campusZone is recomputed whenever the building set changes. Steps 2 and 3
+ * did that by hand. If the generator and the shipped file ever disagree, one of
+ * them is lying about how this data was made, and the next person to add a
+ * building will silently rewrite 85 sourced records.
+ * ================================================================== */
+console.log('\nGRAPH: walk-edges.json is reproducible, and WCB is sourced');
+
+const BUILDINGS = readJson(path.join(REPO, 'plugins', 'fsu-schedule', 'data', 'buildings.json'));
+
+check('build-walk-graph.mjs reproduces the shipped graph exactly', () => {
+  const r = run(path.join(REPO, 'tools', 'build-walk-graph.mjs'), ['--check']);
+  return r.status === 0 ? true : `--check failed:\n${r.stdout.split('\n').slice(-12).join('\n')}`;
+});
+
+check('every campusZone matches what the documented rule computes', () => {
+  const { zones } = computeZones(BUILDINGS);
+  const drift = BUILDINGS.filter((b) => b.campusZone !== zones.get(b.code));
+  return drift.length
+    ? `${drift.map((b) => `${b.code} is ${b.campusZone}, rule says ${zones.get(b.code)}`).join('; ')}`
+    : true;
+});
+
+check('WCB ships, with the coordinate the three geocodes agree on', () => {
+  const wcb = BUILDINGS.find((b) => b.code === 'WCB');
+  if (!wcb) return 'WCB is not in buildings.json';
+  // The mean of the US Census, Esri and OSM address points. Pinned because it is
+  // a computed value: if someone edits it by hand, the provenance note stops
+  // describing the number that is actually shipped.
+  const mean = { lat: (30.435556684975 + 30.436000647226 + 30.4357406) / 3, lon: (-84.285716372278 + -84.286678500607 + -84.2862174) / 3 };
+  const dLat = Math.abs(wcb.centroid.lat - mean.lat);
+  const dLon = Math.abs(wcb.centroid.lon - mean.lon);
+  if (dLat > 1e-6 || dLon > 1e-6) return `centroid ${wcb.centroid.lat}/${wcb.centroid.lon} is not the mean of the three sourced geocodes`;
+  return true;
+});
+
+check('WCB is marked low confidence, and says why in its provenance', () => {
+  const wcb = BUILDINGS.find((b) => b.code === 'WCB');
+  if (wcb.provenance.confidence !== 'low') return `confidence is ${wcb.provenance.confidence}; no polygon exists and three geocodes disagree by 100 m`;
+  const note = wcb.provenance.note;
+  for (const must of ['Census', 'Esri', 'OpenStreetMap', '4540']) {
+    if (!note.includes(must)) return `the provenance note does not name ${must}, so the derivation cannot be re-checked`;
+  }
+  return true;
+});
+
+check('WCB carries the 24 classrooms FSU\'s room inventory lists', () => {
+  const wcb = BUILDINGS.find((b) => b.code === 'WCB');
+  const rooms = (wcb.notes.match(/\b(G00\d\w?|G1\d\d|G600|\d{4})\b/g) ?? []);
+  if (!wcb.notes.includes('24 rooms of type "(110) CLASSROOM"')) return 'the classroom count is not recorded in notes';
+  if (!rooms.includes('2703') || !rooms.includes('1701')) return 'the room list does not include rooms the real schedule uses';
+  return eq(wcb.typicalClassroomFloors, [0, 1, 2, 3], 'classroom floors');
+});
+
+check('adding WCB did not silently orphan it: it reaches the rest of the graph', () => {
+  for (const to of ['HCB', 'PDB', 'BEL', 'LIB']) {
+    const r = route('WCB', to);
+    if (!r.ok) return `WCB does not reach ${to}: ${r.reason}`;
+  }
+  return true;
+});
+
+/* ================================================================== *
+ * 10. QUERY SKILLS -- whats-next, check-conflicts, deadlines
+ * ================================================================== */
+console.log('\nQUERY SKILLS: no schedule, dead days, three outcomes, no invented exams');
+
+const WHATSNEXT = path.join(SCRIPTS, 'whats-next.mjs');
+const CONFLICTS = path.join(SCRIPTS, 'check-conflicts.mjs');
+const DEADLINES = path.join(SCRIPTS, 'deadlines.mjs');
+const jsonRun = (script, args) => {
+  const r = run(script, [...args, '--json']);
+  return { ...r, json: JSON.parse(r.stdout) };
+};
+const emptyDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fsu-empty-'));
+
+/* --- no schedule imported, the most likely caller state --- */
+for (const [name, script] of [['whats-next', WHATSNEXT], ['check-conflicts', CONFLICTS]]) {
+  check(`${name}: no schedule imported exits 4, not 0`, () => {
+    const r = jsonRun(script, ['--data-dir', emptyDir]);
+    if (r.status !== 4) return `exited ${r.status}; "nothing imported" must not look like "nothing scheduled"`;
+    return r.json.status === 'no-schedule' ? true : `status was ${r.json.status}`;
+  });
+  check(`${name}: the no-schedule message sends the student to the importer`, () => {
+    const r = jsonRun(script, ['--data-dir', emptyDir]);
+    if (/no classes|nothing scheduled|free day/i.test(r.json.say)) {
+      return 'it reads as an empty day, which is the exact confusion exit 4 exists to prevent';
+    }
+    return /import/i.test(r.json.say) ? true : 'it does not tell them to import anything';
+  });
+}
+
+/* --- the real schedule: all courses were location-unresolved before step 6 --- */
+check('whats-next lists a location-unresolved course INLINE rather than omitting it', () => {
+  const r = jsonRun(WHATSNEXT, ['--schedule', path.join(FIXTURES, '04-unknown-building', 'expected.json'), '--now', '2026-09-07T07:00']);
+  const monday = r.json.week.find((d) => d.weekday === 'monday' && d.meetings.length);
+  const all = r.json.week.flatMap((d) => d.meetings);
+  const bul = all.find((m) => m.courseCode === 'BUL3310');
+  if (!bul) return 'the course with the unshipped building vanished from the week -- a silently missing class is the worst failure here';
+  if (bul.locationStatus !== 'unknown-building') return `locationStatus was ${bul.locationStatus}`;
+  if (!bul.startTime) return 'the time was dropped along with the place; the time is still right';
+  void monday;
+  return true;
+});
+
+/* --- the four dead-day cases --- */
+check('whats-next at 11pm Friday looks forward to the next real class day', () => {
+  const r = jsonRun(WHATSNEXT, ['--schedule', FX07, '--now', '2026-09-04T23:00']);
+  if (!r.json.next.found) return 'it found no next class at all, mid-term';
+  if (r.json.next.date <= '2026-09-04') return `it returned ${r.json.next.date}, which is not in the future`;
+  if (r.json.today.meetings.length) return 'it listed classes that had already finished';
+  return r.json.next.date === '2026-09-08' ? true : `expected the following Tuesday, got ${r.json.next.date}`;
+});
+
+check('whats-next during finals returns NO meetings and points at the exam grid', () => {
+  const r = jsonRun(WHATSNEXT, ['--schedule', FX07, '--now', '2026-12-08T09:00']);
+  if (r.json.today.meetings.length) return 'it expanded the weekly pattern across finals week, which is simply wrong';
+  if (r.json.today.status.kind !== 'finals') return `dayStatus said ${r.json.today.status.kind}`;
+  if (r.json.next.found) return 'it invented a next class during finals week';
+  return r.json.next.reason === 'finals' ? true : `reason was ${r.json.next.reason}`;
+});
+
+check('whats-next during winter break invents nothing and does not wrap around', () => {
+  const r = jsonRun(WHATSNEXT, ['--schedule', FX07, '--now', '2027-01-05T09:00']);
+  if (r.json.next.found) return `it produced a next class on ${r.json.next.date}, outside any shipped term`;
+  if (r.json.today.meetings.length) return 'it listed classes on a date no calendar covers';
+  return r.json.next.reason === 'term-over' ? true : `reason was ${r.json.next.reason}`;
+});
+
+check('whats-next on a weekend names the reason rather than going blank', () => {
+  const r = jsonRun(WHATSNEXT, ['--schedule', FX07, '--now', '2026-09-05T10:00']);
+  if (r.json.today.status.kind !== 'none' || !r.json.today.status.weekend) return 'Saturday was not identified as a weekend';
+  return r.json.next.found ? true : 'it failed to look past the weekend to Monday';
+});
+
+check('whats-next on Homecoming Friday reports a PARTIAL day and cancels the afternoon', () => {
+  const r = jsonRun(WHATSNEXT, ['--schedule', FX08, '--now', '2026-11-20T09:00']);
+  if (r.json.today.status.kind !== 'partial') return `dayStatus said ${r.json.today.status.kind}; the record's classesCancelled is false and alone would read as normal`;
+  const morning = r.json.today.meetings.map((m) => m.courseCode);
+  const cancelled = r.json.today.suppressed.map((m) => m.courseCode);
+  if (!morning.includes('SPC2608')) return 'the 10am class should still meet';
+  if (!cancelled.includes('ECO2013')) return 'the 2pm class is after the noon cutoff and must be reported as cancelled';
+  return true;
+});
+
+check('the clock is America/New_York regardless of the machine', () => {
+  // An injected --now is a statement about campus, not about the host. If this
+  // ever depends on TZ, a student travelling gets a different schedule.
+  const args = [WHATSNEXT, '--schedule', FX07, '--now', '2026-09-03T09:30', '--json'];
+  const a = execFileSync(process.execPath, args, { encoding: 'utf8', env: { ...process.env, TZ: 'UTC' } });
+  const b = execFileSync(process.execPath, args, { encoding: 'utf8', env: { ...process.env, TZ: 'Pacific/Auckland' } });
+  return a === b ? true : 'the answer changed with the host timezone';
+});
+
+/* --- conflicts: all three outcomes must be reachable --- */
+check('check-conflicts finds exactly one conflict and one CANNOT TELL on fixture 05', () => {
+  const r = jsonRun(CONFLICTS, ['--schedule', FX05]);
+  return eq(r.json.tally, { conflict: 1, 'no-conflict': 0, 'cannot-determine': 1 }, 'verdict tally');
+});
+
+check('check-conflicts NEVER reports no-conflict while sessions are unpublished', () => {
+  const r = jsonRun(CONFLICTS, ['--schedule', FX05]);
+  if (r.json.sessionsStatus !== 'not-published') return `sessionsStatus was ${r.json.sessionsStatus}`;
+  const bad = r.json.collisions.filter((c) => c.verdict === 'no-conflict');
+  return bad.length ? 'a pair was ruled out by dates that do not exist' : true;
+});
+
+check('the no-conflict verdict IS reachable, given real dates', () => {
+  // Otherwise "three outcomes" is untested for the middle one and could have
+  // rotted into two without anything noticing.
+  const doc = readJson(FX05);
+  const [a, b] = doc.meetings.filter((m) => m.partOfTerm && m.partOfTerm !== 'full-term');
+  a.partOfTerm = 'custom';
+  a.dateRange = { firstMeetingDate: '2026-08-24', lastMeetingDate: '2026-10-09' };
+  b.partOfTerm = 'custom';
+  b.dateRange = { firstMeetingDate: '2026-10-12', lastMeetingDate: '2026-12-04' };
+  const file = path.join(os.tmpdir(), `fsu-halves-${process.pid}.json`);
+  fs.writeFileSync(file, JSON.stringify(doc));
+  try {
+    const r = jsonRun(CONFLICTS, ['--schedule', file]);
+    if (r.json.tally['cannot-determine'] !== 0) return 'custom dateRanges did not resolve';
+    return r.json.tally['no-conflict'] === 1 ? true : `no-conflict count was ${r.json.tally['no-conflict']}`;
+  } finally { fs.rmSync(file, { force: true }); }
+});
+
+check('check-conflicts names the courses whose term dates cannot be placed', () => {
+  const r = jsonRun(CONFLICTS, ['--schedule', FX05]);
+  const codes = r.json.unresolvablePartOfTerm.map((m) => m.courseCode).sort();
+  return eq(codes, ['PHI2100', 'REL3170'], 'unresolvable courses');
+});
+
+/* --- deadlines --- */
+check('deadlines works with NO schedule imported', () => {
+  const r = jsonRun(DEADLINES, ['--data-dir', emptyDir, '--term', '2026-fall', '--now', '2026-10-01']);
+  if (r.status !== 0) return `exited ${r.status}; deadlines belong to the term, not the student`;
+  return r.json.deadlines.length >= 12 ? true : `only ${r.json.deadlines.length} deadlines`;
+});
+
+check('deadlines REFUSES a term with no shipped calendar', () => {
+  const r = jsonRun(DEADLINES, ['--term', '2027-spring', '--now', '2027-02-01']);
+  if (r.status !== 3) return `exited ${r.status}; inventing a drop deadline is how a student misses one`;
+  return r.json.kind === 'no-calendar' ? true : `kind was ${r.json.kind}`;
+});
+
+check('deadlines never produces a per-course exam time', () => {
+  const r = jsonRun(DEADLINES, ['--term', '2026-fall', '--now', '2026-12-01']);
+  if (r.json.finals.examGridAvailable !== false) return 'it claims to have an exam grid';
+  if (r.json.finals.weeklyPatternApplies !== false) return 'it claims the weekly pattern applies during finals';
+  if (!r.json.finals.url) return 'no Registrar link to send the student to';
+  const text = run(DEADLINES, ['--term', '2026-fall', '--now', '2026-12-01']).stdout;
+  return /NO EXAM GRID/i.test(text) ? true : 'the text does not say the grid is absent';
+});
+
+check('deadlines surfaces Homecoming Friday as a PARTIAL day', () => {
+  const r = jsonRun(DEADLINES, ['--term', '2026-fall', '--now', '2026-11-01']);
+  const hc = r.json.nonClassDays.find((p) => p.id === 'homecoming-friday');
+  if (!hc) return 'Homecoming is not in the calendar';
+  if (hc.classesCancelled !== false) return 'the shipped record should still say classesCancelled false';
+  if (!hc.partial) return 'it was not flagged as partial, so it reads as an ordinary day';
+  return hc.cancelledFromTime === '12:00' ? true : `cancelledFromTime is ${hc.cancelledFromTime}`;
+});
+
+check('deadlines warns that every date is a FULL-TERM date, and names half-term courses', () => {
+  const r = jsonRun(DEADLINES, ['--schedule', FX05, '--now', '2026-10-01']);
+  if (r.json.allDeadlinesAreFullTerm !== true) return 'the full-term caveat is not asserted';
+  const codes = r.json.halfTermCourses.map((m) => m.courseCode).sort();
+  return eq(codes, ['PHI2100', 'REL3170'], 'half-term courses named');
+});
+
+check('deadlines quotes the Registrar rather than paraphrasing', () => {
+  const r = jsonRun(DEADLINES, ['--term', '2026-fall', '--now', '2026-10-01']);
+  const drop = r.json.deadlines.find((d) => d.id === 'drop-without-grade');
+  const withdraw = r.json.deadlines.find((d) => d.id === 'withdraw-without-grade');
+  // Same date, materially different meanings. If either description ever gets
+  // shortened, the distinction disappears and a student drops the wrong thing.
+  if (drop.date !== withdraw.date) return 'these two no longer share a date, so the trap has moved';
+  if (!/drop a course without receiving a grade/.test(drop.description)) return 'the drop wording was paraphrased away';
+  if (!/withdraw from school without receiving a grade/.test(withdraw.description)) return 'the withdrawal wording was paraphrased away';
+  return true;
+});
+
+fs.rmSync(emptyDir, { recursive: true, force: true });
 
 /* ================================================================== */
 console.log(`\n${passed} checks passed, ${failures.length} failed.`);

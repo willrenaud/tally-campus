@@ -25,10 +25,10 @@
       "startTime": "09:30",
       "endTime": "10:45",
       "location": {
-        "buildingCode": "WCB",
+        "buildingCode": "UCB",
         "room": "1010",
         "floor": 1,
-        "buildingCodeRaw": "WCB 1010"
+        "buildingCodeRaw": "UCB 1010"
       }
     },
     {
@@ -91,13 +91,13 @@
     "sourceLabel": "Student Central detailed schedule, pasted as text",
     "importedAt": "2026-08-30T14:00:00-04:00",
     "importerVersion": "0.4.0",
-    "sourceChecksum": "7b1128e2efb4a5af1854c406236595f0eb1852c4955a5decce17f6a276be23ea",
+    "sourceChecksum": "6704f155ed0de683c70d82b2c58681674279aa6a2240dea5285c51a22c415a67",
     "warnings": [
       {
         "code": "unknown-building-code",
-        "message": "BUL3310 0005 meets in WCB 1010. WCB (the Herbert Wertheim Center for Business Excellence) is not in this plugin's campus data, so walking times, between-class feasibility and parking answers are unavailable for this course. The days, time and room are stored exactly as printed and the rest of the schedule is unaffected. See DATA-GAPS.md section 4.",
+        "message": "BUL3310 0005 meets in UCB 1010. UCB (University Center B) is not in this plugin's campus data, so walking times, between-class feasibility and parking answers are unavailable for this course. The days, time and room are stored exactly as printed and the rest of the schedule is unaffected. See DATA-GAPS.md section 4.",
         "meetingId": "bul3310-0005-lecture-mowe",
-        "rawValue": "WCB 1010"
+        "rawValue": "UCB 1010"
       },
       {
         "code": "missing-instructor",

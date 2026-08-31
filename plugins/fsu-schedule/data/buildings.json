@@ -1425,6 +1425,61 @@
     }
   },
   {
+    "code": "WCB",
+    "name": "Herbert Wertheim Center for Business Excellence",
+    "aliases": [
+      "wcb",
+      "the wcb",
+      "herbert wertheim center for business excellence",
+      "wertheim center for business excellence",
+      "wertheim center",
+      "the wertheim center",
+      "wertheim",
+      "the wertheim",
+      "legacy hall",
+      "business building"
+    ],
+    "campusZone": "east-campus",
+    "centroid": {
+      "lat": 30.435766,
+      "lon": -84.2862041
+    },
+    "entrances": [
+      {
+        "id": "centroid-stand-in",
+        "label": "Herbert Wertheim Center for Business Excellence — geocoded address point, exact doors not surveyed",
+        "point": {
+          "lat": 30.435766,
+          "lon": -84.2862041
+        },
+        "entranceType": "main",
+        "accessNote": "NOT A REAL DOOR, AND WEAKER THAN THE STAND-INS IN EVERY OTHER RECORD. For the other 32 buildings this point is a polygon centroid; here no building polygon exists in any source, so it is the mean of three independent geocodes of FSU’s published street address. FSU does publish where the doors are, in prose: the southeast corner entrance is at Gaines St. and MLK Blvd. and opens onto the First Floor, the Gaines St. entrance runs through the Peter & Jennifer Collins Colonnade and also opens onto the First Floor, and the west side entrance opens onto the Ground Floor. None of those has a coordinate, so none can be routed to. Do not present this as \"leave by the southeast doors\".",
+        "confidence": "unknown"
+      }
+    ],
+    "floorCount": 5,
+    "typicalClassroomFloors": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "notes": "FSU building number 4540, FSU space zone \"ZONE D\", street address 402 W GAINES ST. FSU’s room inventory lists 24 rooms of type \"(110) CLASSROOM\" — G001, G001B, G106, G112, G600, 1103, 1104, 1607, 1701, 1702, 1703, 2600, 2601, 2604, 2701, 2702, 2703, 2704, 2705, 2706, 2800, 3600, 3604 and 3730 — which is the largest classroom count of any building in this file and the reason it was the single most valuable gap to close. Opened 6 January 2026; 218,392 sq ft. TWO FSU SOURCES DISAGREE ABOUT THE FLOOR COUNT AND THE DISAGREEMENT IS RECORDED RATHER THAN RESOLVED: the building’s own FAQ says it rises \"five stories from the Ground Floor to the 4th Floor\", while the room-lookup inventory carries floor codes 00 through 05. floorCount is set to 5 from the FAQ, which is a statement about occupiable stories; the 05 code is most likely mechanical or roof plant, but no fetched page says so. Formerly named Legacy Hall, which is why \"legacy hall\" is an alias and why legacyhall.business.fsu.edu still resolves.",
+    "provenance": {
+      "sourceUrl": "https://forms.pdc.fsu.edu/portal/building/?bldg=4540",
+      "retrievedOn": "2026-08-31",
+      "method": "computed",
+      "confidence": "low",
+      "note": "Identity, official name, FSU building number 4540, space zone and street address read off the FSU Building Information Portal. Floor count and entrance descriptions from https://wertheimcenter.fsu.edu/faqs; classroom inventory from https://forms.pdc.fsu.edu/portal/room-lookup/?bldg=4540. THE COORDINATE IS THE WEAKEST IN THIS FILE AND IS WHY confidence IS \"low\". No FSU page publishes coordinates, and unlike every other record there is NO OpenStreetMap building polygon to join to: an Overpass query for building ways within 250 m of the address returns 45 buildings, none of them on this block, because the construction is too recent to have been mapped. The shipped point is therefore the arithmetic mean of THREE INDEPENDENT GEOCODES of FSU’s published address 402 W Gaines St: the US Census Bureau geocoder (Public_AR_Current, TIGER line 82851215, side R) at 30.435556684975/-84.285716372278; the Esri World Geocoding Service at 30.436000647226/-84.286678500607, returned as a PointAddress with score 100; and OpenStreetMap node 8381890349, a place=house address node, at 30.4357406/-84.2862174. Those three disagree by up to 104.6 m, which is comparable to the building’s own footprint, and the mean sits 3.1 m from the OSM node and 52 m from each of the other two. TWO INDEPENDENT CROSS-CHECKS CONFIRM THE BLOCK. First, FSU’s FAQ places the southeast corner entrance at the junction of Gaines St and MLK Blvd; OpenStreetMap puts that junction (node 98446167) at 30.4354658/-84.2856235, which is 64.9 m southeast of the shipped point — the right direction and the right magnitude for a corner of a building of this size. Second, FSU News places the building \"just south of the Donald L. Tucker Civic Center\"; OSM way 168363245 puts the Civic Center at 30.4377202/-84.2866811, which is 222.1 m north of the shipped point. These also RESOLVE the ambiguity recorded in DATA-GAPS.md section 4: a Nominatim search for the street address returns two candidates about 1.5 km apart, and the western one (30.4355039/-84.3019140) is ruled out by all four of the above. What this coordinate is NOT: a surveyed position, a building polygon centroid, or a door. It is an address point, and a walking estimate through it inherits an error of the order of 50 m at this end on top of everything already wrong with the walk model."
+    },
+    "source": {
+      "url": "https://forms.pdc.fsu.edu/portal/building/?bldg=4540",
+      "label": "FSU Planning, Design & Construction — Building Information Portal",
+      "retrievedAt": "2026-08-31T12:00:00-04:00",
+      "confidence": "estimated"
+    }
+  },
+  {
     "code": "WJB",
     "name": "Johnston Building",
     "aliases": [

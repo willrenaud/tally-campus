@@ -15,8 +15,13 @@ inputs are not campus facts.
 
 The **building codes** are the exception and are deliberately real: they have to be,
 because the whole point of fixture 04 is what happens when a code is not in
-`buildings.json`. `HCB`, `BEL`, `LOV`, `DIF`, `MCH`, `LIB`, `WMS` and `KRB` ship;
-`WCB` does not, and [`DATA-GAPS.md`](../../DATA-GAPS.md) §4 says why.
+`buildings.json`. `HCB`, `BEL`, `LOV`, `DIF`, `MCH`, `LIB`, `WMS`, `KRB`, `PDB` and — since 0.6.0 — `WCB` all ship;
+`UCB` does not, and [`DATA-GAPS.md`](../../DATA-GAPS.md) §4 says why.
+
+**Fixture 04 was repointed from `WCB` to `UCB` when `WCB` shipped.** Its whole purpose is the
+unknown-building path, so it needs a code that genuinely is not in the data. If `UCB` is ever added,
+repoint it again rather than deleting the fixture: that path must always have a live example, and it
+is the one an unlucky student hits most.
 
 ## Layout
 
@@ -44,10 +49,10 @@ because the whole point of fixture 04 is what happens when a code is not in
 | 01 | Clean Student Central paste | None. The baseline: if this one is wrong, nothing else means anything. |
 | 02 | Wrapped lines, header repeated mid-paste | Field values continue on the next line, and the column header reappears where the source paginated. Both look like data. |
 | 03 | Online asynchronous course, plus an in-person course with a TBA room | Two different kinds of "no room" that must not be conflated. |
-| 04 | A course in `WCB`, which does not ship | **Must import successfully.** Failing the whole schedule over one building is the bug. |
+| 04 | A course in `UCB`, which does not ship | **Must import successfully.** Failing the whole schedule over one building is the bug. Also the feasibility fixture where **every leg refuses**. |
 | 05 | Two full-term courses genuinely colliding, and two half-term courses that only appear to | One is a `CONFLICT`, the other is `CANNOT TELL`, and reporting the second as "no conflict" is the failure. |
 | 06 | `.ics` export | Folded lines, escaped commas, `BYDAY`, an `EXDATE`, and an event with no `LOCATION`. |
-| 07 | A screenshot: no sections, no titles, four of five rooms in `WCB` | **Must ask nothing.** Under 0.3.0 this input produced four blocking questions before the student saw a thing. Doubles as the feasibility fixture where **every leg refuses**. |
+| 07 | A screenshot: no sections, no titles, four of five rooms in `WCB` | **Must ask nothing.** Under 0.3.0 this input produced four blocking questions before the student saw a thing. Since 0.6.0 it doubles as the fixture proving **every leg now answers**, because `WCB` ships. |
 | 08 | Four back-to-back pairs, one per rung of the feasibility ladder | Not an importer fixture. Its gaps are chosen so that one lands on `comfortable`, one on `tight`, one on `no`, and one refuses for an online origin. |
 
 ## Fixture 08 is a query fixture, not an import one
@@ -65,3 +70,10 @@ down what `can-i-make-it` does, and its gaps are not arbitrary:
 If a change to `walk-edges.json` moves those durations, the Tuesday row stops
 testing what it exists to test — the assertion checks the inequality, not just the
 verdict, so it will fail loudly rather than quietly passing for the wrong reason.
+
+**0.6.0 added a ninth meeting, `ECO2013` on Friday at 14:00 in `HCB`.** It exists for
+`whats-next` rather than for feasibility: Homecoming Friday cancels classes from
+12:00, so this is the meeting that must be reported as **CANCELLED** while the
+09:00 and 10:00 Friday classes still meet. Without an afternoon class on a Friday
+the partial-day path has nothing to suppress and the test cannot tell a working
+implementation from one that ignores `cancelledFromTime` entirely.

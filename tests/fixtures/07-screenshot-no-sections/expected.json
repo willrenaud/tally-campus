@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "0.4.0",
+  "schemaVersion": "0.6.0",
   "termCode": "2026-fall",
   "meetings": [
     {
@@ -128,33 +128,8 @@
   "import": {
     "sourceFormat": "screenshot-ocr",
     "sourceLabel": "Weekly schedule grid, screenshot pasted into the conversation",
-    "importedAt": "2026-08-31T12:15:00-04:00",
-    "importerVersion": "0.4.0",
-    "warnings": [
-      {
-        "code": "unknown-building-code",
-        "message": "WCB is not in the shipped campus data, so walking times, between-class feasibility and parking answers are unavailable for ISM3541. Days, times and the room number are stored exactly as printed.",
-        "meetingId": "ism3541-lecture-th",
-        "rawValue": "WCB"
-      },
-      {
-        "code": "unknown-building-code",
-        "message": "WCB is not in the shipped campus data, so walking times, between-class feasibility and parking answers are unavailable for FIN4424. Days, times and the room number are stored exactly as printed.",
-        "meetingId": "fin4424-lecture-tuth",
-        "rawValue": "WCB"
-      },
-      {
-        "code": "unknown-building-code",
-        "message": "WCB is not in the shipped campus data, so walking times, between-class feasibility and parking answers are unavailable for MAN4720. Days, times and the room number are stored exactly as printed.",
-        "meetingId": "man4720-lecture-mowe",
-        "rawValue": "WCB"
-      },
-      {
-        "code": "unknown-building-code",
-        "message": "WCB is not in the shipped campus data, so walking times, between-class feasibility and parking answers are unavailable for FIN4453. Days, times and the room number are stored exactly as printed.",
-        "meetingId": "fin4453-lecture-tuth",
-        "rawValue": "WCB"
-      }
-    ]
+    "importedAt": "2026-08-31T18:40:00-04:00",
+    "importerVersion": "0.6.0",
+    "warnings": []
   }
 }

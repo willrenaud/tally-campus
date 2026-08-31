@@ -119,7 +119,8 @@
         "type": "no-class-day",
         "startDate": "2026-11-20",
         "endDate": "2026-11-20",
-        "classesCancelled": false
+        "classesCancelled": false,
+        "cancelledFromTime": "12:00"
       },
       {
         "id": "thanksgiving",

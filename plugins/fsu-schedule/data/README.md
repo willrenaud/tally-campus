@@ -14,7 +14,7 @@ document, a student's own schedule, never lives here — it is written to
 > are known to be wrong, and the required behaviour is to **refuse to answer**, not to answer with a
 > caveat. See [The parking rule model](#the-parking-rule-model) below.
 
-Collected 2026-08-27. Everything missing, and why, is in
+Collected 2026-08-27, with later passes on 2026-08-28 and 2026-08-31. Everything missing, and why, is in
 [`DATA-GAPS.md`](../../../DATA-GAPS.md) at the repository root — read it before trusting any answer
 built on these files.
 
@@ -26,7 +26,7 @@ today, so that adding Spring 2027 is not a shape change.
 
 | File | Records | Schema | Holds |
 | --- | --- | --- | --- |
-| `buildings.json` | 32 | `building.schema.json` | The 28 main-campus buildings holding the most FSU-typed classrooms, plus Strozier Library and the New Student Union as destinations, plus B.K. Roberts Hall and the Dirac Science Library added in a later pass. Codes, official names, aliases, coordinates, floor counts, classroom floors. |
+| `buildings.json` | 33 | `building.schema.json` | The 28 main-campus buildings holding the most FSU-typed classrooms, plus Strozier Library and the New Student Union as destinations, plus B.K. Roberts Hall and the Dirac Science Library added in a later pass. Codes, official names, aliases, coordinates, floor counts, classroom floors. |
 | `walk-edges.json` | 85 | `walk-edge.schema.json` | A connected near-neighbour walk graph over those buildings. All durations computed, none measured. |
 | `parking-zones.json` | 6 | `parking-zone.schema.json` | FSU's six parking garages with time-windowed permit rules. No surface lots. |
 | `term-calendar.json` | 1 | `term-calendar.schema.json` | Fall 2026: term dates, deadlines, holidays, finals week, and the home-game dates on which parking cannot be answered. |
@@ -98,9 +98,14 @@ had been held back only because a coordinate could not be found for them at the 
 | `LAW` | B.K. Roberts Hall, College of Law | 9 | Found in OpenStreetMap by name rather than by address. It is 993 m from the mean centre and lands in `east-campus`, not the academic core. |
 | `DSL` | Dirac Science Library | 3 | Found by name. Its coordinate is a point-of-interest node *inside* the building rather than a polygon centroid — the only such coordinate in this file. |
 
-The 32 shipped buildings hold 273 of the 421 classrooms FSU lists across its main-campus space
-zones. The largest single omission is still `WCB`, the Wertheim Center for Business Excellence, at
-24 classrooms; see `DATA-GAPS.md` §4.
+A third pass on **2026-08-31** added `WCB`, the Herbert Wertheim Center for Business Excellence —
+at 24 classrooms the largest classroom count of any building in the file, and previously the largest
+single omission. It is the only record whose coordinate comes from **address geocoding rather than a
+polygon join**, because OpenStreetMap still has nothing on that block; it ships `low` confidence and
+`DATA-GAPS.md` §3 carries the full derivation and both cross-checks.
+
+The 33 shipped buildings hold 297 of the 421 classrooms FSU lists across its main-campus space
+zones.
 
 Aliases are derived mechanically, not invented: the building code, the code prefixed with "the", the
 official name, the name with any parenthetical stripped, that name with a trailing generic noun
@@ -164,6 +169,31 @@ a neighbour out of some other building's nearest four. Adding `LAW` and `DSL` ad
 removed 4 (`lov-to-nsu`, `lov-to-stb`, `mch-to-scn`, `pdb-to-scn`, all displaced by `DSL`, which sits
 63 m from `MCH`). No bridge edge was needed; `LAW` reaches the rest of the graph through `DIF` at
 433 m, comfortably inside the 600 m cap.
+
+Adding `WCB` in the 2026-08-31 pass added one edge and removed one: `law-to-wcb` appeared and
+`krb-to-law` vanished, because `WCB` at 380 m pushed `KRB` out of `LAW`'s nearest four. The edge
+count is still 85 and the graph is still connected. **`WCB` is the only building with degree 1** —
+nothing else ships within 600 m of it — so every route in or out passes through `LAW` and is
+inflated by roughly 15–20% against a straight line. That is the one place in this dataset where the
+error runs pessimistic rather than optimistic; `DATA-GAPS.md` §6 has the figures.
+
+### Regenerating it: `tools/build-walk-graph.mjs`
+
+The algorithm above used to live only in this prose, and steps 2 and 3 applied it by hand. It is now
+a tool, and the tool has a **`--check` mode that regenerates the graph and diffs it against the
+shipped file**:
+
+```bash
+node tools/build-walk-graph.mjs --check    # reproduce and diff; writes nothing
+node tools/build-walk-graph.mjs --write    # regenerate walk-edges.json and every campusZone
+```
+
+`--check` must pass **before** `--write` is trusted, and `npm test` runs it. This matters more than
+it looks: a generator that merely produced plausible edges would silently rewrite 85 sourced records
+the first time anyone ran it. Getting it to reproduce the shipped file exactly also pinned down two
+details this document had not recorded — the path factor is applied to the **unrounded** haversine
+and rounded once, and the duration divides that same unrounded product rather than the rounded
+distance. Rounding in the other order moves 20 edges by 0.1 m and 3 durations by a whole second.
 
 ## The parking rule model
 

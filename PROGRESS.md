@@ -197,8 +197,175 @@ stops it being the tight case fails loudly instead of passing for the wrong reas
 
 Deliberately unchanged: no campus data was touched, so no new record needed
 sourcing. `partOfTerm` still has three outcomes and `cannot-determine` now carries
-a *conditional* answer rather than a bare shrug. An unknown building is still
-ordinary — it degrades one leg, never the query.
+
+## A note on the step numbering
+
+**The numbering in this file drifted, and this section is the correction.**
+
+Step 5 shipped `can-i-make-it` and `parking` and then wrote a "Step 6 starts here"
+section listing `check-conflicts` and `deadlines` as what remained. But step 5's own
+heading called itself *"the two consequential query skills"*, and the step 3 and 4
+sections had already promised **four** query skills — walking times, parking,
+conflicts, deadlines — plus a "what's next" view. So "step 6" was really the second
+half of a job step 5 had started and described as finished.
+
+What follows is that second half, plus `whats-next`, which had been specified in the
+step 4 wrap-up and then never built at all — it fell out of the list between steps
+and nothing caught it, because each step's plan was written by reading the previous
+step's closing section rather than the original spec.
+
+**The lesson, recorded because it will happen again:** a step's closing "what's
+next" section is a summary, not the specification. When it disagrees with what
+earlier steps promised, the earlier promise wins. This step is numbered 6 and does
+the work of the missing half of 5 and the whole of 6.
+
+---
+
+## Step 6 — WCB, and the three query skills that were skipped
+
+Plugin 0.6.0. The feature set is now complete: six skills.
+
+### Part A — `WCB` ships, and it was the highest-value item in the project
+
+Four of the five courses in the real schedule this project has been tested against
+are in the Herbert Wertheim Center for Business Excellence. Until now every one of
+them was location-unresolved, so `can-i-make-it` refused **every leg** of that
+schedule and exited 3, and `parking` refused outright. Any finance or management
+student hit this on almost every course they took. It is a 24-classroom building —
+the largest classroom count of any building now in the file.
+
+**Steps 2 and 3 failed on it because they searched OpenStreetMap**, and OSM still
+has nothing there: an Overpass query for `building` ways within 250 m of the address
+returns 45 elements and none is on that block. The construction is too recent.
+
+What worked was giving up on a polygon join and **geocoding FSU's published address
+through three independent services**, then cross-checking the answer against two FSU
+statements about what the building is next to:
+
+| Source | Coordinate |
+| --- | --- |
+| US Census Bureau geocoder (TIGER) | 30.435556684975, −84.285716372278 |
+| Esri World Geocoding Service (`PointAddress`, score 100) | 30.436000647226, −84.286678500607 |
+| OpenStreetMap node 8381890349 (`place=house`) | 30.4357406, −84.2862174 |
+
+Shipped value is their mean, **30.4357660, −84.2862041**. The two cross-checks:
+FSU's FAQ puts the southeast corner entrance at Gaines & MLK, and OSM puts that
+junction **64.9 m southeast** of the shipped point; FSU News puts the building "just
+south of the Donald L. Tucker Civic Center", and OSM puts the Civic Center **222.1 m
+north** of it. Both are the right direction and the right magnitude.
+
+Those also **resolved the ambiguity `DATA-GAPS.md` §4 had recorded**: Nominatim
+returns two `402 W Gaines St` candidates 1.5 km apart, and the western one is now
+ruled out by four independent lines of evidence.
+
+**It ships `low` confidence** and says why. The three geocodes disagree by up to
+104.6 m, which is comparable to the building's own footprint, and the result is an
+*address point* — not a surveyed position, not a polygon centroid, not a door.
+`low` means good enough to route with and not good enough to act on, which is
+exactly right.
+
+Also sourced in the same pass, all from pages actually fetched: FSU building number
+**4540**, official name, `ZONE D`, the **24 classroom numbers and their floors** from
+the public room-lookup service, and five floors from the building's own FAQ. Two FSU
+sources disagree about the floor count — the FAQ says "five stories from the Ground
+Floor to the 4th Floor", the room inventory carries floor codes `00`–`05` — and the
+disagreement is **recorded rather than resolved**, per the standing rule.
+
+The FSU Building Portal moved during this pass: `facilities.fsu.edu/space/buildings/`
+now 301-redirects to `forms.pdc.fsu.edu/portal`, and the room-lookup service behind
+it turns out to be **public, no login**.
+
+### `tools/build-walk-graph.mjs`, which had to exist first
+
+`data/README.md` says the walk graph is a pure function of the shipped centroids and
+that `campusZone` is recomputed whenever the building set changes. Steps 2 and 3 did
+that by hand, so there was no way to add a building without either trusting prose
+written months earlier or rewriting 85 sourced records on a guess.
+
+So the algorithm is now a tool with a **`--check` mode that regenerates the graph and
+diffs it against the shipped file**, and `--check` passing on the 32 existing
+buildings was the precondition for letting it write anything. Getting it to reproduce
+the file *exactly* pinned down two details the prose had never recorded: the path
+factor is applied to the **unrounded** haversine and rounded once, and the duration
+divides that same unrounded product rather than the rounded distance. Rounding in the
+other order moves 20 edges by 0.1 m and 3 durations by a whole second.
+
+Adding `WCB` then did exactly what that document warns a new building can do: it
+**displaced an existing edge**. `law-to-wcb` appeared and `krb-to-law` vanished,
+because `WCB` at 380 m pushed `KRB` out of `LAW`'s nearest four. Still 85 edges,
+still connected, no `campusZone` changed.
+
+**`WCB` is the only building with degree 1** — nothing else ships within the 600 m
+cap — so every route in or out detours through `LAW` and is inflated by roughly
+15–20%. That is the **one place in this dataset where the error runs pessimistic**.
+Left as it is: widening the cap for one building would rewrite the other 84 edges'
+basis, and being long is the safe direction.
+
+### Part B — `whats-next`, `check-conflicts`, `deadlines`
+
+Built on a new shared read layer, `lib/schedule.mjs`, which exists because four
+scripts were about to invent four answers to the same questions:
+
+- **An injectable America/New_York clock.** `resolveNow()` goes through `Intl`, so
+  daylight saving is handled rather than assumed, and `--now` injects a fixed moment.
+  A clock that cannot be injected cannot be tested: "what happens at 11pm on a
+  Friday" is only true for one hour a week. A test asserts the answer is identical
+  under `TZ=UTC` and `TZ=Pacific/Auckland`.
+- **`no-schedule` as a first-class status**, never an exception and never an empty
+  list, with its own exit code **4**. Conflating it with 0 produces the worst failure
+  available here: telling a student who has not imported anything that they have no
+  classes today. That is indistinguishable from a real free day.
+- **`dayStatus()`, which is three-valued** — `classes` / `partial` / `none`, plus
+  `finals`.
+- **`import.warnings` attached to the meeting they are about**, so a room OCR'd from
+  a screenshot months ago is still flagged on the line that mentions it.
+
+**A schema change closed a gap this file had flagged twice.** `nonClassPeriod` gained
+an optional `cancelledFromTime`, and FSU's Homecoming Friday now carries `"12:00"`
+alongside `classesCancelled: false`. The boolean alone read as "an ordinary day" and
+would have sent a student to a 2 p.m. class that is not happening.
+
+`lib/conflicts.mjs` holds the three-outcome collision rule, and **`review-schedule.mjs`
+was refactored onto it** rather than keeping a second copy — two copies of a
+three-outcome rule is two chances to quietly lose the third outcome.
+
+What each skill refuses or declines to invent:
+
+- **`whats-next`** never invents a next class. The search walks forward one real
+  calendar day at a time and **stops at the end of the term** rather than wrapping.
+  Finals week returns **no meetings at all**. Location-unresolved courses are listed
+  **inline with their times**, never dropped — the time is right even when the place
+  is not, and a silently missing class is the failure a student cannot catch.
+- **`check-conflicts`** has no refusal exit code, on purpose: `cannot-determine` is a
+  *finding*, reported alongside what could be decided. With `sessionsStatus:
+  "not-published"` it is currently the common outcome for any half-term course, so
+  the skill's job is making it read as a fact about FSU's publishing rather than as a
+  broken tool — including the one-step fix, which is that the student's own syllabus
+  has the dates.
+- **`deadlines`** works **without a stored schedule**, because deadlines belong to
+  the term rather than the student. It never emits a per-course exam time — there is
+  no grid in the data and no field one could live in — and it refuses (exit 3) for a
+  term with no shipped calendar rather than inventing a drop date.
+
+### Tests: **241 checks**, up from 211
+
+New `GRAPH` and `QUERY SKILLS` sections. The graph section runs
+`build-walk-graph.mjs --check` as a test, so the shipped data and the documented
+algorithm cannot drift apart, and pins `WCB`'s coordinate to the mean of the three
+sourced geocodes so a hand edit cannot leave the provenance note describing a
+different number.
+
+The three WCB feasibility assertions were **reversed rather than deleted** — they
+used to assert every leg of the real schedule refuses, and now assert every leg
+answers. Fixture **04** was repointed from `WCB` to `UCB` so the unknown-building
+path keeps a live example; if `UCB` ever ships, repoint it again.
+
+Also covered: no schedule imported (exit 4, and the message must not read as an
+empty day), 11pm Friday, finals week, winter break, a weekend, the Homecoming
+partial day, timezone independence, all three conflict outcomes — including a
+constructed case proving `no-conflict` is still **reachable**, which the shipped
+calendar alone cannot demonstrate — and that the Registrar's wording for the two
+different 9 October deadlines is quoted rather than paraphrased.
 
 ---
 
@@ -217,56 +384,96 @@ Carried forward until fixed.
   but `dist/PACK-INFO.json` now stamps every pack so that "am I looking at a
   cached copy?" is answerable instead of a guess.*
 - ~~**A directory-source marketplace resolves the skill's base directory to the
-  working tree.**~~ **Closed in step 5** by `npm run pack`; see below.
+  working tree.**~~ **Closed in step 5** by `npm run pack`.
 - **`lib/validate.mjs`'s header comment names `tests/validator-parity.test.mjs`**,
   which does not exist — the parity section lives inside `tests/run-tests.mjs`.
   Documentation drift only; the test itself is real and passing.
 - **No real building entrances** ship, so every route is building-centroid to
   building-centroid. `DATA-GAPS.md` §1.
+- **`WCB`'s coordinate is the weakest in the file.** It is the mean of three
+  address geocodes that disagree by 104 m, not a polygon centroid and not a door,
+  and it ships `low`. One GPS reading at the building closes it, and it is the
+  building with the most classrooms. `DATA-GAPS.md` §3.
+- **`WCB` is a graph leaf**, so routes to it detour through `LAW` and run 15–20%
+  long — the only place in this dataset where the error is pessimistic rather than
+  optimistic. Accepted deliberately. `DATA-GAPS.md` §6.
 - **Fall half-term session dates are unpublished** by FSU, which is why
   `sessionsStatus` is `not-published` and why "do these two conflict?" has a third
   answer. Not fixable by us.
+- **Only Fall 2026 ships**, so `deadlines` refuses for any other term and `parking`
+  refuses for any date it cannot check blackouts against. Both refusals are
+  correct; both stop being necessary when a second calendar ships.
+- ~~**Homecoming Friday is a half day that `nonClassPeriod` cannot express.**~~
+  **Closed in step 6** by adding `cancelledFromTime` to the schema.
 
 ---
 
-## Step 6 starts here
+## Step 7 starts here
 
-The remaining query skills: **conflicts** and **deadlines**, plus whatever the
-first real use of 0.5.0 exposes.
+**The six skills are the whole feature set as originally specified.** There is no
+seventh skill waiting; what is left is depth, and the honest next move is to use it
+for a term and fix what that exposes.
 
-- **Conflicts** is mostly built already — `review-schedule.mjs` computes the
-  three-outcome collision verdict, and `can-i-make-it.mjs` reuses the same
-  resolvability rule. A conflicts skill is largely a presentation layer over
-  existing output, which is the right amount of work for it.
-- **Deadlines** is the untouched one. `term-calendar.json` has twelve dated
-  deadlines with the Registrar's own wording quoted rather than paraphrased. Two
-  traps: every shipped deadline is a **full-term** one because `sessions` is empty
-  (`DATA-GAPS.md` §8), so a half-term course's much earlier drop date cannot be
-  given; and **final exams are not at the course's normal meeting time**, so a
-  weekly schedule expanded across Dec 7–11 is simply wrong. Send students to
-  `finals.url`.
-- **Homecoming Friday is a half day** — classes cancelled only after 12:00 on
-  Nov 20 — and `nonClassPeriod` cannot express a partial day. It ships with
-  `classesCancelled: false`, which understates it. A schema change is the right
-  fix, and a deadlines or "what's on today" skill will hit it immediately.
+The three things most worth doing, in order of how much they would improve an answer:
 
-The acceptance criteria from step 3 and step 4 still stand. Two more from step 5,
-which are now the pattern rather than a suggestion:
+1. **Walk the campus with a GPS.** Every remaining weakness in the routing answers
+   traces to two facts: no entrance is a real door, and no edge has ever been walked.
+   Real door coordinates and a handful of measured times would let `walk-edges.json`
+   carry a `measurement` block with a `p90Seconds` — and the p90 is what
+   `SAFETY_MARGIN` in `lib/routing.mjs` is standing in for. That constant is
+   designed to be deleted. `DATA-GAPS.md` §1 and §6.
+2. **A GPS reading at `WCB`.** It ships at `low` confidence off three geocodes that
+   disagree by 104 m. One reading at the building replaces the weakest coordinate in
+   the file, and it is the building with the most classrooms.
+3. **Surface lots.** Parking is six garages, and FSU's own page for `WCB` names
+   student lots, metered spaces run by the City of Tallahassee, and Civic Center
+   visitor parking — none of it representable. This is the largest remaining gap by
+   how often a student hits it. `DATA-GAPS.md` §7.
 
-5. **Put the safety behaviour in the script.** If a rule can be skipped by a model
-   having a bad day, it is not a rule. Make the wrong answer unrepresentable —
-   no `yes` rung, no single-number formatter, an early return before the
-   arithmetic — rather than writing "be careful" in a SKILL.md.
-6. **A refusal is a result and needs its own exit code.** Exit 3 across both query
-   scripts. A caller checking only for zero must not read a refusal as success.
+Smaller, and each closes a caveat currently printed on every relevant answer:
 
-Reuse rather than rebuild: `lib/campus.mjs` exposes `buildings()`, `building()`,
-`walkEdges()`, `parkingZones()`, `termCalendar()`, `termCalendars()`,
-`termCalendarCovering()`, `resolveBuilding()` and `currentTerm()`. `lib/routing.mjs`
-has the graph, the margin and `formatRange()`. `lib/feasibility.mjs` has the ladder.
-`lib/parking.mjs` has `blackoutCheck()`, `windowMatches()` (including the wrapping
-case common.defs warns about) and `ruleAt()`. Scripts stay Node-builtins-only, and
-**changing a schema means running `npm test`**.
+- **Spring 2027's calendar**, once the Registrar publishes it. `deadlines` refuses
+  outright for any date outside Fall 2026, and `parking` refuses too because it
+  cannot check blackout dates it does not have. Both refusals are correct and both
+  stop being necessary the moment a second term ships. Follow the regeneration
+  recipe in `data/README.md`.
+- **The finals exam grid.** `finalsPeriod` has nowhere to put a mapping from meeting
+  pattern to exam block, so `deadlines` and `whats-next` can only point at the
+  Registrar. A schema change is the right fix, the same shape as the
+  `cancelledFromTime` change in step 6.
+- **`UCD` / `UCC` / `UCB` and the nine one-or-two-classroom buildings.** All resolve
+  cleanly; they were below the original cut. `tools/build-walk-graph.mjs --write`
+  now makes adding them a regeneration rather than a hand edit — but note that
+  fixture 04 uses `UCB` as its unknown building and must be repointed if it ships.
+- **`owner.name` and `author.name` are still `"TODO"`.** They must be real before
+  this is published anywhere.
+
+### The acceptance criteria, cumulative
+
+From step 3: `partOfTerm` has three outcomes; `parkingBlackouts` means refusal;
+`locationTba` and `location: null` are different; an unknown building is ordinary.
+From step 4: a question must earn its place. From step 5: put the safety behaviour
+in the script, and give a refusal its own exit code. And now:
+
+7. **A closing "what's next" section is a summary, not a specification.** Step 6
+   existed partly because `whats-next` was promised in step 4, dropped from step 5's
+   closing list, and then nobody noticed. When a step's plan disagrees with what
+   earlier steps promised, the earlier promise wins — go back and read them.
+8. **Regenerate derived data, never hand-edit it.** `walk-edges.json` and every
+   `campusZone` are pure functions of the building centroids. Run
+   `tools/build-walk-graph.mjs --check` before trusting `--write`, and treat a
+   `--check` failure as the tool being wrong about the data rather than the data
+   being wrong.
+
+Reuse rather than rebuild: `lib/campus.mjs` (shipped data, building resolution,
+`termCalendarCovering`), `lib/schedule.mjs` (the injectable clock, `loadSchedule`,
+three-valued `dayStatus`, `meetingsOn`), `lib/conflicts.mjs` (the three-outcome
+rule, used by both `review-schedule` and `check-conflicts`), `lib/routing.mjs` (the
+graph, the safety margin, `formatRange`), `lib/feasibility.mjs` (the verdict
+ladder), `lib/parking.mjs` (the blackout gate, `windowMatches`, `ruleAt`).
+
+Scripts stay Node-builtins-only. **Changing a schema means running `npm test`** —
+the parity section is what catches `lib/validate.mjs` drifting.
 
 Room-number-to-floor derivation is verified against 736 real FSU rooms: a
 four-digit room starting with `0` carries the floor in its first two digits,

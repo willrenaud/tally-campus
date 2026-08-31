@@ -47,7 +47,11 @@ recorded per record in `provenance.note`.
 
 Confidence ladder as shipped: **15 buildings `high`** (FSU street address and OSM `addr:*` tags match
 exactly), **14 `medium`** (name match only, OSM polygon carries no address, or the two sources
-disagree about the street), **3 `low`** (see below).
+disagree about the street), **4 `low`** (see below).
+
+`WCB` is the fourth and is a different kind of weak from the other three: it has no OpenStreetMap
+element at all, so its coordinate does not come from a polygon join. It is the mean of three
+independent **address geocodes**. See §3.
 
 ## 3. The three low-confidence building coordinates
 
@@ -62,30 +66,72 @@ file derived that way, and offset from the building's true centre by an unknown 
 | `WJB` | Johnston Building | OSM has **two** polygons both named "Johnston", 57 m apart, neither with an address. The shipped coordinate is their midpoint, which may fall between the wings rather than inside either. FSU's address, 143 Honors Way, is consistent with both. |
 | `PDB` | Psychology Department Building | OSM has "Psychology Building A" and "Psychology Building B", both tagged `1107 West Call Street` — the same address FSU gives for `PDB`. FSU has a separate code `PDA` for the Psychology Department Auditorium, so `PDB` is one of A/B or both. The shipped coordinate is the midpoint of A and B. |
 | `HWC` | Coburn Wellness Center | Paired to an OSM polygon named "Wellness Building". Similar, not identical, and the OSM polygon has no address to confirm against. Plausible and unconfirmed. |
+| `WCB` | Herbert Wertheim Center for Business Excellence | **No OpenStreetMap element of any kind.** The coordinate is the mean of three independent geocodes of FSU's published address; they disagree by up to 104.6 m, which is comparable to the building's own footprint. Added 2026-08-31; see below. |
+
+### `WCB` in detail, because it is the newest and the weakest
+
+FSU publishes no coordinates and OpenStreetMap has no polygon for this building — an Overpass query
+for `building` ways within 250 m of the address returns 45 elements and **none of them is on this
+block**, because the construction is too recent to have been mapped. So unlike every other record in
+the file, there is no polygon to join to and the shipped point is an **address point**.
+
+Three independent geocodes of FSU's published `402 W Gaines St`:
+
+| Source | Coordinate | Kind |
+| --- | --- | --- |
+| US Census Bureau geocoder (`Public_AR_Current`) | 30.435556684975, −84.285716372278 | TIGER address-range interpolation, line 82851215, side R |
+| Esri World Geocoding Service | 30.436000647226, −84.286678500607 | `PointAddress`, score 100 |
+| OpenStreetMap node 8381890349 | 30.4357406, −84.2862174 | `place=house` address node |
+
+Shipped value is their mean: **30.4357660, −84.2862041**, which sits 3.1 m from the OSM node and
+about 52 m from each of the other two.
+
+**Two cross-checks confirm the block**, and both are FSU statements rather than more geocoding:
+
+1. FSU's own FAQ places the **southeast corner entrance at Gaines St and MLK Blvd**. OSM puts that
+   junction (node 98446167) at 30.4354658/−84.2856235 — **64.9 m southeast** of the shipped point,
+   which is the right direction and the right magnitude for a corner of a building this size.
+2. FSU News places it **"just south of the Donald L. Tucker Civic Center"**. OSM way 168363245 puts
+   the Civic Center at 30.4377202/−84.2866811 — **222.1 m north** of the shipped point.
+
+These also **resolve the ambiguity this file recorded in §4**: a Nominatim search for the street
+address returns two candidates about 1.5 km apart, and the western one (30.4355039/−84.3019140) is
+ruled out by all four lines of evidence above.
+
+**What the coordinate is not:** a surveyed position, a polygon centroid, or a door. A walking
+estimate through it inherits an error of the order of 50 m at that end, on top of everything already
+wrong with the walk model. It ships `low` for that reason, and `low` means good enough to route with
+and not good enough to act on.
+
+**To close it properly:** a GPS reading at the building, or wait for OpenStreetMap to map it.
 
 ## 4. Classroom buildings on main campus that did not ship
 
-32 buildings ship, holding **273 of the 421** rooms FSU types as `(110) CLASSROOM` across its
-main-campus space zones. 31 buildings with at least one classroom did not ship. The ones worth adding
+33 buildings ship, holding **297 of the 421** rooms FSU types as `(110) CLASSROOM` across its
+main-campus space zones. 30 buildings with at least one classroom did not ship. The ones worth adding
 next, in order:
 
 | Code | Classrooms | Building | Why it is missing |
 | --- | --- | --- | --- |
-| `WCB` | 24 | Herbert Wertheim Center for Business Excellence | **The largest single omission by a wide margin** — a 24-classroom building students are timetabled into. See below. |
 | `UCD` / `UCC` / `UCB` | 8 / 6 / 3 | University Center buildings D, C, B | Matched by name in OSM, but they ring Doak Campbell Stadium roughly a kilometre southwest of the academic core, and admitting them would stretch the walk graph across a gap with no sourced path. Deferred rather than rejected. |
 | `CAR`, `DOD`, `FLH`, `UPL`, `LSB`, `EOA`, `DSC`, `LON`, `FAA` | 1–2 each | various | All resolved cleanly to OSM coordinates; they simply fell below the original cut. Adding them is nearly free. |
 
-**`WCB` specifically.** Everything about it is sourced except the one thing needed to ship it. FSU
-gives the address as 402 W Gaines St, and an FSU News item on the January 2026 grand opening places
-it "just south of the Donald L. Tucker Civic Center, at the corner of West Gaines Street and MLK
-Boulevard, overlooking Burnette Park". That is enough to point at on a map and not enough to write a
-coordinate. What was tried: a Nominatim search for the building name returns nothing; a search for
-the street address returns two candidates about 1.5 km apart, neither of them a named building. It
-is recent construction and OpenStreetMap has not caught up. Placing it at the midpoint of two
-candidates 1.5 km apart would be a fabrication with a student walking to it, so it stays out, and
-students timetabled there will hit the import skill's unknown-building path instead — which is
-exactly the case that path exists for. **To close it:** a GPS reading at the building, or wait for
-OSM.
+**Closed in the 2026-08-31 pass: `WCB`, which had been the largest single omission by a wide
+margin** — 24 classrooms, the biggest classroom count of any building now in the file, and the home
+of the business school, so any finance or management student hit the unknown-building path on
+almost every course they took.
+
+Earlier passes failed on it because they searched OpenStreetMap, which still has nothing there. What
+worked was abandoning OSM as the coordinate source and geocoding FSU's published address through
+**three independent services**, then cross-checking the result against two FSU prose statements about
+what the building is next to. §3 has the full derivation, the numbers, and the reasons it still ships
+at `low` confidence. `UCB` now carries the unknown-building test fixture that `WCB` used to.
+
+The FSU Building Information Portal moved during this pass: `facilities.fsu.edu/space/buildings/`
+now 301-redirects to `forms.pdc.fsu.edu/portal`, and the per-building URL is
+`https://forms.pdc.fsu.edu/portal/building/?bldg=<number>` — WCB is building **4540**. The room
+inventory behind it, `https://forms.pdc.fsu.edu/portal/room-lookup/?bldg=<number>`, is **public and
+needs no login**, which is what supplied the 24 classroom numbers and their floors.
 
 **Closed in the 2026-08-28 pass.** `LAW` (9 classrooms) and `DSL` (3) were both listed here as
 having no OSM match. Both in fact match by *name* — the earlier pass had searched by address only,
@@ -127,6 +173,27 @@ Missing as a direct consequence:
 - The 1.3 path factor and 1.4 m/s pace are **assumptions, not measurements**, chosen and documented
   rather than sourced. They are the two numbers most worth replacing first.
 
+**`WCB` is a leaf node, and its routes are the one place the error runs pessimistic.** Nothing else
+ships within the graph's 600 m edge cap of it — the next nearest after `LAW` at 380 m is `DIF` at
+676 m — so `WCB` has exactly one edge and every route in or out detours through `LAW`:
+
+| Route | Graph path | Straight-line model | Detour |
+| --- | --- | --- | --- |
+| `WCB`→`DIF` | 1057 m | 879 m | ×1.20 |
+| `WCB`→`HCB` | 2000 m | 1730 m | ×1.16 |
+| `WCB`→`PDB` | 3195 m | 2620 m | ×1.22 |
+
+So a walking answer involving `WCB` is inflated by roughly 15–20% by graph topology, which is the
+**opposite** direction from every other error in this file. It is left as it is: the detour is a
+consequence of the documented edge-selection rule, and quietly widening the cap for one building
+would rewrite the other 84 edges' basis. A consumer does not need to correct for it — being long is
+the safe direction — but should not claim precision about a WCB route either.
+
+Adding `WCB` also **displaced an existing edge**, exactly as this model predicts it can:
+`krb-to-law` disappeared because `WCB` pushed `KRB` out of `LAW`'s nearest four. That is why
+`tools/build-walk-graph.mjs` exists and why it has a `--check` mode that reproduces the shipped file
+byte-for-byte before it is allowed to write one.
+
 ## 7. Parking: six garages, and nothing else
 
 `parking-zones.json` holds the six FSU parking garages and no other parking of any kind.
@@ -166,6 +233,16 @@ Three specific unresolved problems:
 3. **No per-floor permit split.** Third-party summaries state the first floor of every FSU garage is
    faculty/staff (R/RP) and upper floors are student (W). That sentence does not appear on any FSU
    page fetched for this build, so it is not asserted. The rules describe the garage as a whole.
+4. **`WCB` has sourced parking guidance that this schema cannot hold.** *Noted 2026-08-31.* The
+   building's own FAQ says students have "designated lots within a 10-minute walk" and shared
+   parking "within 7 minutes", that the "metered spaces along the perimeter of the Wertheim Center"
+   are maintained by **the City of Tallahassee** rather than FSU, and that visitors may use the
+   Donald L. Tucker Civic Center. **None of that is representable here**: no surface lot ships, no
+   metered space ships, no non-FSU operator is modelled, and FSU names no specific lot. So the
+   nearest garage this data can offer for a `WCB` class is `PG5` at about 7–13 minutes, and it is
+   **not** in any garage's curated `servesBuildings` — the parking script reports it as "nearest by
+   geometry only". For the building with the most classrooms on campus, the shipped parking answer
+   is therefore the weakest one in the file, and it must say so.
 
 ## 8. Term calendar: three things the page or the schema could not carry
 
@@ -198,9 +275,14 @@ Three specific unresolved problems:
   in the data, because `finalsPeriod` has only `startDate`/`endDate`/`note`/`url` and nowhere to put
   a mapping from meeting pattern to exam block. **A schema change is the right fix.** Until then a
   weekly schedule expanded across that week is simply wrong, and the record says so in its `note`.
-- **Homecoming Friday is a half day** — classes cancelled only after 12:00 p.m. on Nov 20 — and
-  `nonClassPeriod` has no way to express a partial day. It ships with `classesCancelled: false` and the
-  detail in the name, which understates it. **A schema change is the right fix**, not a data change.
+- ~~**Homecoming Friday is a half day** and `nonClassPeriod` has no way to express a partial day.~~
+  **Closed 2026-08-31, by the schema change this entry called for.** `nonClassPeriod` gained an
+  optional `cancelledFromTime`, and the Homecoming record now carries `"12:00"` alongside
+  `classesCancelled: false`. The two fields together are three-valued — classes meet / classes meet
+  until this time / no classes — where the boolean alone read as "an ordinary day" and would have
+  sent a student to a 2 p.m. class that is not happening. `lib/schedule.mjs`'s `dayStatus()` returns
+  `partial` for it and `whats-next` lists the afternoon meetings under CANCELLED rather than
+  omitting them.
 - No reading day appears on the Registrar's page, so none is recorded.
 
 ## 9. Everything about accessibility

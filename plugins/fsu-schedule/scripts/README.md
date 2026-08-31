@@ -16,23 +16,52 @@ themselves rather than relying on `${CLAUDE_PLUGIN_ROOT}` being exported.
 | `save-schedule.mjs <draft>` | the draft | `$CLAUDE_PLUGIN_DATA/schedules/` | 0 done, 1 invalid so nothing written, 2 could not run |
 | `can-i-make-it.mjs` | the stored schedule, `data/` | a feasibility report on stdout | 0 something answered, 2 could not run, **3 nothing was answerable** |
 | `where-to-park.mjs --building <CODE>` | `data/`, optionally the stored schedule | a parking report on stdout | 0 answered, 2 could not run, **3 refused by design** |
+| `whats-next.mjs` | the stored schedule, `data/` | next class, today, this week | 0 answered, 2 could not run, **4 no schedule imported** |
+| `check-conflicts.mjs` | the stored schedule, `data/` | the three-outcome collision report | 0 answered, 2 could not run, **4 no schedule imported** |
+| `deadlines.mjs` | `data/`, optionally the stored schedule | deadlines, breaks, finals | 0 answered, 2 could not run, **3 no calendar for that term** |
 
 `lib/` holds what they share: `normalize.mjs` (field parsing), `validate.mjs` (a
 hand-written schema check), `campus.mjs` (shipped data access and building
 resolution), `store.mjs` (the per-user file and the re-import policy),
 `routing.mjs` (the walk graph **and the safety margin**), `feasibility.mjs` (the
-verdict ladder), `parking.mjs` (the blackout gate and rule evaluation).
+verdict ladder), `parking.mjs` (the blackout gate and rule evaluation),
+`conflicts.mjs` (the three-outcome collision rule), and `schedule.mjs` (the shared
+read layer: the injectable America/New_York clock, loading the stored schedule,
+and `dayStatus`).
 
-## Exit code 3 means refused, and that is a result
+## Exit codes 3 and 4 both mean "no answer", and they are different
 
-Both query scripts can exit **3**. It is not an error code. It means the honest
-answer was that there is no answer: a home football date, a building outside the
-32 that ship, a step-free routing request against data with no accessibility
-information in it.
+**3 is refused by design.** The honest answer is that there is no answer: a home
+football date, a building outside the 33 that ship, a step-free routing request
+against data with no accessibility information in it, a term with no shipped
+calendar.
 
-The code is distinct from 0 on purpose. A caller that only checks for zero would
-read total refusal as success, and the whole design of these two scripts is that a
-refusal must be impossible to mistake for an answer.
+**4 is nothing imported yet.** The remedy is completely different — go and run
+`import-schedule` — and conflating the two produces the single worst failure in
+this plugin: reporting "you have no classes today" to a student who simply has not
+imported a schedule. That is indistinguishable from a real free day, and it sends
+them to a class they do have.
+
+Both are distinct from 0 on purpose. A caller that only checks for zero would read
+either as success.
+
+## The shared read layer
+
+`lib/schedule.mjs` exists so the four schedule-reading scripts cannot each invent
+their own answer to the same four questions:
+
+- **What time is it, in America/New_York?** `resolveNow()` goes through `Intl`, so
+  daylight saving is handled rather than assumed, and `--now` injects a fixed
+  moment. A clock that cannot be injected cannot be tested: "what happens at 11pm
+  on a Friday" is only true for one hour a week.
+- **Is there a schedule at all?** `loadSchedule()` returns `no-schedule` as a
+  status, never as an exception and never as an empty list.
+- **Is this date even a class day?** `dayStatus()` is **three-valued** —
+  `classes` / `partial` / `none`, plus `finals` — because FSU's Homecoming Friday
+  cancels classes only after noon, and a boolean cannot say that.
+- **What is shaky about this schedule?** `import.warnings` are attached to the
+  meeting they are about, so a room read off a screenshot months ago can still be
+  flagged on the line that mentions it.
 
 ## Four rules these scripts follow
 

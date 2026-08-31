@@ -16,6 +16,7 @@
 import fs from 'node:fs';
 import { validateSchedule, loadPermitClasses } from './lib/validate.mjs';
 import { resolveBuilding, termCalendar, parkingSchema } from './lib/campus.mjs';
+import { findCollisions } from './lib/conflicts.mjs';
 
 const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 const SHORT = { monday: 'Mon', tuesday: 'Tue', wednesday: 'Wed', thursday: 'Thu', friday: 'Fri', saturday: 'Sat', sunday: 'Sun' };
@@ -65,62 +66,14 @@ const unresolved = locations.filter((l) => l.status === 'unknown' || l.status ==
 
 /* ------------------------------------------------------------------ *
  * Time collisions -- three outcomes, never two.
+ *
+ * The logic lives in lib/conflicts.mjs so that this script and check-conflicts.mjs
+ * cannot drift apart about what counts as a conflict. Two copies of a
+ * three-outcome rule is two chances to quietly lose the third outcome.
  * ------------------------------------------------------------------ */
 const cal = doc.termCode ? termCalendar(doc.termCode) : null;
 const sessionsStatus = cal?.sessionsStatus ?? 'not-checked';
-const sessions = Array.isArray(cal?.sessions) ? cal.sessions : [];
-
-/** The dates a meeting actually runs, or null when they cannot be established. */
-function span(m) {
-  if (m.dateRange) {
-    return { from: m.dateRange.firstMeetingDate, to: m.dateRange.lastMeetingDate, source: 'dateRange' };
-  }
-  const part = m.partOfTerm ?? 'full-term';
-  if (part === 'full-term') {
-    if (cal) return { from: cal.classesBeginDate, to: cal.classesEndDate, source: 'term' };
-    return null;
-  }
-  const s = sessions.find((x) => x.code === part);
-  if (s) return { from: s.startDate, to: s.endDate, source: 'session' };
-  return null; // UNRESOLVABLE -- this is case (c) of partOfTerm's RESOLUTION RULE
-}
-
-const overlaps = (a, b) => a.startTime < b.endTime && b.startTime < a.endTime;
-
-const collisions = [];
-for (let i = 0; i < meetings.length; i++) {
-  for (let j = i + 1; j < meetings.length; j++) {
-    const a = meetings[i], b = meetings[j];
-    if (a.deliveryMode === 'online-asynchronous' || b.deliveryMode === 'online-asynchronous') continue;
-    if (!Array.isArray(a.daysOfWeek) || !Array.isArray(b.daysOfWeek)) continue;
-    if (!a.startTime || !a.endTime || !b.startTime || !b.endTime) continue;
-    const days = a.daysOfWeek.filter((d) => b.daysOfWeek.includes(d));
-    if (!days.length || !overlaps(a, b)) continue;
-
-    const sa = span(a), sb = span(b);
-    let verdict, why;
-    if (!sa || !sb) {
-      const which = !sa ? a : b;
-      verdict = 'cannot-determine';
-      why = `${which.courseCode} runs '${which.partOfTerm}', and the ${doc.termCode} calendar has no date range for that ` +
-        `(sessionsStatus is "${sessionsStatus}"). These two might not overlap at all, or they might collide every week. ` +
-        'This is not the same as "no conflict" and must not be reported as one.';
-    } else if (sa.from > sb.to || sb.from > sa.to) {
-      verdict = 'no-conflict';
-      why = `${a.courseCode} runs ${sa.from} to ${sa.to} and ${b.courseCode} runs ${sb.from} to ${sb.to}; they never run at the same time of year.`;
-    } else {
-      verdict = 'conflict';
-      why = `Both run between ${sa.from > sb.from ? sa.from : sb.from} and ${sa.to < sb.to ? sa.to : sb.to}.`;
-    }
-    collisions.push({
-      verdict,
-      days,
-      a: { id: a.id, courseCode: a.courseCode, section: a.section, startTime: a.startTime, endTime: a.endTime },
-      b: { id: b.id, courseCode: b.courseCode, section: b.section, startTime: b.startTime, endTime: b.endTime },
-      why
-    });
-  }
-}
+const collisions = findCollisions(meetings, cal, doc.termCode);
 
 /* ------------------------------------------------------------------ *
  * Report

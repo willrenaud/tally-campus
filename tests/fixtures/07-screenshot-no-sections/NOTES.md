@@ -45,3 +45,25 @@ fabrication.
 1701 → 1. `G700` and `A0101` start with a letter and derive nothing, so the field is
 omitted rather than guessed. That the building is unknown does not stop the floor
 being derivable: the floor is a property of the room number, not of the building.
+
+## What changed in 0.6.0: `WCB` ships
+
+This was **the** motivating case for closing the WCB gap. Four of these five courses
+are in the Wertheim Center, so until 0.6.0 this schedule was mostly unroutable:
+`can-i-make-it` refused every one of its legs and exited 3, and `parking` refused
+outright. That is now reversed, and the test that used to assert *"every leg
+refuses"* asserts *"every leg answers"*.
+
+Two things did **not** change, deliberately:
+
+- **The meetings themselves.** Same courses, same days, same times, same rooms. The
+  only edit was removing the four `unknown-building-code` warnings, which a fresh
+  import today would not raise.
+- **`blockingQuestions === 0`.** The draft-first regression this fixture was built
+  for is untouched by the building shipping, and it is still the primary assertion.
+
+Worth recording: the room numbers this fixture carries, read off an image by OCR,
+**check out against FSU's real room inventory** now that it can be consulted.
+`2703` and `1701` are both listed as `(110) CLASSROOM` in building 4540, and `G700`
+is a real room on the ground floor typed as something else. The one part of a
+screenshot import most likely to be wrong turned out to be right.

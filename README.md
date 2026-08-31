@@ -11,19 +11,31 @@ A Claude Code plugin marketplace for Florida State University students.
 
 | Plugin | Version | What it does |
 | --- | --- | --- |
-| [`fsu-schedule`](plugins/fsu-schedule/) | 0.5.0 | Import your class schedule once, then ask Claude about walking times between classes, parking, conflicts, and deadlines. |
+| [`fsu-schedule`](plugins/fsu-schedule/) | 0.6.0 | Import your class schedule once, then ask Claude about walking times between classes, parking, conflicts, and deadlines. |
 
 ## Status
 
-**Three skills: import, feasibility, parking.** `fsu-schedule` 0.5.0 ships six JSON Schemas with a
-worked example of each, real FSU campus data — 32 buildings, 85 walk edges, the six parking garages,
+**Six skills — the feature set is complete.** `fsu-schedule` 0.6.0 ships six JSON Schemas with a
+worked example of each, real FSU campus data — 33 buildings, 85 walk edges, the six parking garages,
 and the Fall 2026 academic calendar — and:
 
 - [`import-schedule`](plugins/fsu-schedule/skills/import-schedule/SKILL.md) turns a paste from
   Student Central, an `.ics` export, a screenshot, or a spoken description into a validated schedule.
+- [`whats-next`](plugins/fsu-schedule/skills/whats-next/SKILL.md) answers what is next, today, or
+  this week.
 - [`can-i-make-it`](plugins/fsu-schedule/skills/can-i-make-it/SKILL.md) answers whether the gap
   between two classes is enough.
+- [`check-conflicts`](plugins/fsu-schedule/skills/check-conflicts/SKILL.md) answers whether two
+  courses collide — with three outcomes, not two.
+- [`deadlines`](plugins/fsu-schedule/skills/deadlines/SKILL.md) answers drop/add, withdrawal,
+  holidays, breaks and finals, and works before anything is imported.
 - [`parking`](plugins/fsu-schedule/skills/parking/SKILL.md) answers where to park for a class.
+
+**`WCB` now ships.** The Herbert Wertheim Center for Business Excellence — 24 classrooms, the home of
+the business school, and previously the largest single gap in the campus data — was added in 0.6.0
+after three independent geocoders and two FSU cross-references agreed on where it is. It is the only
+building whose coordinate comes from address geocoding rather than an OpenStreetMap polygon, so it
+ships at `low` confidence with the full derivation in [`DATA-GAPS.md`](DATA-GAPS.md) §3.
 
 **The two query skills are built around the weakness of the data underneath them.** Walking times
 are centroid-to-centroid estimates that have never been measured and omit doors, stairs, crossings
@@ -76,9 +88,11 @@ fsu-campus/
 │   └── fsu-schedule/                 the plugin
 │       ├── schemas/                  the data contracts
 │       ├── data/                      shipped campus data
-│       ├── skills/                    import-schedule, can-i-make-it, parking
+│       ├── skills/                    six skills: import, whats-next, can-i-make-it,
+│       │                              check-conflicts, deadlines, parking
 │       └── scripts/                   dependency-free helpers the skills run
-├── tools/                            validators and the packer (dev only, never shipped)
+├── tools/                            validators, the walk-graph generator and the packer
+│                                     (dev only, never shipped to users)
 ├── tests/                            import fixtures and the test suite (dev only)
 ├── package.json                      dev dependencies for tools/ and tests/ — not the plugin
 ├── PROGRESS.md                       what each step delivered, and where the next one starts
@@ -110,6 +124,18 @@ npm run test:all          # both
 over the same documents and fails if they ever disagree. The shipped plugin cannot carry Ajv, so
 that hand-written validator is what actually guards a student's file; the parity check is the only
 thing keeping it in step with the schemas. Change a schema, run the tests.
+
+Regenerate the walk graph after changing any building coordinate:
+
+```bash
+node tools/build-walk-graph.mjs --check    # reproduce the shipped graph and diff it
+node tools/build-walk-graph.mjs --write    # regenerate walk-edges.json and every campusZone
+```
+
+The graph is a pure function of the shipped centroids, and `campusZone` is a function of their mean,
+so **adding one building can displace an existing edge and reclassify others** — adding `WCB` removed
+`krb-to-law`. `--check` is what makes that safe: it must reproduce the shipped file exactly before
+`--write` is trusted, and `npm test` runs it.
 
 Validate the manifests:
 

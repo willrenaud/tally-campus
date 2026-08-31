@@ -9,12 +9,15 @@ The goal is to make questions like these answerable from structured data instead
 - *What's due this week?*
 - *Do these two courses conflict?*
 
-## Status: version 0.5.0 — three skills
+## Status: version 0.6.0 — six skills
 
 | Skill | What it does |
 | --- | --- |
 | [`import-schedule`](skills/import-schedule/SKILL.md) | Turns a Student Central paste, an `.ics` export, a screenshot, or a spoken description into a validated schedule. Draft-first: it shows your week back before it asks you anything. |
+| [`whats-next`](skills/whats-next/SKILL.md) | Next class, today, this week — time, building and room. |
 | [`can-i-make-it`](skills/can-i-make-it/SKILL.md) | Whether the gap between two classes is enough to walk it. |
+| [`check-conflicts`](skills/check-conflicts/SKILL.md) | Time collisions, with three outcomes rather than two. |
+| [`deadlines`](skills/deadlines/SKILL.md) | Drop/add, withdrawal, holidays, breaks and finals. Works before you import anything. |
 | [`parking`](skills/parking/SKILL.md) | Where to park for a class, and what the rule at that moment actually is. |
 
 ```
@@ -26,9 +29,9 @@ fsu-schedule/
 │   ├── …                         term-calendar, student-schedule
 │   ├── examples/                 one hand-written instance per schema
 │   └── README.md                 the model explained in prose — start here
-├── data/                         32 buildings, 85 walk edges, 6 garages, Fall 2026
+├── data/                         33 buildings, 85 walk edges, 6 garages, Fall 2026
 ├── scripts/                      dependency-free helpers the skills run
-└── skills/                       the three above
+└── skills/                       the six above
 ```
 
 Read [`schemas/README.md`](schemas/README.md) for what each schema is for and how they join, and
@@ -36,8 +39,8 @@ Read [`schemas/README.md`](schemas/README.md) for what each schema is for and ho
 
 ### What these answers are worth
 
-**The two query skills are deliberately unwilling to sound confident**, because the data underneath
-them does not support it:
+**The query skills are deliberately unwilling to sound confident**, because the data underneath them
+does not support it:
 
 - Every walking time is computed from **building centres**, has **never been measured**, and leaves
   out doors, stairs, road crossings and class-change crowds — all in the optimistic direction. So
@@ -47,9 +50,15 @@ them does not support it:
 - Parking is **six garages and no surface lots**, and on FSU's seven home football dates the shipped
   rules are known to be wrong. `parking` says the first out loud in every answer and **refuses** on
   the second, pointing at [FSU Game Day](https://transportation.fsu.edu/GameDay).
+- FSU publishes half-term session dates for **summer terms only**, so for Fall 2026 a first-half or
+  second-half course cannot be placed on the calendar at all. `check-conflicts` answers **cannot
+  determine** for those, which is not the same as "no conflict" and is never reported as one.
+- Final exams are **not** at a course's normal meeting time and this data has no exam grid, so
+  `deadlines` and `whats-next` never expand a weekly schedule across finals week.
 
-"I can't tell you" is a correct answer here. A student who gets a hedge walks faster or parks
-elsewhere; a student who gets a confident wrong answer misses a class or gets towed.
+"I can't tell you" is a correct answer here. A student who gets a hedge walks faster, parks
+elsewhere, or checks with their department; a student who gets a confident wrong answer misses a
+class or gets towed.
 
 ## How data will be stored
 

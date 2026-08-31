@@ -201,7 +201,11 @@
         "classesCancelled": {
           "type": "boolean",
           "default": true,
-          "description": "Whether regular classes are suppressed on these dates. Nearly always true; false exists for days that are administratively notable but on which classes still meet."
+          "description": "Whether regular classes are suppressed for the WHOLE of these dates. Nearly always true; false exists for days that are administratively notable but on which classes still meet. False does NOT mean the day is ordinary: see cancelledFromTime, which covers the half-day case that this boolean alone cannot express."
+        },
+        "cancelledFromTime": {
+          "$ref": "common.defs.schema.json#/$defs/timeOfDay",
+          "description": "Wall-clock time from which classes are cancelled on a PARTIAL day, in America/New_York. Present only when classesCancelled is false and the day is nonetheless not a normal one: FSU's Homecoming Friday cancels classes from 12:00 p.m. onward while morning classes meet as usual. Before this field existed the only way to record that was to put it in the name and set classesCancelled to false, which understates the day and reads to any consumer as \"classes meet normally\" -- a student is then told to walk to a 2 p.m. class that is not happening. A consumer MUST treat a day carrying this field as three-valued (classes meet / classes meet until this time / no classes) rather than as a boolean. Omit for a whole-day cancellation, which is what classesCancelled true already says."
         },
         "campusClosed": {
           "type": "boolean",
