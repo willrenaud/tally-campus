@@ -29,6 +29,7 @@ import { buildAjv, compileFor } from '../tools/lib/ajv-env.mjs';
 import * as N from '../plugins/fsu-schedule/scripts/lib/normalize.mjs';
 import { validateSchedule, loadPermitClasses } from '../plugins/fsu-schedule/scripts/lib/validate.mjs';
 import { parkingSchema } from '../plugins/fsu-schedule/scripts/lib/campus.mjs';
+import * as N_CAMPUS from '../plugins/fsu-schedule/scripts/lib/campus.mjs';
 import { saveSchedule, readSchedule, listTerms, archiveDir, ARCHIVE_KEEP } from '../plugins/fsu-schedule/scripts/lib/store.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -122,6 +123,27 @@ for (const tba of ['TBA', 'TBD', 'To Be Announced', 'ARR', '', '   ']) {
     return r.ok ? eq(r.value, null, 'room') : `refused with ${r.reason}`;
   });
 }
+/* The term is derived, never asked. These pin the three bases apart, because they
+ * do not deserve equal confidence and the skill hedges differently for each. */
+for (const [today, wantCode, wantBasis] of [
+  ['2026-08-31', '2026-fall', 'calendar'],   // inside the shipped term
+  ['2026-08-24', '2026-fall', 'calendar'],   // first day of classes
+  ['2026-08-01', '2026-fall', 'next-term'],  // before it starts; a schedule is imported early
+  ['2027-06-01', '2027-summer', 'month']     // nothing shipped covers or follows it
+]) {
+  check(`currentTerm ${today} -> ${wantCode} (${wantBasis})`, () => {
+    const r = N_CAMPUS.currentTerm(today);
+    return eq([r.termCode, r.basis], [wantCode, wantBasis], today);
+  });
+}
+check('currentTerm never asks: it always returns a termCode', () => {
+  for (const d of ['2020-01-01', '2026-05-15', '2030-12-31']) {
+    const r = N_CAMPUS.currentTerm(d);
+    if (!/^20[0-9]{2}-(spring|summer|fall)$/.test(r.termCode)) return `${d} produced ${r.termCode}`;
+  }
+  return true;
+});
+
 check('splitLocation separates online from TBA', () => {
   const online = N.splitLocation('ONLINE');
   const tba = N.splitLocation('TBA');
@@ -214,6 +236,11 @@ const permitted = [
   ['an empty instructor list', (d) => { d.meetings[0].instructors = []; }],
   ['no meetings at all', (d) => { d.meetings = []; d.import.warnings = []; }],
   ['a non-canonical course code', (d) => { d.meetings[0].courseCode = 'ISC4241C'; d.meetings[0].canonicalNumbering = false; }],
+  // section and title became optional in 0.4.0. A screenshot grid carries neither,
+  // and requiring them forced the importer to interrogate or to fabricate.
+  ['a meeting with no section', (d) => { delete d.meetings[0].section; }],
+  ['a meeting with no title', (d) => { delete d.meetings[0].title; }],
+  ['a meeting with neither section nor title', (d) => { for (const m of d.meetings) { delete m.section; delete m.title; } }],
   ['a custom term slice with dates', (d) => { d.meetings[0].partOfTerm = 'custom'; d.meetings[0].dateRange = { firstMeetingDate: '2026-08-24', lastMeetingDate: '2026-10-09' }; }]
 ];
 for (const [name, mutate] of permitted) {
@@ -244,6 +271,7 @@ const EXPECTATIONS = {
     input: 'input.txt',
     meetings: 6,
     unresolvedLocations: 0,
+    blockingQuestions: 0,  // the assertion this rework exists for
     collisions: {},
     warningCodes: ['missing-instructor', 'missing-instructor']
   },
@@ -251,6 +279,7 @@ const EXPECTATIONS = {
     input: 'input.txt',
     meetings: 4,
     unresolvedLocations: 0,
+    blockingQuestions: 0,  // the assertion this rework exists for
     collisions: {},
     warningCodes: ['missing-instructor'],
     // The whole point: the wrapped title is rejoined and the repeated header is not
@@ -272,6 +301,7 @@ const EXPECTATIONS = {
     // LOCATION: the building resolved, so routing to it works and only the door
     // number is missing. The async course has no location to resolve at all.
     unresolvedLocations: 0,
+    blockingQuestions: 0,  // the assertion this rework exists for
     collisions: {},
     warningCodes: ['missing-instructor', 'assumed-delivery-mode', 'missing-room'],
     extra: (doc, rev) => {
@@ -293,6 +323,7 @@ const EXPECTATIONS = {
     input: 'input.txt',
     meetings: 3,
     unresolvedLocations: 1,
+    blockingQuestions: 0,  // the assertion this rework exists for
     collisions: {},
     warningCodes: ['unknown-building-code', 'missing-instructor'],
     extra: (doc, rev) => {
@@ -312,6 +343,7 @@ const EXPECTATIONS = {
     input: 'input.txt',
     meetings: 4,
     unresolvedLocations: 0,
+    blockingQuestions: 1,  // the assertion this rework exists for
     collisions: { conflict: 1, 'cannot-determine': 1 },
     warningCodes: ['unmapped-session', 'unmapped-session'],
     extra: (doc, rev) => {
@@ -325,6 +357,41 @@ const EXPECTATIONS = {
         return 'something was reported as "no conflict"; with sessionsStatus not-published that claim cannot be made';
       }
       if (rev.sessionsStatus !== 'not-published') return `sessionsStatus should be not-published, got ${rev.sessionsStatus}`;
+      return true;
+    }
+  },
+  '07-screenshot-no-sections': {
+    // No input file at all: the source was an image. Nothing to checksum.
+    input: null,
+    meetings: 5,
+    unresolvedLocations: 4,
+    blockingQuestions: 0,  // THE POINT OF THIS FIXTURE
+    collisions: {},
+    warningCodes: ['unknown-building-code', 'unknown-building-code', 'unknown-building-code', 'unknown-building-code'],
+    extra: (doc, rev) => {
+      // This exact input produced FOUR blocking questions under the 0.3.0 skill,
+      // before the student saw anything at all. Every one of them is now derived
+      // or stated. If this count ever rises above zero the rework has regressed.
+      if (rev.blockingQuestions.length !== 0) {
+        return `asks ${rev.blockingQuestions.length} question(s) before showing anything: ` +
+          rev.blockingQuestions.map((q) => q.kind).join(', ');
+      }
+      if (doc.meetings.some((m) => 'section' in m)) return 'a section was invented; the screenshot has none';
+      if (doc.meetings.some((m) => 'title' in m)) return 'a title was invented; the screenshot has none';
+      if (doc.import.sourceChecksum !== undefined) return 'an image has no raw text to checksum';
+      // Four of five buildings unresolvable and the import still succeeds.
+      if (!rev.valid) return 'the import was rejected -- a mostly-unknown-buildings schedule must still import';
+      const pdb = rev.locations.find((l) => l.code === 'PDB');
+      if (!pdb || pdb.status !== 'resolved') return 'PDB must still resolve alongside the unknown ones';
+      // A once-weekly course is an observation, never a question.
+      const once = doc.meetings.find((m) => m.courseCode === 'ISM3541');
+      if (once.daysOfWeek.length !== 1) return 'ISM3541 meets once a week in the source';
+      if (!rev.assumptions.some((a) => a.includes('once a week'))) {
+        return 'a once-weekly course must be noted as an observation under the table';
+      }
+      if (!rev.assumptions.some((a) => a.toLowerCase().includes('room numbers'))) {
+        return 'a screenshot import must flag room numbers as the OCR risk';
+      }
       return true;
     }
   }
@@ -343,6 +410,13 @@ for (const [dir, exp] of Object.entries(EXPECTATIONS)) {
   });
 
   check(`${dir}: checksum matches the input file`, () => {
+    if (!exp.input) {
+      // An image source has no raw text, so the schema lets the checksum be absent
+      // rather than inviting a fabricated one.
+      return doc.import.sourceChecksum === undefined
+        ? true
+        : `there is no input file, so sourceChecksum should be absent, not ${JSON.stringify(doc.import.sourceChecksum)}`;
+    }
     const raw = fs.readFileSync(path.join(FIXTURES, dir, exp.input), 'utf8');
     const sum = crypto.createHash('sha256').update(raw, 'utf8').digest('hex');
     return eq(doc.import.sourceChecksum, sum, 'sourceChecksum');
@@ -365,8 +439,53 @@ for (const [dir, exp] of Object.entries(EXPECTATIONS)) {
   check(`${dir}: ${exp.unresolvedLocations} unresolved location(s)`, () =>
     eq(rev.unresolved.length, exp.unresolvedLocations, 'unresolved count'));
 
+  check(`${dir}: ${exp.blockingQuestions} blocking question(s)`, () => {
+    if (rev.blockingQuestions.length === exp.blockingQuestions) return true;
+    return `expected ${exp.blockingQuestions}, got ${rev.blockingQuestions.length}: ` +
+      rev.blockingQuestions.map((q) => q.kind).join(', ') +
+      '\n    A question must earn its place: it may only be asked when the answer cannot be' +
+      '\n    inferred AND a wrong guess would be invisible to a student reading the draft.';
+  });
+
   if (exp.extra) check(`${dir}: ${dir.replace(/^\d+-/, '').replace(/-/g, ' ')}`, () => exp.extra(doc, rev));
 }
+
+/* ------------------------------------------------------------------ *
+ * The draft comes FIRST. This is an ordering assertion, not a content one:
+ * whatever else the report says, the student must meet their own week before
+ * they meet a question about it. Asserted on the text the student actually
+ * sees, because that is where the ordering is real.
+ * ------------------------------------------------------------------ */
+console.log('\nFLOW: the draft is shown before anything is asked');
+
+const reviewText = (file) => execFileSync(process.execPath,
+  [path.join(SCRIPTS, 'review-schedule.mjs'), file],
+  { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+
+for (const dir of Object.keys(EXPECTATIONS)) {
+  check(`${dir}: THE WEEK precedes MUST ASK`, () => {
+    const text = reviewText(path.join(FIXTURES, dir, 'expected.json'));
+    const week = text.indexOf('THE WEEK');
+    const ask = text.indexOf('MUST ASK');
+    const assume = text.indexOf('ASSUMPTIONS');
+    if (week === -1) return 'the week was never rendered';
+    if (ask === -1) return 'the MUST ASK section is missing entirely';
+    if (assume === -1) return 'the ASSUMPTIONS section is missing entirely';
+    if (week > assume) return 'assumptions were listed before the week they qualify';
+    if (assume > ask) return 'questions came before the assumptions';
+    return true;
+  });
+}
+
+check('a schedule that needs a question STILL shows the week first', () => {
+  // 05 is the fixture with a genuine collision, so it is the one that proves the
+  // ordering holds when there really is something to ask about.
+  const text = reviewText(path.join(FIXTURES, '05-time-conflict', 'expected.json'));
+  if (!/MUST ASK \(1\)/.test(text)) return 'fixture 05 should raise exactly one question';
+  return text.indexOf('THE WEEK') < text.indexOf('MUST ASK')
+    ? true
+    : 'the question was raised before the draft was shown';
+});
 
 /* --- the .ics fixture exercises the parser rather than a document --- */
 console.log('\nFIXTURES: .ics parsing');

@@ -132,6 +132,81 @@ const where = (m) => {
   return m.location.room ? `${m.location.buildingCode} ${m.location.room}` : `${m.location.buildingCode} (room TBA)`;
 };
 
+/** Section is optional, so it is a suffix rather than a column. */
+const label = (m) => (m.section ? `${m.courseCode} ${m.section}` : m.courseCode);
+
+/* ------------------------------------------------------------------ *
+ * Questions versus assumptions
+ *
+ * THE RULE, and the reason this section exists at all: a question must earn its
+ * place. It earns it only when the answer cannot be inferred AND getting it wrong
+ * would produce a schedule that is quietly incorrect -- wrong in a way the student
+ * would not notice while reading the draft table.
+ *
+ * Everything else is an ASSUMPTION: stated plainly under the draft, correctable in
+ * one word, and never a thing that stops a student seeing their schedule. An import
+ * that interrogates before it shows anything is an import that gets abandoned, and
+ * an abandoned import helps nobody.
+ *
+ * So an unknown building is not a question -- the student cannot fix FSU's missing
+ * data and does not need to. A missing section is not a question -- nothing is
+ * computed from it. A course meeting once a week is not a question -- that is
+ * ordinary. An unreadable row IS a question, because a silently dropped class is
+ * exactly the failure the student will not catch by scanning a table.
+ * ------------------------------------------------------------------ */
+const BLOCKING_WARNINGS = new Set(['unparsed-row', 'ambiguous-time']);
+const allWarnings = doc.import?.warnings ?? [];
+
+const blockingQuestions = [];
+for (const w of allWarnings) {
+  if (!BLOCKING_WARNINGS.has(w.code)) continue;
+  blockingQuestions.push({
+    kind: w.code,
+    ask: w.code === 'unparsed-row'
+      ? `A row could not be read, so a class may be missing entirely: ${w.rawValue ?? w.message}`
+      : `A time could not be read unambiguously: ${w.rawValue ?? w.message}`,
+    meetingId: w.meetingId ?? null
+  });
+}
+for (const c of collisions) {
+  if (c.verdict !== 'conflict') continue;
+  blockingQuestions.push({
+    kind: 'time-conflict',
+    ask: `${c.a.courseCode} and ${c.b.courseCode} genuinely overlap on ${c.days.map((d) => SHORT[d]).join(', ')}. ` +
+      'That is usually a misread time and occasionally a real registration problem. Which is it?',
+    meetingId: c.a.id
+  });
+}
+
+/* Stated, not asked. */
+const assumptions = [];
+const noSection = meetings.filter((m) => m.section === undefined);
+if (noSection.length) {
+  assumptions.push(`No section numbers in the source, so none were stored (${noSection.length} block(s)). ` +
+    'Location, conflict and walking-time answers do not use them. Say so if you want them added.');
+}
+const noTitle = meetings.filter((m) => m.title === undefined);
+if (noTitle.length) {
+  assumptions.push(`No course titles in the source, so none were stored (${noTitle.length} block(s)). Course codes carry the meaning.`);
+}
+if (meetings.some((m) => (m.partOfTerm ?? 'full-term') === 'full-term')) {
+  assumptions.push('Every course is treated as full-term, which is the default -- the source did not say otherwise. ' +
+    'A half-term course would change conflict answers, so correct this if any of yours is one.');
+}
+for (const w of allWarnings) {
+  if (BLOCKING_WARNINGS.has(w.code)) continue;
+  assumptions.push(`${w.code}: ${w.message}`);
+}
+const onceWeekly = meetings.filter((m) => Array.isArray(m.daysOfWeek) && m.daysOfWeek.length === 1);
+if (onceWeekly.length) {
+  assumptions.push(`Meets once a week: ${onceWeekly.map((m) => `${m.courseCode} (${SHORT[m.daysOfWeek[0]]})`).join(', ')}. ` +
+    'Read off the source as-is; ordinary, but correct it if a day was cut off.');
+}
+if (doc.import?.sourceFormat === 'screenshot-ocr') {
+  assumptions.push('Read from an image, so ROOM NUMBERS are the values most likely to be wrong. ' +
+    'They are shown in full in the week above -- check them there.');
+}
+
 if (asJson) {
   console.log(JSON.stringify({
     valid: errors.length === 0,
@@ -142,7 +217,9 @@ if (asJson) {
     locations,
     unresolved,
     collisions,
-    warnings: doc.import?.warnings ?? []
+    warnings: allWarnings,
+    assumptions,
+    blockingQuestions
   }, null, 2));
   process.exit(errors.length ? 1 : 0);
 }
@@ -173,11 +250,11 @@ for (const d of DAYS) {
   if (!list.length) continue;
   out.push(`  ${SHORT[d]}`);
   for (const m of list) {
-    out.push(`    ${m.startTime}-${m.endTime}  ${m.courseCode} ${m.section}  ${(m.meetingType || 'meeting').padEnd(10)} ${where(m)}`);
+    out.push(`    ${m.startTime}-${m.endTime}  ${label(m).padEnd(14)} ${(m.meetingType || 'meeting').padEnd(10)} ${where(m)}`);
   }
 }
 for (const m of unscheduled) {
-  out.push(`  (no fixed time)  ${m.courseCode} ${m.section}  ${m.deliveryMode}  ${where(m)}`);
+  out.push(`  (no fixed time)  ${label(m).padEnd(14)} ${m.deliveryMode}  ${where(m)}`);
 }
 out.push('');
 
@@ -210,10 +287,24 @@ if (!collisions.length) {
 }
 out.push('');
 
-const warnings = doc.import?.warnings ?? [];
-out.push(`IMPORT WARNINGS (${warnings.length})`);
-for (const w of warnings) out.push(`  ${w.code}: ${w.message}`);
-if (!warnings.length) out.push('  None recorded.');
+out.push(`IMPORT WARNINGS (${allWarnings.length})`);
+for (const w of allWarnings) out.push(`  ${w.code}: ${w.message}`);
+if (!allWarnings.length) out.push('  None recorded.');
+out.push('');
+
+/* These two sections come LAST, and that ordering is the point: the student sees
+ * their week before they are asked to do anything about it. */
+out.push(`ASSUMPTIONS (${assumptions.length}) -- stated, not asked; correct any that are wrong`);
+if (!assumptions.length) out.push('  None: nothing had to be assumed.');
+for (const a of assumptions) out.push(`  - ${a}`);
+out.push('');
+
+out.push(`MUST ASK (${blockingQuestions.length})`);
+if (!blockingQuestions.length) {
+  out.push('  Nothing. Show the week above and ask for a yes.');
+} else {
+  for (const q of blockingQuestions) out.push(`  - ${q.ask}`);
+}
 
 console.log(out.join('\n'));
 process.exit(0);

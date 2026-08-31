@@ -167,7 +167,10 @@ export function validateMeeting(meeting, path = '') {
 
 function validateMeetingInto(ctx, path, m) {
   if (!ctx.obj(path, m, PROPS.meeting)) return;
-  ctx.req(path, m, ['id', 'termCode', 'courseCode', 'section', 'title', 'deliveryMode']);
+  ctx.req(path, m, ['id', 'termCode', 'courseCode', 'deliveryMode']);
+  // section and title are OPTIONAL: a screenshot grid carries neither, and neither
+  // feeds an answer. See course-meeting.schema.json for the reasoning. Fabricating
+  // them is the failure this omission prevents.
 
   if (m.id !== undefined) ctx.str(`${path}/id`, m.id, RE.slug, 'a slug');
   if (m.termCode !== undefined) ctx.str(`${path}/termCode`, m.termCode, RE.termCode, 'YYYY-season');

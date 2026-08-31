@@ -1,0 +1,160 @@
+{
+  "schemaVersion": "0.4.0",
+  "termCode": "2026-fall",
+  "meetings": [
+    {
+      "id": "ism3541-lecture-th",
+      "termCode": "2026-fall",
+      "courseCode": "ISM3541",
+      "instructors": [
+        {
+          "name": "Ajaan Khan",
+          "role": "unknown"
+        }
+      ],
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "thursday"
+      ],
+      "startTime": "08:00",
+      "endTime": "09:15",
+      "location": {
+        "buildingCode": "WCB",
+        "room": "G700",
+        "buildingCodeRaw": "WCB G700"
+      }
+    },
+    {
+      "id": "fin4424-lecture-tuth",
+      "termCode": "2026-fall",
+      "courseCode": "FIN4424",
+      "instructors": [
+        {
+          "name": "Matheus Sampaio",
+          "role": "unknown"
+        }
+      ],
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "tuesday",
+        "thursday"
+      ],
+      "startTime": "11:30",
+      "endTime": "12:45",
+      "location": {
+        "buildingCode": "WCB",
+        "room": "2703",
+        "buildingCodeRaw": "WCB 2703",
+        "floor": 2
+      }
+    },
+    {
+      "id": "man4720-lecture-mowe",
+      "termCode": "2026-fall",
+      "courseCode": "MAN4720",
+      "instructors": [
+        {
+          "name": "Hermann Ndofor",
+          "role": "unknown"
+        }
+      ],
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "monday",
+        "wednesday"
+      ],
+      "startTime": "13:15",
+      "endTime": "14:30",
+      "location": {
+        "buildingCode": "WCB",
+        "room": "2703",
+        "buildingCodeRaw": "WCB 2703",
+        "floor": 2
+      }
+    },
+    {
+      "id": "fin4453-lecture-tuth",
+      "termCode": "2026-fall",
+      "courseCode": "FIN4453",
+      "instructors": [
+        {
+          "name": "Gary Smith",
+          "role": "unknown"
+        }
+      ],
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "tuesday",
+        "thursday"
+      ],
+      "startTime": "13:15",
+      "endTime": "14:30",
+      "location": {
+        "buildingCode": "WCB",
+        "room": "1701",
+        "buildingCodeRaw": "WCB 1701",
+        "floor": 1
+      }
+    },
+    {
+      "id": "sop3004-lecture-tuth",
+      "termCode": "2026-fall",
+      "courseCode": "SOP3004",
+      "instructors": [
+        {
+          "name": "Julia Lombard",
+          "role": "unknown"
+        }
+      ],
+      "meetingType": "lecture",
+      "deliveryMode": "in-person",
+      "daysOfWeek": [
+        "tuesday",
+        "thursday"
+      ],
+      "startTime": "15:00",
+      "endTime": "16:15",
+      "location": {
+        "buildingCode": "PDB",
+        "room": "A0101",
+        "buildingCodeRaw": "PDB A0101"
+      }
+    }
+  ],
+  "import": {
+    "sourceFormat": "screenshot-ocr",
+    "sourceLabel": "Weekly schedule grid, screenshot pasted into the conversation",
+    "importedAt": "2026-08-31T12:15:00-04:00",
+    "importerVersion": "0.4.0",
+    "warnings": [
+      {
+        "code": "unknown-building-code",
+        "message": "WCB is not in the shipped campus data, so walking times, between-class feasibility and parking answers are unavailable for ISM3541. Days, times and the room number are stored exactly as printed.",
+        "meetingId": "ism3541-lecture-th",
+        "rawValue": "WCB"
+      },
+      {
+        "code": "unknown-building-code",
+        "message": "WCB is not in the shipped campus data, so walking times, between-class feasibility and parking answers are unavailable for FIN4424. Days, times and the room number are stored exactly as printed.",
+        "meetingId": "fin4424-lecture-tuth",
+        "rawValue": "WCB"
+      },
+      {
+        "code": "unknown-building-code",
+        "message": "WCB is not in the shipped campus data, so walking times, between-class feasibility and parking answers are unavailable for MAN4720. Days, times and the room number are stored exactly as printed.",
+        "meetingId": "man4720-lecture-mowe",
+        "rawValue": "WCB"
+      },
+      {
+        "code": "unknown-building-code",
+        "message": "WCB is not in the shipped campus data, so walking times, between-class feasibility and parking answers are unavailable for FIN4453. Days, times and the room number are stored exactly as printed.",
+        "meetingId": "fin4453-lecture-tuth",
+        "rawValue": "WCB"
+      }
+    ]
+  }
+}

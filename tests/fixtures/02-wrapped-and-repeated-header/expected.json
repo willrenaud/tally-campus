@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "0.3.0",
+  "schemaVersion": "0.4.0",
   "termCode": "2026-fall",
   "meetings": [
     {
@@ -119,7 +119,7 @@
     "sourceFormat": "text-paste",
     "sourceLabel": "Student Central detailed schedule, pasted as text across two pages",
     "importedAt": "2026-08-30T14:00:00-04:00",
-    "importerVersion": "0.3.0",
+    "importerVersion": "0.4.0",
     "sourceChecksum": "fa183882c258521e91ea509297edbd6012ac6e52cb3ad6daf8ee7fc3be56ebbe",
     "warnings": [
       {

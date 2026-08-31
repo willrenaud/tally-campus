@@ -74,3 +74,47 @@ export function resolveBuilding(raw) {
     : [];
   return { status: 'unknown', raw: raw.trim(), near };
 }
+
+/**
+ * Which term a schedule being imported today most likely belongs to.
+ *
+ * WHY THIS EXISTS. Asking a student "which term is this?" is a question that
+ * cannot earn its place: the answer is derivable from the date, and getting it
+ * wrong is both obvious and cheap to correct, because the term is stated on the
+ * face of the draft. So the importer states an assumption instead of blocking.
+ *
+ * The three bases are ranked by how much they should be trusted, and the caller
+ * is expected to say which one it used:
+ *
+ *   'calendar'    today falls inside a shipped term. Solid.
+ *   'next-term'   today falls between shipped terms, so the next one starting is
+ *                 the guess -- a schedule is usually imported shortly BEFORE the
+ *                 term it covers, never after it ends.
+ *   'month'       no shipped calendar covers or follows today, so the term is
+ *                 derived from the month alone. Says nothing about whether FSU
+ *                 actually runs that term; it is a shape, not a fact, and the
+ *                 caller must hedge accordingly.
+ *
+ * Deriving a termCode is not the same as inventing campus data: no dates, rooms
+ * or deadlines are conjured here, only the label of the file to write.
+ */
+export function currentTerm(today = new Date().toISOString().slice(0, 10)) {
+  const cals = termCalendars();
+
+  const covering = cals.find((c) => c.startDate <= today && today <= c.endDate);
+  if (covering) {
+    return { termCode: covering.termCode, displayName: covering.displayName ?? null, basis: 'calendar' };
+  }
+
+  const upcoming = cals
+    .filter((c) => c.startDate > today)
+    .sort((a, b) => a.startDate.localeCompare(b.startDate))[0];
+  if (upcoming) {
+    return { termCode: upcoming.termCode, displayName: upcoming.displayName ?? null, basis: 'next-term' };
+  }
+
+  const year = today.slice(0, 4);
+  const month = Number(today.slice(5, 7));
+  const season = month <= 4 ? 'spring' : month <= 7 ? 'summer' : 'fall';
+  return { termCode: `${year}-${season}`, displayName: null, basis: 'month' };
+}

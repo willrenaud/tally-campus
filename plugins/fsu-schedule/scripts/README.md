@@ -9,6 +9,7 @@ themselves rather than relying on `${CLAUDE_PLUGIN_ROOT}` being exported.
 
 | Script | Reads | Writes | Exit codes |
 | --- | --- | --- | --- |
+| `current-term.mjs` | `data/term-calendar.json` | the term to assume, on stdout | 0, or 2 on a malformed `--date` |
 | `parse-ics.mjs <file>` | an `.ics` file | JSON drafts on stdout | 0, or 2 if the file is unreadable |
 | `resolve-buildings.mjs <loc>…` | `data/buildings.json` | a report on stdout | always 0 — an unknown building is a result, not a failure |
 | `review-schedule.mjs <draft>` | the draft, `data/` | a report on stdout | 0 valid, 1 invalid, 2 could not run |
@@ -26,6 +27,12 @@ no meridiem, and a two-letter `FR` all come back refused, because each has two
 readings that are both common in real schedules and nothing in the string separates
 them. Guessing is silent, and silent is the problem — a student finds out in the
 wrong room three weeks later.
+
+**A question must earn its place.** `review-schedule.mjs` splits what it finds into
+ASSUMPTIONS and MUST ASK, and the split is not cosmetic: it is the rule that an
+importer may only stop a student when the answer cannot be inferred AND a wrong
+guess would be invisible in the rendered week. `current-term.mjs` exists to move one
+former question -- which term is this? -- permanently onto the assumptions side.
 
 **An unknown building is a result.** Only 32 of FSU's buildings ship. A code that
 does not resolve is reported as `unknown` and the import continues; nothing here

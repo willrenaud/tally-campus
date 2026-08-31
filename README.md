@@ -11,17 +11,25 @@ A Claude Code plugin marketplace for Florida State University students.
 
 | Plugin | Version | What it does |
 | --- | --- | --- |
-| [`fsu-schedule`](plugins/fsu-schedule/) | 0.3.0 | Import your class schedule once, then ask Claude about walking times between classes, parking, conflicts, and deadlines. |
+| [`fsu-schedule`](plugins/fsu-schedule/) | 0.4.0 | Import your class schedule once, then ask Claude about walking times between classes, parking, conflicts, and deadlines. |
 
 ## Status
 
-**One skill: importing a schedule.** `fsu-schedule` 0.3.0 ships six JSON Schemas with a worked
+**One skill: importing a schedule.** `fsu-schedule` 0.4.0 ships six JSON Schemas with a worked
 example of each, real FSU campus data — 32 buildings, 85 walk edges, the six parking garages, and
 the Fall 2026 academic calendar — and the
 [`import-schedule`](plugins/fsu-schedule/skills/import-schedule/SKILL.md) skill, which takes a
 paste from Student Central, an `.ics` export, a screenshot, or a spoken description and turns it
 into a validated schedule. Nothing yet *queries* that schedule; walking times, parking and conflict
 answers are the next step.
+
+The import is **draft-first**: it parses everything it can, shows the week back as a table with its
+assumptions listed under it, and asks only what genuinely could not be resolved. The term comes from
+today’s date and the shipped calendar; absent sections and titles are omitted rather than demanded;
+an unknown building is stated, not queried. A question is only asked when the answer cannot be
+inferred *and* a wrong guess would be invisible to someone reading the draft — an unreadable row, a
+`TH` that could mean two things, a genuine collision. The test suite pins an exact question count on
+every fixture, and the clean cases ask nothing at all.
 
 The scripts the skill runs are dependency-free by design: Ajv validates the campus data at build
 time, but a student installs the plugin and it works with nothing else on their machine.

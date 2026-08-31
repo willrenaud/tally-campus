@@ -22,7 +22,7 @@ because the whole point of fixture 04 is what happens when a code is not in
 
 | File | What it is |
 | --- | --- |
-| `input.txt` / `input.ics` | The raw artifact, exactly as a student would hand it over. |
+| `input.txt` / `input.ics` | The raw artifact, exactly as a student would hand it over. Absent for 07, whose source was an image. |
 | `expected.json` | The `student-schedule` document a correct import produces from it. |
 | `NOTES.md` | What is adversarial about this fixture and what the importer must not do. |
 
@@ -33,6 +33,9 @@ because the whole point of fixture 04 is what happens when a code is not in
 - produces the specific review outcome the fixture is about — an unknown building
   that still imports, a collision that is a collision, a collision that is
   *undecidable*.
+- asks the student **only** what genuinely could not be resolved: every fixture
+  carries an exact `blockingQuestions` count, and the report renders the week
+  before it renders a question.
 
 ## The fixtures
 
@@ -44,3 +47,4 @@ because the whole point of fixture 04 is what happens when a code is not in
 | 04 | A course in `WCB`, which does not ship | **Must import successfully.** Failing the whole schedule over one building is the bug. |
 | 05 | Two full-term courses genuinely colliding, and two half-term courses that only appear to | One is a `CONFLICT`, the other is `CANNOT TELL`, and reporting the second as "no conflict" is the failure. |
 | 06 | `.ics` export | Folded lines, escaped commas, `BYDAY`, an `EXDATE`, and an event with no `LOCATION`. |
+| 07 | A screenshot: no sections, no titles, four of five rooms in `WCB` | **Must ask nothing.** Under 0.3.0 this input produced four blocking questions before the student saw a thing. |

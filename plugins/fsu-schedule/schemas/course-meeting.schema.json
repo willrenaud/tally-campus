@@ -25,7 +25,7 @@
     "section": {
       "type": "string",
       "pattern": "^[A-Za-z0-9-]{1,8}$",
-      "description": "The section identifier as printed on the schedule, for example \"0001\" or \"01\". Stored as a string, never a number, because leading zeros are significant and some sections are not numeric at all."
+      "description": "The section identifier as printed on the schedule, for example \"0001\" or \"01\". Stored as a string, never a number, because leading zeros are significant and some sections are not numeric at all.\n\nOPTIONAL, and deliberately so. A weekly-grid screenshot and most calendar exports do not print a section anywhere, and nothing this plugin answers needs one: location, walking times, conflicts and deadlines are all properties of the meeting block, not of the section label. Requiring it would force an importer either to interrogate the student about data they are looking at a picture of, or to fabricate \"0001\" -- and a fabricated section is worse than an absent one, because it looks authoritative in a later registration question. Omit it when the source does not carry it; a student who wants section-specific answers can supply it later."
     },
     "classNumber": {
       "type": "string",
@@ -35,7 +35,7 @@
     "title": {
       "type": "string",
       "minLength": 1,
-      "description": "The course title as it appears on the schedule, for example \"Freshman Composition and Rhetoric\"."
+      "description": "The course title as it appears on the schedule, for example \"Freshman Composition and Rhetoric\".\n\nOPTIONAL for the same reason as section: a grid screenshot usually prints only the course code, and the title is presentation rather than something an answer is computed from. Omit it rather than inventing one or echoing the course code into it."
     },
     "instructors": {
       "type": "array",
@@ -143,8 +143,6 @@
     "id",
     "termCode",
     "courseCode",
-    "section",
-    "title",
     "deliveryMode"
   ],
   "additionalProperties": false,
