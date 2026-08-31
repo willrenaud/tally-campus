@@ -39,6 +39,8 @@ fetched, and how much to trust it. Nothing was written from memory: a record is 
 page actually retrieved, or computed from records that were, or it is listed in
 [`DATA-GAPS.md`](DATA-GAPS.md) instead.
 
+Start with [`PROGRESS.md`](PROGRESS.md) for where the build is and what step comes next.
+
 Three things to read, in order:
 
 - [`plugins/fsu-schedule/data/README.md`](plugins/fsu-schedule/data/README.md) — what shipped, where
@@ -66,6 +68,7 @@ fsu-campus/
 ├── tools/                            validators (dev only, never shipped to users)
 ├── tests/                            import fixtures and the test suite (dev only)
 ├── package.json                      dev dependencies for tools/ and tests/ — not the plugin
+├── PROGRESS.md                       what each step delivered, and where the next one starts
 ├── DATA-GAPS.md                      what the campus data is missing, and what was tried
 ├── NOTES-SPEC.md                     notes from the live plugin docs, so we don't re-fetch
 ├── LICENSE                           MIT
