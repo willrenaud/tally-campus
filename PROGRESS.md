@@ -367,6 +367,131 @@ constructed case proving `no-conflict` is still **reachable**, which the shipped
 calendar alone cannot demonstrate — and that the Registrar's wording for the two
 different 9 October deadlines is quoted rather than paraphrased.
 
+## Step 7 — Driving, and the first correction from real use
+
+Plugin 0.7.0. The first step driven by someone actually using the thing, and the
+first time a finding from a previous step turned out to be **wrong in an
+interesting direction**.
+
+### The correction: the model is better than step 6 claimed
+
+Step 6 reported `WCB`→`PDB` at **38–54 minutes** and hedged it, on the grounds that
+`WCB` is a graph leaf whose routes detour through `LAW` and run 15–20% long, with
+the safety margin stacked on top. `DATA-GAPS.md` §6 predicted an inflated answer.
+
+**It is accurate.** The student who makes that trip regularly reports the figure is
+right, not inflated. At the long end the leaf detour and the margin land about
+where reality is.
+
+**Nothing was tuned.** One leg, one observer, one mode, no stopwatch, at the extreme
+end of the range — the place where a proportional error is largest in absolute
+terms and therefore easiest to *feel* correct. `PATH_FACTOR`, `WALK_SPEED_MPS` and
+`SAFETY_MARGIN` are untouched. It is recorded in §6 as corroboration and explicitly
+not as calibration. What would justify moving a constant is the fieldwork in §1 and
+§6: measured edges across a range of distances, which is what a `p90Seconds` needs
+anyway.
+
+### The real gap it exposed: the plugin only modelled walking
+
+On that leg the plugin told a student **a true thing about a mode they do not use**.
+The walk verdict was right and the answer was useless, because the verdict attached
+to it — a flat `no` — reads as *"you cannot make this class"* when the truth is
+*"not on foot"*. The student drives that leg. The useful answer was unsayable.
+
+This is a different failure from every one the earlier steps chased. Those were all
+about **confidence** — saying more than the data supports. This one is about
+**scope**: answering a narrower question than the one asked, and letting the
+narrowness pass unmentioned.
+
+### Part A — the honest floor, shipped first and standing on its own
+
+`no` now means only that two meetings **overlap in time** — a scheduling conflict,
+with no gap to travel in. A gap too short to walk returns **`not-walkable`**, which
+names alternatives instead of stopping.
+
+Deliberately built and tested to work with **zero drive data**: `evaluateLeg()`
+attaches `ALTERNATIVES` whenever the verdict is `not-walkable`, and the drive
+planner is an *optional* injected function. With no planner the alternatives are
+still named, just without numbers. A test calls `evaluateLeg` with no planner and
+asserts exactly that, so Part A cannot rot into something that only works because
+Part B happens to be there.
+
+### Part B — the drive model, and the hole in the middle of it
+
+`lib/driving.mjs`. Four components, kept separately visible because their
+confidences are not remotely comparable:
+
+| Step | Confidence |
+| --- | --- |
+| walk to the car | estimate, **weak** — straight-line to a garage centroid, no walk edge has a parking endpoint |
+| drive | estimate — `haversine × 1.45 ÷ 6.7 m/s`, both constants chosen and stated, neither measured |
+| **find a space** | **not estimable at all** |
+| walk in from the garage | same weak straight-line estimate |
+
+**The hard rule is structural, not advisory: there is no total.** Not a field, not
+a getter. `PARKING_SEARCH` carries `estimable: false` and **no seconds key**, so a
+consumer cannot read a number off it by accident, and a test walks every key
+asserting none is numeric. The plan exposes `knownMinimumSeconds`, labelled
+*"before you start looking for a space"*, and nothing that adds the four steps up.
+
+That hole is the feature, not a limitation of it. Six garages ship with no
+capacity, no `typicalFullBy`, no occupancy and no fill history (`DATA-GAPS.md` §7),
+and on a weekday morning the search is routinely the largest term in the trip. "About
+12 minutes" would be the same class of harm as a hedged game-day parking answer: the
+student arrives late because PG5 was full. The output also refuses to present
+`gap − knownMinimum` as time available to park.
+
+**The margin is charged once.** A drive leg has two walking components and
+`SAFETY_MARGIN` is a multiplier **plus a flat 180 s**. The flat part is a
+per-JOURNEY allowance — doors at both ends, time inside both buildings, one
+crossing — and a drive journey still has one origin and one destination building.
+So the two walk legs are summed and the margin applied once. The drive leg carries
+**no** walking margin at all, because doors, stairs and class-change crowds are not
+things a car is subject to. Every component reports `carriesMargin`, and a test
+asserts the once-versus-twice difference is *exactly* the flat allowance, so it
+cannot pass trivially.
+
+**The multi-hop assumption is stated, not hidden.** The car is assumed to be at the
+garage this plugin would have recommended for the *earlier* class, because a student
+who drives between classes moves the car during the day. A model assuming one
+morning parking spot answers a question nobody asked. The assumption is returned on
+the plan so an answer can state it.
+
+**Blackout dates refuse the drive too** — a drive answer is a parking answer with a
+journey in front of it, so telling a student to drive on a home football date is
+telling them to park on one. `planDrive()` calls `blackoutCheck()` before it ranks a
+single garage.
+
+`rankZonesFor()` moved into `lib/parking.mjs` so `where-to-park` and the drive model
+rank garages identically; two copies would be two chances to disagree.
+
+### Seminole Express: scoped, not built
+
+**Route and timetable data is fetchable.** StarMetro publishes a static GTFS feed at
+`talgov.com/Uploads/Public/documents/starmetro/GTFS.zip`, tracked live by Transitland
+(`f-djkj-starmetro`, successful fetch 2026-08-31). Seven routes — Garnet, Gold,
+Heritage, Innovation, Osceola, Renegade, Tomahawk — plus Nite Nole. FSU publishes
+operating hours; per-stop times exist only inside the GTFS.
+
+Not built here, because a GTFS import is a whole step: a schema for routes and stop
+times, a zip and CSV parser that stays Node-builtins-only, stop-to-building
+association as its own sourcing problem, and the question of how a bus leg composes
+with walking legs at both ends. A half-version would produce exactly the
+confident-sounding answer the rest of this project exists to prevent. `DATA-GAPS.md`
+§11 has the URLs and the scope.
+
+So the shuttle is **named with no times**, carrying `known: 'none'`, and a test
+asserts it quotes no duration.
+
+### Tests: **250 checks**, up from 241
+
+New `MODES` section: `WCB`→`PDB` in 30 minutes returns `not-walkable` with a drive
+alternative and never a bare `no`; no drive answer exposes a numeric total or puts a
+number on the search; the margin is applied once and differs from twice by exactly
+the flat allowance; the drive leg carries no walking margin; a blackout date refuses
+the drive; short and same-building legs are untouched and are not offered a car they
+do not need; Part A works with no planner; the shuttle quotes no times.
+
 ---
 
 ## Outstanding
@@ -403,77 +528,97 @@ Carried forward until fixed.
 - **Only Fall 2026 ships**, so `deadlines` refuses for any other term and `parking`
   refuses for any date it cannot check blackouts against. Both refusals are
   correct; both stop being necessary when a second calendar ships.
+- **Time to find a parking space cannot be estimated at all**, which is why a drive
+  answer has no total. The single highest-value data item in the project now: a
+  capacity and `typicalFullBy` per garage would *bound* it, an occupancy feed would
+  *answer* it. `DATA-GAPS.md` §7 and §10.
+- **Seminole Express is named but unknown.** The GTFS feed is live and scoped in
+  `DATA-GAPS.md` §11; importing it is a whole step and was deliberately not started.
+- **Nothing inside a garage is modelled** — deck-to-street stairs and lifts are
+  uncounted, because `verticalTransit` is unpopulated on every access point.
 - ~~**Homecoming Friday is a half day that `nonClassPeriod` cannot express.**~~
   **Closed in step 6** by adding `cancelledFromTime` to the schema.
 
 ---
 
-## Step 7 starts here
+## Step 8 starts here
 
-**The six skills are the whole feature set as originally specified.** There is no
-seventh skill waiting; what is left is depth, and the honest next move is to use it
-for a term and fix what that exposes.
+Step 7 changed what the next step should be. Two of the three items step 6 listed
+are still right, but a new one now outranks them both.
 
-The three things most worth doing, in order of how much they would improve an answer:
+**1. Garage capacity and `typicalFullBy`.** This is now the single highest-value
+data item in the project. It is the term that dominates every drive answer, it is
+the reason a drive cannot be totalled, and bounding it would turn "unknown" into
+"usually 5–15 minutes before 10am" — which is an actionable answer rather than an
+admission. FSU does not publish it on any page fetched so far. Worth trying:
+Transportation & Parking's annual reports, an FSU Facilities space or parking
+inventory, a public-records request, or counting decks from the garage records
+themselves. An occupancy *feed* would close it outright; a static count and a fill
+time would bound it, which is most of the value.
 
-1. **Walk the campus with a GPS.** Every remaining weakness in the routing answers
-   traces to two facts: no entrance is a real door, and no edge has ever been walked.
-   Real door coordinates and a handful of measured times would let `walk-edges.json`
-   carry a `measurement` block with a `p90Seconds` — and the p90 is what
-   `SAFETY_MARGIN` in `lib/routing.mjs` is standing in for. That constant is
-   designed to be deleted. `DATA-GAPS.md` §1 and §6.
-2. **A GPS reading at `WCB`.** It ships at `low` confidence off three geocodes that
-   disagree by 104 m. One reading at the building replaces the weakest coordinate in
-   the file, and it is the building with the most classrooms.
-3. **Surface lots.** Parking is six garages, and FSU's own page for `WCB` names
-   student lots, metered spaces run by the City of Tallahassee, and Civic Center
-   visitor parking — none of it representable. This is the largest remaining gap by
-   how often a student hits it. `DATA-GAPS.md` §7.
+**2. Seminole Express, via the GTFS feed.** Scoped in `DATA-GAPS.md` §11 and ready
+to build: the feed is live and tracked. This is the second mode the student actually
+has, and right now the plugin names it and admits it knows nothing. A whole step:
+schema for routes/stops/stop-times, a Node-builtins-only zip and CSV reader,
+stop-to-building association, and how a bus leg composes with walking at both ends.
+Do not shortcut the association step — nearest-neighbour guessing a stop to a
+building is exactly the kind of plausible fabrication this project refuses.
 
-Smaller, and each closes a caveat currently printed on every relevant answer:
+**3. Walk the campus with a GPS.** Unchanged from step 6, and step 7 sharpened the
+case for it: one real-world data point now corroborates the walking model at the
+long end, which is encouraging and is *not* evidence about the short end, where most
+legs live. Measured edges across a range of distances would give `walk-edges.json` a
+`measurement` block with `p90Seconds`, and `SAFETY_MARGIN` is designed to be deleted
+the day that lands. Also worth a GPS reading at `WCB` while out there — it is still
+the weakest coordinate in the file.
 
-- **Spring 2027's calendar**, once the Registrar publishes it. `deadlines` refuses
-  outright for any date outside Fall 2026, and `parking` refuses too because it
-  cannot check blackout dates it does not have. Both refusals are correct and both
-  stop being necessary the moment a second term ships. Follow the regeneration
-  recipe in `data/README.md`.
-- **The finals exam grid.** `finalsPeriod` has nowhere to put a mapping from meeting
-  pattern to exam block, so `deadlines` and `whats-next` can only point at the
-  Registrar. A schema change is the right fix, the same shape as the
-  `cancelledFromTime` change in step 6.
-- **`UCD` / `UCC` / `UCB` and the nine one-or-two-classroom buildings.** All resolve
-  cleanly; they were below the original cut. `tools/build-walk-graph.mjs --write`
-  now makes adding them a regeneration rather than a hand edit — but note that
-  fixture 04 uses `UCB` as its unknown building and must be repointed if it ships.
-- **`owner.name` and `author.name` are still `"TODO"`.** They must be real before
-  this is published anywhere.
+Smaller, all carried forward:
+
+- **Spring 2027's calendar** when the Registrar publishes it. `deadlines` and
+  `parking` both refuse outside Fall 2026, correctly.
+- **The finals exam grid** — a schema change, the same shape as `cancelledFromTime`.
+- **Surface lots**, still the largest coverage gap in parking, and now doubly
+  relevant: a drive answer that could name a lot near `WCB` would be materially
+  better than one that can only offer PG5.
+- **`UCD`/`UCC`/`UCB`** and the nine small buildings. Note fixture 04 uses `UCB` as
+  its unknown building and must be repointed if it ships.
+- **`owner.name` and `author.name` are still `"TODO"`.**
 
 ### The acceptance criteria, cumulative
 
 From step 3: `partOfTerm` has three outcomes; `parkingBlackouts` means refusal;
 `locationTba` and `location: null` are different; an unknown building is ordinary.
 From step 4: a question must earn its place. From step 5: put the safety behaviour
-in the script, and give a refusal its own exit code. And now:
+in the script, and give a refusal its own exit code. From step 6: a closing
+"what's next" is a summary and not a specification, and derived data is regenerated
+rather than hand-edited. And now:
 
-7. **A closing "what's next" section is a summary, not a specification.** Step 6
-   existed partly because `whats-next` was promised in step 4, dropped from step 5's
-   closing list, and then nobody noticed. When a step's plan disagrees with what
-   earlier steps promised, the earlier promise wins — go back and read them.
-8. **Regenerate derived data, never hand-edit it.** `walk-edges.json` and every
-   `campusZone` are pure functions of the building centroids. Run
-   `tools/build-walk-graph.mjs --check` before trusting `--write`, and treat a
-   `--check` failure as the tool being wrong about the data rather than the data
-   being wrong.
+9. **Answer the question that was asked, not the one the data models.** A correct
+   answer about walking, given to someone who drives, is a wrong answer. When a
+   result is scoped to an assumption the student never made, say the scope out loud
+   and name what falls outside it. This is a different failure from over-confidence
+   and it will not be caught by any amount of hedging.
+10. **An unknown gets no field.** If a quantity cannot be estimated, do not give it
+    a nullable number, a zero, or a default — remove the key, and remove any field
+    that would let a caller total around it. `PARKING_SEARCH` has no `seconds` and
+    the drive plan has no total. Making the wrong answer unrepresentable beats
+    warning against it, and it survives a model having a bad day.
+11. **One real data point is corroboration, never calibration.** Record it, say what
+    it does and does not support, and leave the constants alone. Tuning a documented
+    assumption to a single observation replaces a stated guess with a fitted one and
+    loses the honesty without gaining accuracy.
 
-Reuse rather than rebuild: `lib/campus.mjs` (shipped data, building resolution,
-`termCalendarCovering`), `lib/schedule.mjs` (the injectable clock, `loadSchedule`,
-three-valued `dayStatus`, `meetingsOn`), `lib/conflicts.mjs` (the three-outcome
-rule, used by both `review-schedule` and `check-conflicts`), `lib/routing.mjs` (the
-graph, the safety margin, `formatRange`), `lib/feasibility.mjs` (the verdict
-ladder), `lib/parking.mjs` (the blackout gate, `windowMatches`, `ruleAt`).
+Reuse rather than rebuild: `lib/campus.mjs`, `lib/schedule.mjs` (injectable clock,
+`loadSchedule`, three-valued `dayStatus`), `lib/conflicts.mjs` (the three-outcome
+rule), `lib/routing.mjs` (graph, margin, `formatRange`), `lib/feasibility.mjs` (the
+ladder and `ALTERNATIVES`), `lib/driving.mjs` (`planDrive`, `PARKING_SEARCH`,
+`DRIVE_MODEL`), `lib/parking.mjs` (`blackoutCheck`, `rankZonesFor`, `windowMatches`,
+`ruleAt`).
 
 Scripts stay Node-builtins-only. **Changing a schema means running `npm test`** —
-the parity section is what catches `lib/validate.mjs` drifting.
+the parity section is what catches `lib/validate.mjs` drifting. **Changing a
+building coordinate means running `tools/build-walk-graph.mjs --check`** before
+`--write`.
 
 Room-number-to-floor derivation is verified against 736 real FSU rooms: a
 four-digit room starting with `0` carries the floor in its first two digits,

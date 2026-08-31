@@ -24,8 +24,26 @@
 import fs from 'node:fs';
 import { readSchedule, dataRoot } from './lib/store.mjs';
 import { termCalendar, currentTerm } from './lib/campus.mjs';
-import { SAFETY_MARGIN } from './lib/routing.mjs';
+import { SAFETY_MARGIN, formatMinutes } from './lib/routing.mjs';
 import { evaluateLeg, endpointOf, legsForDay } from './lib/feasibility.mjs';
+import { planDrive, PARKING_SEARCH, DRIVE_MODEL } from './lib/driving.mjs';
+
+/**
+ * The drive planner handed to evaluateLeg. It only ever runs on a leg the ladder
+ * has already called 'not-walkable', so an ordinary leg never pays for it and a
+ * short walk is never answered with a car.
+ */
+const driveDate = () => { const i = process.argv.indexOf('--date'); return i === -1 ? undefined : process.argv[i + 1]; };
+const drivePlanner = ({ from, to }) => {
+  if (from.kind !== 'building' || to.kind !== 'building') return null;
+  return planDrive({
+    fromCode: from.code,
+    toCode: to.code,
+    date: driveDate(),
+    time: (() => { const i = process.argv.indexOf('--time'); return i === -1 ? '12:00' : process.argv[i + 1]; })(),
+    permits: (() => { const i = process.argv.indexOf('--permits'); return i === -1 ? [] : String(process.argv[i + 1]).split(',').map((s) => s.trim()).filter(Boolean); })()
+  });
+};
 
 const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 const SHORT = { monday: 'Mon', tuesday: 'Tue', wednesday: 'Wed', thursday: 'Thu', friday: 'Fri', saturday: 'Sat', sunday: 'Sun' };
@@ -52,7 +70,8 @@ if (has('--from') || has('--to')) {
     to: endpointOf(fake(to)),
     gapMinutes: gap,
     paceMetersPerSecond: Number(val('--pace')) || undefined,
-    bufferMinutes: Number(val('--buffer')) || 0
+    bufferMinutes: Number(val('--buffer')) || 0,
+    drivePlanner
   });
   emit({ mode: 'ad-hoc', legs: [{ ...result, day: null, earlier: from, later: to }] });
 }
@@ -107,7 +126,8 @@ for (const day of onlyDay ? [onlyDay] : DAYS) {
       sessionsNote: unresolved.length
         ? `${unresolved.map((m) => `${m.courseCode} runs "${m.partOfTerm}"`).join(', ')}, and the ` +
           `${doc.termCode} calendar has no dates for that part of term (sessionsStatus is "${sessionsStatus}").`
-        : null
+        : null,
+      drivePlanner
     });
     legs.push({
       ...result,
@@ -122,6 +142,45 @@ emit({ mode: 'schedule', termCode: doc.termCode ?? null, sessionsStatus, legs })
 
 function labelOf(m) {
   return `${m.courseCode}${m.section ? ` ${m.section}` : ''} ${m.startTime}-${m.endTime}`;
+}
+
+/**
+ * What to do instead of walking. Printed as COMPONENTS with the unknown in the
+ * middle of them, never as a total -- the drive plan has no total field to print
+ * even if this wanted to.
+ */
+function renderAlternatives(out, leg) {
+  const p = (s) => out.push(`                 ${s}`);
+  p('');
+  p('OPTIONS INSTEAD OF WALKING');
+
+  const d = leg.drivePlan;
+  if (d && d.ok) {
+    p(`  DRIVE — ${d.assumption}`);
+    p(`    1. walk to the car    ~${formatMinutes(d.components.walkToCar.optimisticSeconds)}  (${d.origin.code} to ${d.parkedAt.name})`);
+    p(`    2. drive              ~${formatMinutes(d.components.drive.optimisticSeconds)}  (${d.parkedAt.name} to ${d.parkAt.name}, ~${DRIVE_MODEL.approxMph} mph assumed)`);
+    p('    3. FIND A SPACE       UNKNOWN — not estimable from this data, and usually the biggest term');
+    p(`    4. walk in            ~${formatMinutes(d.components.walkFromGarage.optimisticSeconds)}  (${d.parkAt.name} to ${d.destination.code})`);
+    p('');
+    p(`    Walking legs 1 and 4 together, with the safety margin applied ONCE: ${d.combinedWalk.range}`);
+    p(`    Known minimum, steps 1+2+4 only: ${d.knownMinimumLabel}`);
+    p(`    Your gap is ${leg.gapMinutes} min. DO NOT read the difference between those two as`);
+    p('    "time available to find a space". Step 3 has no bound in this data, and steps 1, 2');
+    p('    and 4 are themselves estimates. The trip cannot be totalled.');
+    p('');
+    p(`    ${PARKING_SEARCH.say}`);
+    for (const u of d.unknowns.slice(1)) p(`    Also unmodelled: ${u}`);
+  } else if (d && !d.ok) {
+    p(`  DRIVE — not answerable: ${d.say}`);
+  } else {
+    p('  DRIVE — the plugin can estimate the walk to your car, the drive, and the walk in from');
+    p('    the garage, but NOT how long it takes to find a space. Ask about a specific pair of');
+    p('    buildings for the components.');
+  }
+
+  for (const alt of leg.alternatives.filter((a) => a.mode !== 'drive')) {
+    p(`  ${alt.mode.toUpperCase().replace(/-/g, ' ')} — ${alt.say}${alt.url ? ` (${alt.url})` : ''}`);
+  }
 }
 
 /* ------------------------------------------------------------------ *
@@ -158,7 +217,8 @@ function emit(payload) {
     const tag = {
       comfortable: 'COMFORTABLE  ',
       tight: 'TIGHT        ',
-      no: 'NO           ',
+      no: "NO           ",
+      "not-walkable": "NOT WALKABLE ",
       'cannot-determine': 'CANNOT TELL  ',
       'not-applicable': 'no walk      ',
       refuse: 'REFUSING     '
@@ -168,6 +228,7 @@ function emit(payload) {
       out.push(`                 walk ${leg.walk.range} via ${leg.walk.path.join(' -> ')} (${leg.walk.distanceMeters} m assumed)`);
     }
     out.push(`                 ${leg.say}`);
+    if (leg.verdict === 'not-walkable') renderAlternatives(out, leg);
   }
   out.push('');
 

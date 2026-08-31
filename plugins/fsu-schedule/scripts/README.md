@@ -24,7 +24,8 @@ themselves rather than relying on `${CLAUDE_PLUGIN_ROOT}` being exported.
 hand-written schema check), `campus.mjs` (shipped data access and building
 resolution), `store.mjs` (the per-user file and the re-import policy),
 `routing.mjs` (the walk graph **and the safety margin**), `feasibility.mjs` (the
-verdict ladder), `parking.mjs` (the blackout gate and rule evaluation),
+verdict ladder), `driving.mjs` (the drive model **and the missing middle**),
+`parking.mjs` (the blackout gate, rule evaluation and garage ranking),
 `conflicts.mjs` (the three-outcome collision rule), and `schedule.mjs` (the shared
 read layer: the injectable America/New_York clock, loading the stored schedule,
 and `dayStatus`).
@@ -93,6 +94,20 @@ cannot emit one number. A leg touching a missing building refuses because
 `evaluateLeg()` returns before it reaches any arithmetic. A blackout date never
 reaches a parking rule because `where-to-park.mjs` calls `blackoutCheck()` first
 and exits on it. None of that depends on anyone remembering to be careful.
+
+**An unknown gets no field.** `lib/driving.mjs` returns a drive plan with **no
+total**, because a drive is `walk + drive + FIND A SPACE + walk` and the third
+term cannot be estimated from six garages with no capacity and no occupancy data.
+`PARKING_SEARCH` carries `estimable: false` and **no seconds key at all**, so a
+consumer cannot read a number off it by accident, and the plan exposes only a
+`knownMinimumSeconds` labelled as the floor before the search begins. Making the
+wrong answer unrepresentable beats warning against it.
+
+**The safety margin is charged once per journey, not once per leg.** A drive has
+two walking components; their optimistic seconds are summed and
+`applySafetyMargin` is called once, because the flat 180 s covers doors,
+in-building time and a crossing — a per-journey allowance. Each component reports
+a `carriesMargin` field so an answer can say which parts are margined.
 
 ## The one thing to watch
 

@@ -18,7 +18,7 @@ and OpenStreetMap via the Overpass API.
 
 ## 1. No real entrances exist. Every building routes from its centre.
 
-**The single biggest gap, and it affects all 32 buildings.** Each building in `buildings.json`
+**The single biggest gap, and it affects all 33 buildings.** Each building in `buildings.json`
 carries exactly one entrance whose id is `centroid-stand-in`, placed at the building's centroid and
 labelled as not being a door.
 
@@ -53,7 +53,7 @@ disagree about the street), **4 `low`** (see below).
 element at all, so its coordinate does not come from a polygon join. It is the mean of three
 independent **address geocodes**. See §3.
 
-## 3. The three low-confidence building coordinates
+## 3. The four low-confidence building coordinates
 
 Plus two `medium` records whose weakness is worth naming here even though they cleared the bar:
 `LAW`'s OSM element sits on West Pensacola Street while FSU gives 425 W Jefferson St, so the two
@@ -189,6 +189,26 @@ consequence of the documented edge-selection rule, and quietly widening the cap 
 would rewrite the other 84 edges' basis. A consumer does not need to correct for it — being long is
 the safe direction — but should not claim precision about a WCB route either.
 
+### One real-world corroboration, at the long end
+
+*Recorded 2026-08-31.* The `WCB`→`PDB` leg — the longest routine leg any test schedule produces, and
+the one where the leaf detour and the safety margin stack most — is reported as **38–54 minutes**.
+A student who makes that trip regularly reports that figure is **accurate, not inflated**.
+
+This is the only point on the model that has been checked against reality at all, and it is worth
+writing down precisely because the preceding paragraphs predicted the opposite. The leaf detour and
+the margin are *not* producing a false negative here; at the long end they land about right.
+
+**Nothing was tuned on the strength of it, and nothing should be.** One leg, one observer, one mode,
+no stopwatch, and it is a single point at the extreme end of the range — the place where a
+proportional error is largest in absolute terms and therefore easiest to feel as "about right". It
+is corroboration, not calibration. `PATH_FACTOR`, `WALK_SPEED_MPS` and `SAFETY_MARGIN` are unchanged.
+What would justify changing them is the fieldwork in §1 and §6 above: a set of measured edges across
+a range of distances, which is what a `p90Seconds` needs anyway.
+
+What this *did* expose is a different gap entirely, and a real one: on that leg the plugin told a
+student a true thing about **a mode they do not use**. See §10.
+
 Adding `WCB` also **displaced an existing edge**, exactly as this model predicts it can:
 `krb-to-law` disappeared because `WCB` pushed `KRB` out of `LAW`'s nearest four. That is why
 `tools/build-walk-graph.mjs` exists and why it has a `--check` mode that reproduces the shipped file
@@ -291,3 +311,80 @@ There is no accessibility data anywhere in this dataset: not on entrances, not o
 garage access points. `student-schedule.schema.json` defines `requiresAccessibleRoutes`, and the
 correct behaviour when it is set is to **report that the data cannot answer**, never to quietly return
 the default route.
+
+## 10. Modes other than walking
+
+*Opened 2026-08-31, and partly closed the same day.*
+
+Until 0.7.0 this plugin modelled **walking and nothing else**. That was invisible while every
+answerable leg was a short one, and became obvious the moment `WCB` shipped and the `WCB`→`PDB` leg
+started returning a correct 38–54 minutes to a student who **drives** that leg. The number was right
+and the answer was useless: it was a true statement about a mode the student does not use, and the
+verdict attached to it — a flat "no" — read as "you cannot make this class" when the truth was "not
+on foot".
+
+**What now ships.** A leg too long to walk returns `not-walkable` rather than `no`, and names what
+else exists. Where both ends are shipped buildings it also produces a four-part drive plan.
+
+**What is still missing, per component:**
+
+| Component | Status | Why |
+| --- | --- | --- |
+| walk to the car | estimated, **weak** | Straight-line to a garage centroid. No walk edge in the graph has a parking endpoint (§6), so this is weaker than an ordinary walking estimate. |
+| drive time | estimated | `haversine × 1.45 ÷ 6.7 m/s`. Both constants **chosen, not measured**, same as the walking model. No road network is shipped, so this cuts across blocks a car cannot. |
+| **finding a space** | **not estimable at all** | The core of the gap. See below. |
+| walk from garage | estimated, **weak** | Same weakness as the leg to the car. |
+| deck to street level | **unmodelled** | Garage access points are `centroid-stand-in` and `verticalTransit` is unpopulated on every one, so stairs and lifts inside a garage are not counted anywhere. |
+
+**Time to find a space cannot be estimated, and this is the honest core of the feature.** §7 lists
+what is missing per garage: no capacity, no `adaSpaces`, no `typicalFullBy`, no occupancy feed, no
+historical fill data. There is nothing to derive a search time from, and on a weekday morning it is
+routinely the largest term in the whole trip. So `lib/driving.mjs` returns it as
+`{ estimable: false }` with **no seconds key on the object at all**, and the plan it returns has **no
+total field** — only a `knownMinimumSeconds` explicitly labelled as the floor before the search
+begins. A drive answer that produced "about 12 minutes" would be the same class of harm as a hedged
+game-day parking answer: the student arrives late because PG5 was full.
+
+**To close it:** a capacity and `typicalFullBy` per garage would let the search be *bounded*. A live
+occupancy feed would let it be *answered*. Neither is published on any FSU page fetched for this
+build.
+
+**One thing to watch in the arithmetic.** A drive leg has two walking components, and `SAFETY_MARGIN`
+is a multiplier *plus a flat 180 seconds*. The flat part is a per-JOURNEY allowance — doors at both
+ends, time inside both buildings, one road crossing — so it is charged **once**, on the sum of the
+two walk legs, not once per leg. Applying it twice would add three minutes of pure double-counting.
+Every component in a drive plan carries a `carriesMargin` field recording which side of this it falls
+on, and a test asserts the once-versus-twice difference is exactly the flat allowance.
+
+## 11. Seminole Express: fetchable, and deliberately not built yet
+
+*Investigated 2026-08-31. Route and timetable data **is** available; it is scoped here and left for a
+later step.*
+
+FSU's campus bus is operated by the City of Tallahassee's StarMetro. What exists:
+
+| Source | What it gives | URL |
+| --- | --- | --- |
+| FSU Transportation, Bus Services | Operating hours only, no stop times | `https://transportation.fsu.edu/bus` |
+| StarMetro FSU routes page | The seven route names, per-route map **PDFs**, no stop times | `https://www.talgov.com/starmetro/starmetro-routes-se` |
+| **StarMetro static GTFS** | **The whole timetable**: stops with coordinates, stop times, trips, calendars | `https://www.talgov.com/Uploads/Public/documents/starmetro/GTFS.zip` |
+| Transitland feed record | Confirms the feed is live and tracked | `https://www.transit.land/feeds/f-djkj-starmetro` |
+
+The seven routes are **Garnet, Gold, Heritage, Innovation, Osceola, Renegade and Tomahawk**, plus
+**Nite Nole** in the evenings. Published hours are *"Fall & Spring Semester: 7 AM - 8 PM, Monday -
+Friday"*, *"Summer Semester: 7 AM - 5 PM, Monday - Friday"*, and *"Buses do not run during University
+closures and when classes are not in session."* Transitland records the GTFS feed as active with a
+successful fetch on **2026-08-31**.
+
+**Why it is not built here.** A GTFS import is a whole step: a new schema for routes, stops and stop
+times, a `.zip` and CSV parser that has to stay Node-builtins-only, a stop-to-building association
+that is its own sourcing problem, and the question of how a bus leg composes with a walking leg at
+both ends. Bolting a half-version of that onto this step would produce exactly the kind of
+confident-sounding answer the rest of this file exists to prevent.
+
+**So the `not-walkable` message names the shuttle and admits it knows nothing about it** — no times,
+no stops, no claim that a bus helps on any particular leg — and points at the Transit app, which has
+live times. A test asserts the shuttle alternative carries `known: 'none'` and quotes no duration.
+
+**To close it:** parse the GTFS feed, and solve stop-to-building association honestly rather than by
+nearest-neighbour guessing.

@@ -38,6 +38,7 @@
  *                   which nothing in the data supports.
  */
 import { parkingZones, termCalendarCovering, termCalendars } from './campus.mjs';
+import { straightLineEstimate, applySafetyMargin, formatRange } from './routing.mjs';
 
 /**
  * From when on the evening before a game the blackout is treated as already in
@@ -191,6 +192,44 @@ export function evaluateZones(date, time, { permits = [] } = {}) {
       provenanceConfidence: zone.provenance?.confidence ?? null
     };
   });
+}
+
+/**
+ * The garages for one building, best first, each with its walk estimate.
+ *
+ * Shared by where-to-park.mjs and by the drive model, which needs the same
+ * ranking at both ends of a trip. Two copies of this would be two chances to
+ * rank a garage differently depending on which question was asked.
+ *
+ * Ordering: curated `servesBuildings` first, in the order the data lists them,
+ * then everything else by distance. servesBuildings is documented as local
+ * knowledge that geometry misses -- a closer lot can be useless because a fence
+ * blocks the direct path -- so it OUTRANKS geometry rather than being averaged
+ * with it.
+ */
+export function rankZonesFor(building, date, time, { permits = [] } = {}) {
+  const zones = evaluateZones(date, time, { permits }).map((z) => {
+    const est = straightLineEstimate(z.centroid, building.centroid);
+    const margin = applySafetyMargin(est.optimisticSeconds);
+    const curatedIndex = z.servesBuildings.indexOf(building.code);
+    return {
+      ...z,
+      curated: curatedIndex !== -1,
+      curatedRank: curatedIndex,
+      walk: {
+        ...est,
+        ...margin,
+        range: formatRange(margin),
+        basis: 'straight-line, NOT a graph route -- no walk edge in the shipped data has a parking endpoint'
+      }
+    };
+  });
+  zones.sort((a, b) => {
+    if (a.curated !== b.curated) return a.curated ? -1 : 1;
+    if (a.curated && b.curated) return a.curatedRank - b.curatedRank;
+    return a.walk.distanceMeters - b.walk.distanceMeters;
+  });
+  return zones;
 }
 
 /**

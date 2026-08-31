@@ -751,7 +751,7 @@ check('WCB: a same-building leg routes, and a cross-campus one is honestly long'
   if (!same) return 'no WCB-to-WCB leg was routed';
   const across = json.legs.find((l) => l.walk && !l.walk.sameBuilding);
   if (!across) return 'the WCB-to-PDB leg was not routed';
-  if (across.verdict !== 'no') return `WCB to PDB in 30 minutes should not fit; got ${across.verdict}`;
+  if (across.verdict !== 'not-walkable') return `WCB to PDB in 30 minutes should be not-walkable; got ${across.verdict}`;
   return across.walk.path[0] === 'WCB' && across.walk.path.at(-1) === 'PDB'
     ? true
     : `unexpected path ${across.walk.path.join('>')}`;
@@ -805,10 +805,12 @@ check('a tight-but-technically-feasible gap reports as TIGHT, never comfortable'
   return /tight/i.test(leg.say) ? true : 'the wording does not tell the student to leave early';
 });
 
-check('a gap shorter than the OPTIMISTIC estimate is a plain no', () => {
+check('a gap shorter than the OPTIMISTIC estimate is NOT-WALKABLE, never a bare no', () => {
   const { json } = feasibility(['--schedule', FX08, '--day', 'wednesday']);
   const leg = json.legs[0];
-  if (leg.verdict !== 'no') return `verdict was ${leg.verdict}`;
+  if (leg.verdict === 'no') return 'a bare "no" answers a question about walking, not about whether the class is reachable';
+  if (leg.verdict !== 'not-walkable') return `verdict was ${leg.verdict}`;
+  if (!Array.isArray(leg.alternatives) || !leg.alternatives.length) return 'no alternatives were named';
   return leg.reason === 'shorter-than-optimistic' ? true : `reason was ${leg.reason}`;
 });
 
@@ -1098,6 +1100,127 @@ check('the pack stamp records the plugin version and whether the tree was dirty'
   (typeof packInfo.pluginVersion === 'string' && typeof packInfo.gitDirty === 'boolean' && packInfo.treeHash.length === 64)
     ? true
     : 'the stamp cannot be used to tell which copy is installed');
+
+/* ================================================================== *
+ * 8b. MODES -- not-walkable, and the drive model's missing middle
+ *
+ * The rule this section guards is that a drive answer has NO TOTAL. A leg is
+ * walk + drive + FIND A SPACE + walk, and the third term cannot be estimated
+ * from six garages with no capacity and no occupancy data. A total that omits it
+ * is not an underestimate, it is a different question -- and it is the same class
+ * of harm the parking skill already refuses on game days.
+ * ================================================================== */
+console.log('\nMODES: not-walkable names alternatives, and no drive answer has a total');
+
+const drivePlan = (from, to, gap, extra = []) => {
+  const { json } = feasibility(['--from', from, '--to', to, '--gap', String(gap), ...extra]);
+  return json.legs[0];
+};
+
+check('WCB to PDB in 30 minutes is NOT-WALKABLE with a drive alternative, never a bare no', () => {
+  const leg = drivePlan('WCB', 'PDB', 30, ['--date', '2026-09-03']);
+  if (leg.verdict === 'no') return 'a bare "no" is exactly what this must never return';
+  if (leg.verdict !== 'not-walkable') return `verdict was ${leg.verdict}`;
+  const modes = (leg.alternatives ?? []).map((a) => a.mode);
+  if (!modes.includes('drive')) return 'driving was not named';
+  if (!modes.includes('seminole-express')) return 'the shuttle was not named';
+  if (!leg.drivePlan?.ok) return `no drive plan was produced: ${leg.drivePlan?.reason}`;
+  return true;
+});
+
+check('NO drive answer carries a total that hides the parking search', () => {
+  // Structural, not a wording check: there must be no numeric field whose name
+  // suggests a whole-trip total, and the search component must carry no seconds.
+  for (const [from, to, gap] of [['WCB', 'PDB', 30], ['WCB', 'HCB', 20], ['PDB', 'LAW', 25]]) {
+    const leg = drivePlan(from, to, gap, ['--date', '2026-09-03']);
+    const d = leg.drivePlan;
+    if (!d?.ok) continue;
+    for (const key of Object.keys(d)) {
+      if (/^total|Total/.test(key) && typeof d[key] === 'number') return `${from}->${to} exposes a total field: ${key}`;
+    }
+    const search = d.components.parkingSearch;
+    if (search.estimable !== false) return `${from}->${to} claims the search is estimable`;
+    for (const [k, v] of Object.entries(search)) {
+      if (typeof v === 'number') return `${from}->${to} put a number on the parking search: ${k}=${v}`;
+    }
+    if (typeof d.knownMinimumSeconds !== 'number') return 'the known minimum should still be given; it is the floor';
+    if (!/BEFORE you start looking/i.test(d.knownMinimumLabel)) return 'the floor is not labelled as excluding the search';
+  }
+  return true;
+});
+
+check('the safety margin is applied ONCE across the two walk legs, not twice', () => {
+  const d = drivePlan('WCB', 'PDB', 30, ['--date', '2026-09-03']).drivePlan;
+  const a = d.components.walkToCar.optimisticSeconds;
+  const b = d.components.walkFromGarage.optimisticSeconds;
+  const once = applySafetyMargin(a + b);
+  if (d.combinedWalk.realisticSeconds !== once.realisticSeconds) {
+    return `combined walk is ${d.combinedWalk.realisticSeconds}s, expected ${once.realisticSeconds}s from one application`;
+  }
+  // And prove it actually differs from the double application, so this cannot
+  // pass trivially: the flat allowance must be charged exactly one time.
+  const twice = applySafetyMargin(a).realisticSeconds + applySafetyMargin(b).realisticSeconds;
+  if (twice - once.realisticSeconds !== SAFETY_MARGIN.fixedSeconds) {
+    return `double application differs by ${twice - once.realisticSeconds}s, expected exactly the ${SAFETY_MARGIN.fixedSeconds}s flat allowance`;
+  }
+  return true;
+});
+
+check('the drive leg itself carries NO walking margin', () => {
+  const d = drivePlan('WCB', 'PDB', 30, ['--date', '2026-09-03']).drivePlan;
+  if (d.components.drive.carriesMargin !== false) return 'the drive component claims to carry the walking margin';
+  for (const part of ['walkToCar', 'walkFromGarage']) {
+    if (d.components[part].carriesMargin !== 'in-combined-walk') {
+      return `${part} does not say where its margin is accounted for`;
+    }
+  }
+  return true;
+});
+
+check('a drive answer REFUSES on a blackout date, like the parking answer does', () => {
+  const leg = drivePlan('WCB', 'PDB', 30, ['--date', '2026-08-29']);
+  if (leg.verdict !== 'not-walkable') return `the walk verdict changed to ${leg.verdict}`;
+  const d = leg.drivePlan;
+  if (d?.ok) return 'it planned a drive onto a home football date -- that is telling a student to park on one';
+  return d.reason === 'blackout' ? true : `reason was ${d?.reason}`;
+});
+
+check('short and same-building legs are completely unaffected', () => {
+  for (const [from, to, gap, want] of [['HCB', 'BEL', 15, 'comfortable'], ['PDB', 'PDB', 10, 'comfortable'], ['BEL', 'KRB', 10, 'tight']]) {
+    const leg = drivePlan(from, to, gap);
+    if (leg.verdict !== want) return `${from}->${to} in ${gap} min became ${leg.verdict}, expected ${want}`;
+    if (leg.alternatives) return `${from}->${to} was offered driving alternatives it does not need`;
+    if (leg.drivePlan) return `${from}->${to} paid for a drive plan it does not need`;
+  }
+  return true;
+});
+
+check('Part A stands alone: not-walkable names alternatives with no planner at all', () => {
+  // The floor the drive model was built on top of. evaluateLeg is called
+  // directly, with no drivePlanner, exactly as it would be if Part B did not exist.
+  const end = (code) => endpointOf({ deliveryMode: 'in-person', location: { buildingCode: code } });
+  const leg = evaluateLeg({ from: end('WCB'), to: end('PDB'), gapMinutes: 30 });
+  if (leg.verdict !== 'not-walkable') return `verdict was ${leg.verdict}`;
+  if (!leg.alternatives?.length) return 'no alternatives were named without a planner';
+  if (leg.drivePlan) return 'a drive plan appeared without a planner';
+  return /drive/i.test(leg.alternatives.map((a) => a.mode).join(' ')) ? true : 'driving was not named';
+});
+
+check('the shuttle is named WITHOUT pretending to know times', () => {
+  const leg = drivePlan('WCB', 'PDB', 30, ['--date', '2026-09-03']);
+  const bus = leg.alternatives.find((a) => a.mode === 'seminole-express');
+  if (bus.known !== 'none') return `the shuttle claims "${bus.known}" knowledge; no route or stop data ships`;
+  if (/\b\d+\s*(min|minute)/i.test(bus.say)) return 'it quoted a shuttle duration, which is not in the data';
+  return /not in this plugin|cannot tell/i.test(bus.say) ? true : 'it does not admit the data is absent';
+});
+
+check('the drive model constants are stated and unmeasured', () => {
+  const d = drivePlan('WCB', 'PDB', 30, ['--date', '2026-09-03']).drivePlan;
+  if (d.driveModel.roadFactor !== 1.45 || d.driveModel.driveSpeedMetersPerSecond !== 6.7) {
+    return `constants drifted: ${JSON.stringify(d.driveModel)}`;
+  }
+  return /not measured/i.test(d.driveModel.basis) ? true : 'the model does not admit it is unmeasured';
+});
 
 /* ================================================================== *
  * 9. GRAPH -- the shipped walk graph is reproducible from the centroids

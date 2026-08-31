@@ -313,7 +313,7 @@ checksum matches, nothing is written, and you say so.
 
 ## Building the document
 
-- `schemaVersion` is the plugin version — `0.6.0`.
+- `schemaVersion` is the plugin version — `0.7.0`.
 - `import.importedAt` is a real RFC 3339 timestamp **with an offset**, not a
   date. `date -u +%Y-%m-%dT%H:%M:%SZ` will do.
 - `import.sourceChecksum` is the lowercase hex SHA-256 of the raw source text,

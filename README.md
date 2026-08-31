@@ -11,11 +11,11 @@ A Claude Code plugin marketplace for Florida State University students.
 
 | Plugin | Version | What it does |
 | --- | --- | --- |
-| [`fsu-schedule`](plugins/fsu-schedule/) | 0.6.0 | Import your class schedule once, then ask Claude about walking times between classes, parking, conflicts, and deadlines. |
+| [`fsu-schedule`](plugins/fsu-schedule/) | 0.7.0 | Import your class schedule once, then ask Claude about walking times between classes, parking, conflicts, and deadlines. |
 
 ## Status
 
-**Six skills — the feature set is complete.** `fsu-schedule` 0.6.0 ships six JSON Schemas with a
+**Six skills, and two travel modes.** `fsu-schedule` 0.7.0 ships six JSON Schemas with a
 worked example of each, real FSU campus data — 33 buildings, 85 walk edges, the six parking garages,
 and the Fall 2026 academic calendar — and:
 
@@ -24,7 +24,7 @@ and the Fall 2026 academic calendar — and:
 - [`whats-next`](plugins/fsu-schedule/skills/whats-next/SKILL.md) answers what is next, today, or
   this week.
 - [`can-i-make-it`](plugins/fsu-schedule/skills/can-i-make-it/SKILL.md) answers whether the gap
-  between two classes is enough.
+  between two classes is enough — on foot, and when it is not, by car.
 - [`check-conflicts`](plugins/fsu-schedule/skills/check-conflicts/SKILL.md) answers whether two
   courses collide — with three outcomes, not two.
 - [`deadlines`](plugins/fsu-schedule/skills/deadlines/SKILL.md) answers drop/add, withdrawal,
@@ -42,6 +42,9 @@ are centroid-to-centroid estimates that have never been measured and omit doors,
 and class-change crowds — every omission in the optimistic direction — so `can-i-make-it` reports a
 **range** rather than a number, treats anything inside the margin of error as *tight, leave early*
 rather than *yes*, and **refuses outright** on any leg touching a building the data does not ship.
+When a walk is simply too long it says **not on foot** and names driving and the campus shuttle, rather
+than a flat no — and a drive answer has **no total**, because time to find a parking space cannot be
+estimated from six garages with no capacity data and would swamp everything else.
 Parking is six garages and no surface lots, so every parking answer says so, surfaces the rule's
 `enforcementNote` verbatim including FSU's unresolved disagreement with itself about student hours,
 and **refuses** on the seven home football dates rather than hedging. Both behaviours live in the

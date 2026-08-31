@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "fsu-schedule",
   "displayName": "FSU Schedule",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Import your FSU class schedule once, then ask Claude about walking times between classes, parking, conflicts, and deadlines.",
   "author": {
     "name": "TODO"

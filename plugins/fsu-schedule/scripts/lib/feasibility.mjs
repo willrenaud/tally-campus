@@ -43,11 +43,51 @@ import { applySafetyMargin, route, formatRange, WALK_SPEED_MPS } from './routing
 import { building } from './campus.mjs';
 
 export const VERDICTS = Object.freeze([
-  'refuse', 'cannot-determine', 'no', 'tight', 'comfortable',
+  'refuse', 'cannot-determine', 'no', 'not-walkable', 'tight', 'comfortable',
   // Not on the ladder: there is no walk to judge, so there is nothing to be
   // optimistic or pessimistic about. Kept separate from 'refuse' because nothing
   // was withheld.
   'not-applicable'
+]);
+
+/**
+ * The modes this plugin knows a student might use instead of walking, and how
+ * much it can say about each.
+ *
+ * WHY THIS EXISTS. Returning a bare "no" to "can I get from WCB to PDB in 30
+ * minutes?" answers a question about a mode the student may not be using. The
+ * walk genuinely does not fit -- that part was right -- but "no" reads as "you
+ * cannot make this class", when the real answer is "not on foot". A student who
+ * drives that leg was told a true thing about walking and nothing about the
+ * option they actually take.
+ *
+ * So a leg that is too long to walk STOPS at 'not-walkable' and names what else
+ * exists. Even with zero data about those alternatives this is strictly better
+ * than a flat refusal, because naming an option a student can evaluate for
+ * themselves beats silently implying there is none.
+ */
+export const ALTERNATIVES = Object.freeze([
+  Object.freeze({
+    mode: 'drive',
+    known: 'partial',
+    say: 'Driving and parking again at the other end. The plugin can estimate the walk to your car, ' +
+      'the drive itself, and the walk in from the garage -- but NOT how long it takes to find a ' +
+      'space, which is usually the part that decides whether you make it.'
+  }),
+  Object.freeze({
+    mode: 'seminole-express',
+    known: 'none',
+    say: 'Seminole Express, FSU\'s campus bus. Seven routes run 7am-8pm Monday to Friday in fall and ' +
+      'spring, and none of their stops, times or paths are in this plugin. It cannot tell you whether ' +
+      'a bus helps on this leg. The Transit app has live times.',
+    url: 'https://transportation.fsu.edu/bus'
+  }),
+  Object.freeze({
+    mode: 'reschedule',
+    known: 'full',
+    say: 'Neither class moving is also an option worth naming: a leg that does not fit on foot and ' +
+      'depends on a parking space you cannot count on is a standing risk, not a one-off.'
+  })
 ]);
 
 const toMinutes = (hhmm) => {
@@ -92,7 +132,8 @@ export function evaluateLeg({
   bufferMinutes = 0,
   requiresAccessibleRoutes = false,
   sessionsResolvable = true,
-  sessionsNote = null
+  sessionsNote = null,
+  drivePlanner = null
 }) {
   const gapSeconds = gapMinutes * 60;
   const bufferSeconds = bufferMinutes * 60;
@@ -203,7 +244,21 @@ export function evaluateLeg({
 
   /* --- 5. The numeric ladder. --- */
   const v = numericVerdict(gapSeconds, bufferSeconds, margin);
-  return { ...base, verdict: v.verdict, reason: v.reason, walk, say: v.say(walk) };
+  const result = { ...base, verdict: v.verdict, reason: v.reason, walk, say: v.say(walk) };
+
+  /* --- 6. A leg that does not work on foot names what else there is.
+   *
+   * Attached HERE rather than left to the caller's prose, so that a
+   * 'not-walkable' verdict can never be rendered as a bare no. `drivePlanner` is
+   * optional: with no planner the alternatives are still named, just without
+   * numbers, which is the Part A floor and is meant to stand on its own. --- */
+  if (v.verdict === 'not-walkable') {
+    result.alternatives = ALTERNATIVES;
+    if (typeof drivePlanner === 'function') {
+      result.drivePlan = drivePlanner({ from, to, gapMinutes, bufferMinutes });
+    }
+  }
+  return result;
 }
 
 /**
@@ -219,12 +274,17 @@ function numericVerdict(gapSeconds, bufferSeconds, margin) {
     };
   }
   if (gapSeconds < margin.optimisticSeconds) {
+    /* NOT "no". The walk does not fit -- that much the data can state plainly,
+     * and it can because the bias runs the safe way: a walk that fails even the
+     * optimistic number fails for real. But "no" answers a question about
+     * WALKING, and the student may not be walking. Stop at the mode. */
     return {
-      verdict: 'no',
+      verdict: 'not-walkable',
       reason: 'shorter-than-optimistic',
-      say: (w) => `The gap is shorter than even the optimistic estimate (${w.range}). Every omission in ` +
-        'this data makes walks look FASTER than they are, so a walk that does not fit the optimistic ' +
-        'number does not fit at all. This is the one verdict the data can state plainly.'
+      say: (w) => `Not on foot. The gap is shorter than even the optimistic walking estimate (${w.range}), ` +
+        'and every omission in this data makes walks look FASTER than they are -- so a walk that does ' +
+        'not fit the optimistic number does not fit at all. That is a statement about walking, not ' +
+        'about whether you can make the class.'
     };
   }
   if (gapSeconds < margin.realisticSeconds + bufferSeconds) {

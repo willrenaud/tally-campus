@@ -1,6 +1,6 @@
 ---
 name: can-i-make-it
-description: Work out whether a student can get from one FSU class to the next in the gap between them — walking time between buildings, back-to-back feasibility, "do I have time to stop at Strozier", "how long from Bellamy to HCB". Reports a range with its assumptions rather than a single number, and refuses on legs the shipped campus data cannot route. Use whenever a student asks about getting between classes, walking times, or whether a schedule gap is enough.
+description: Work out whether a student can get from one FSU class to the next in the gap between them — walking time between buildings, back-to-back feasibility, "do I have time to stop at Strozier", "how long from Bellamy to HCB", "can I drive between these". Reports a range with its assumptions rather than a single number; when a leg is too long to walk it says so and names driving and the campus shuttle instead of returning a flat no; and it refuses on legs the shipped campus data cannot route. Use whenever a student asks about getting between classes, walking or driving times, or whether a schedule gap is enough.
 ---
 
 # Can I make it between these classes?
@@ -55,7 +55,12 @@ are not symmetric and the answer is not centred.
     node "${CLAUDE_PLUGIN_ROOT}"/scripts/can-i-make-it.mjs --data-dir "$CLAUDE_PLUGIN_DATA"
     node "${CLAUDE_PLUGIN_ROOT}"/scripts/can-i-make-it.mjs --data-dir "$CLAUDE_PLUGIN_DATA" --day thursday
     node "${CLAUDE_PLUGIN_ROOT}"/scripts/can-i-make-it.mjs --from HCB --to BEL --gap 15
+    node "${CLAUDE_PLUGIN_ROOT}"/scripts/can-i-make-it.mjs --from WCB --to PDB --gap 30 --date 2026-09-03
     node "${CLAUDE_PLUGIN_ROOT}"/scripts/can-i-make-it.mjs --data-dir "$CLAUDE_PLUGIN_DATA" --json
+
+Pass `--date` whenever a drive alternative might come up: it is what lets the
+blackout check run against the drive plan. `--time` and `--permits` refine which
+garage is offered.
 
 `--from/--to/--gap` is for a question that is not about the stored schedule —
 "how long from Bellamy to HCB". `--data-dir` mode reads the stored schedule and
@@ -74,10 +79,76 @@ precisely so that they happen whether or not you remember them.
 | --- | --- |
 | `comfortable` | The gap clears the high end. Say the range anyway, and that it assumes the class lets out on time. |
 | `tight` | **Leave the moment you're packed.** The gap fits the low end and not the high one — the data cannot tell you which side of it you are on. Never soften this into "should be fine". |
-| `no` | It does not fit. This is the one verdict you can state plainly, and the reason is worth giving: the estimate is *already* too generous, so a walk that fails it fails for real. |
+| `not-walkable` | The walk does not fit — and that is a statement about **walking**, not about whether they can make the class. **Never render this as a bare "no".** Name the alternatives; see below. |
+| `no` | Reserved for meetings that actually **overlap in time**. There is no gap to travel in, which is a scheduling conflict rather than a transport problem. |
 | `cannot-determine` | The walk is estimable but whether the two classes ever share a day is not — a half-term course FSU has published no dates for. Give the conditional answer *as a conditional*. Never collapse it into "no conflict". |
 | `not-applicable` | The next class is online. There is no walk; say so rather than inventing one. |
 | `refuse` | There is no answer. See below. |
+
+## `not-walkable` is a mode answer, not a refusal
+
+**The plugin models walking. A student may not be walking.** A long leg used to
+come back as a flat "no", which is a true statement about a mode the student might
+never use — and it reads as "you cannot make this class". That is the wrong answer
+to the question they asked.
+
+So a leg too long to walk stops at **"not on foot"** and names what else exists.
+The script attaches the alternatives itself, so this cannot be forgotten.
+
+### The drive answer: four parts, and the middle one is unknown
+
+When both ends are shipped buildings, the script produces a drive plan. **It has no
+total, and it must never be given one.**
+
+| Step | Confidence |
+| --- | --- |
+| 1. Walk to the car | Estimate, and a **weak** one — straight-line to a garage centroid, because no walk edge has a parking endpoint. |
+| 2. Drive | Estimate from stated constants (`×1.45` circuity, `6.7 m/s ≈ 15 mph`). Both **chosen, not measured**. |
+| 3. **Find a space** | **UNKNOWN. Not estimable at all.** |
+| 4. Walk in from the garage | Same weak straight-line estimate as step 1. |
+
+**Step 3 is the whole point.** Six garages ship with **no capacity, no
+`typicalFullBy`, no occupancy feed and no fill history** (`DATA-GAPS.md` §7), so
+there is nothing to estimate a search time from — and on a weekday morning it is
+routinely the *largest* term in the trip. `lib/driving.mjs` returns it as
+`{ estimable: false }` with no seconds key on the object, and the plan carries no
+total field at all. There is nothing for you to add up.
+
+Report the **components** and the `knownMinimum`, which is labelled *"before you
+start looking for a space"*. If a student asks for one number, the answer is that
+there isn't one — and say why, because the why is actionable: *budget generously,
+leave early.* A student told "unknown" leaves early and makes it. A student told
+"12 minutes" gets there late because PG5 was full. That is the same harm the
+`parking` skill refuses on game days.
+
+**Do not subtract.** The gap minus the known minimum is *not* "time available to
+find a space".
+
+### The margin is applied once — say which parts carry it
+
+A drive leg has two walking components, and the safety margin is a multiplier
+**plus a flat 180 seconds**. The flat part covers doors, in-building time and a
+crossing — a per-journey allowance, and a drive journey still has one origin and
+one destination building. So the two walk legs are **summed first** and the margin
+applied **once**. The drive leg carries **no** walking margin, because doors,
+stairs and class-change crowds are not things a car is subject to. Every component
+reports its own `carriesMargin`; pass that on rather than implying the whole trip
+is margined.
+
+### Blackout dates refuse the drive too
+
+A drive answer is a parking answer with a journey in front of it. On one of the
+seven home football dates the drive plan **refuses**, exactly as `parking` does.
+Pass `--date` so this can be checked; without one, say the drive option assumes it
+is not a game day.
+
+### Seminole Express
+
+Named, with **no times**. Seven routes run 7am–8pm Monday–Friday in fall and
+spring, and **none of their stops, times or paths are in this plugin** — a GTFS
+feed exists and has not been imported (`DATA-GAPS.md` §11). Say the shuttle exists,
+say you cannot tell whether it helps on this leg, and point at the Transit app.
+Never invent a bus time or claim a route serves a building.
 
 ## Every case where this skill refuses
 
@@ -109,6 +180,26 @@ not as an error and not as a partial estimate.
 > crossings, or the class-change crowd. None of that has ever been walked with a
 > stopwatch.
 
+And a leg that does not work on foot:
+
+> **WCB → SOP3004 in PDB, 30-minute gap: not on foot.**
+>
+> The walk is **38–54 minutes** — Wertheim is right out on Gaines and Psychology is
+> across the whole core. That's a real number, not a rounding problem.
+>
+> **If you drive**, the parts I can estimate are: about 7 min walking to PG5, about
+> 6 min driving to PG3, about 3 min walking in. With the safety margin applied once
+> across both walks, that's **22 minutes before you start looking for a space**.
+>
+> **And that's where it stops.** I have no capacity, no fill times and no occupancy
+> data for any garage, so *how long it takes to find a space is unknown* — on a
+> weekday morning it's usually the biggest part of the trip. I'm not going to give
+> you a total, because any total I gave you would be leaving out the part that
+> decides it. Budget generously and leave when the first class ends.
+>
+> Seminole Express runs 7am–8pm weekdays, but none of its stops or times are in my
+> data, so I can't tell you whether a bus helps here. The Transit app has live times.
+
 And a refusal:
 
 > **ISM3541 → FIN4424: I can't tell you.**
@@ -123,6 +214,11 @@ And a refusal:
 
 - Never report one number, an average, or a "roughly N minutes".
 - Never call a gap inside the margin "yes", "fine", "doable", or "you'll make it".
+- **Never render `not-walkable` as a bare "no".** It answers about walking only.
+- **Never total a drive.** There is no honest total while step 3 is unknown, and no
+  field to read one from.
+- Never present the gap minus the known minimum as time available to park.
+- Never quote a Seminole Express time. None ship.
 - Never estimate across a building that is not in the shipped data, even
   approximately, even when the student asks you to guess.
 - Never substitute a nearby building for a missing one.

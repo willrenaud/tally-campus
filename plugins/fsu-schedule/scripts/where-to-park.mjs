@@ -24,8 +24,8 @@
  */
 import { readSchedule, dataRoot } from './lib/store.mjs';
 import { building, currentTerm } from './lib/campus.mjs';
-import { blackoutCheck, evaluateZones, dayOfWeek, COVERAGE_CAVEAT, BLACKOUT_EVE_FROM } from './lib/parking.mjs';
-import { straightLineEstimate, applySafetyMargin, SAFETY_MARGIN, formatRange } from './lib/routing.mjs';
+import { blackoutCheck, rankZonesFor, dayOfWeek, COVERAGE_CAVEAT, BLACKOUT_EVE_FROM } from './lib/parking.mjs';
+import { SAFETY_MARGIN } from './lib/routing.mjs';
 
 const argv = process.argv.slice(2);
 const has = (f) => argv.includes(f);
@@ -120,32 +120,7 @@ if (!target) {
 /* ------------------------------------------------------------------ *
  * The answer.
  * ------------------------------------------------------------------ */
-const zones = evaluateZones(date, time, { permits }).map((z) => {
-  const est = straightLineEstimate(z.centroid, target.centroid);
-  const margin = applySafetyMargin(est.optimisticSeconds);
-  const curatedIndex = z.servesBuildings.indexOf(target.code);
-  return {
-    ...z,
-    curated: curatedIndex !== -1,
-    curatedRank: curatedIndex,
-    walk: {
-      ...est,
-      ...margin,
-      range: formatRange(margin),
-      basis: 'straight-line, NOT a graph route -- no walk edge in the shipped data has a parking endpoint'
-    }
-  };
-});
-
-// Curated first, in the order the data lists them; then everything else by
-// distance. servesBuildings is documented as local knowledge that geometry
-// misses, so it outranks geometry rather than being averaged with it.
-zones.sort((a, b) => {
-  if (a.curated !== b.curated) return a.curated ? -1 : 1;
-  if (a.curated && b.curated) return a.curatedRank - b.curatedRank;
-  return a.walk.distanceMeters - b.walk.distanceMeters;
-});
-
+const zones = rankZonesFor(target, date, time, { permits });
 const anyCurated = zones.some((z) => z.curated);
 
 const payload = {

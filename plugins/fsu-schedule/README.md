@@ -9,13 +9,13 @@ The goal is to make questions like these answerable from structured data instead
 - *What's due this week?*
 - *Do these two courses conflict?*
 
-## Status: version 0.6.0 — six skills
+## Status: version 0.7.0 — six skills, two travel modes
 
 | Skill | What it does |
 | --- | --- |
 | [`import-schedule`](skills/import-schedule/SKILL.md) | Turns a Student Central paste, an `.ics` export, a screenshot, or a spoken description into a validated schedule. Draft-first: it shows your week back before it asks you anything. |
 | [`whats-next`](skills/whats-next/SKILL.md) | Next class, today, this week — time, building and room. |
-| [`can-i-make-it`](skills/can-i-make-it/SKILL.md) | Whether the gap between two classes is enough to walk it. |
+| [`can-i-make-it`](skills/can-i-make-it/SKILL.md) | Whether the gap between two classes is enough to walk it — and when it is not, what driving costs, with the part that cannot be estimated left visibly unestimated. |
 | [`check-conflicts`](skills/check-conflicts/SKILL.md) | Time collisions, with three outcomes rather than two. |
 | [`deadlines`](skills/deadlines/SKILL.md) | Drop/add, withdrawal, holidays, breaks and finals. Works before you import anything. |
 | [`parking`](skills/parking/SKILL.md) | Where to park for a class, and what the rule at that moment actually is. |
@@ -47,6 +47,11 @@ does not support it:
   `can-i-make-it` reports a **range**, calls anything inside the margin **tight, leave early** rather
   than *yes*, and **refuses** any leg touching a building that is not in the shipped data rather than
   substituting a nearby one.
+- The plugin models **walking and driving**. A leg too long to walk says so and names the
+  alternatives instead of refusing. A drive answer is reported as **components, never a total**: the
+  walk to the car, the drive and the walk in are estimated, and **how long it takes to find a space
+  is not estimable at all** from six garages with no capacity or occupancy data — so it is returned
+  as an explicit unknown that can swamp the rest.
 - Parking is **six garages and no surface lots**, and on FSU's seven home football dates the shipped
   rules are known to be wrong. `parking` says the first out loud in every answer and **refuses** on
   the second, pointing at [FSU Game Day](https://transportation.fsu.edu/GameDay).
