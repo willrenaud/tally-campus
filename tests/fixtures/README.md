@@ -9,8 +9,8 @@ what it must do when the input fights back.
 No fixture contains a real student's schedule, and no course number, section,
 instructor name or room number in these files was read off an FSU page. They are
 plausible-shaped fabrications, and they are allowed to be — the
-[no-unsourced-data rule](../../plugins/fsu-schedule/data/README.md) governs
-`plugins/fsu-schedule/data/`, which is what ships and what students act on. Test
+[no-unsourced-data rule](../../plugins/nole-schedule/data/README.md) governs
+`plugins/nole-schedule/data/`, which is what ships and what students act on. Test
 inputs are not campus facts.
 
 The **building codes** are the exception and are deliberately real: they have to be,

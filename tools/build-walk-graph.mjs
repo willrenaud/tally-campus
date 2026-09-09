@@ -49,7 +49,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const DATA = path.join(REPO, 'plugins', 'fsu-schedule', 'data');
+const DATA = path.join(REPO, 'plugins', 'nole-schedule', 'data');
 
 export const NEAREST_K = 4;
 export const MAX_EDGE_M = 600;

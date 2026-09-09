@@ -19,7 +19,7 @@ Fields we use:
 
 | Field | Notes |
 | --- | --- |
-| `name` | Required. kebab-case, no spaces, no path separators. Becomes the skill namespace: `/fsu-schedule:import`. |
+| `name` | Required. kebab-case, no spaces, no path separators. Becomes the skill namespace: `/nole-schedule:import`. |
 | `displayName` | Optional. May contain spaces/casing. Falls back to `name`. |
 | `version` | Optional but recommended. Setting it **pins** the plugin: users only get updates when it is bumped. If set in both `plugin.json` and the marketplace entry, **`plugin.json` wins**. |
 | `description`, `author`, `license`, `keywords`, `homepage`, `repository` | Straightforward metadata. `author` is an object `{name, email?, url?}` — not a string. |
@@ -61,24 +61,32 @@ The docs publish an explicit permanently-reserved list:
 Names that *impersonate* official marketplaces (e.g. `official-claude-plugins`,
 `anthropic-plugins-v2`) are also blocked.
 
-**`fsu-campus` is not on that list and does not impersonate an official marketplace — clear to use.**
+**`tally-campus` is not on that list and does not impersonate an official marketplace — clear to use.**
+
+> **Renamed 2026-09-09**, before publishing. The marketplace was `fsu-campus` and the plugin
+> `fsu-schedule`; both were renamed for trademark reasons, since "FSU" and "Seminoles" are
+> Florida State's marks and this is an unaffiliated project. Checked against the same reserved
+> list quoted above. Nothing had been published, so **no `renames` map was needed** — there were
+> no installs to carry forward. **A future rename is not free**: the plugin name keys an install
+> and its `${CLAUDE_PLUGIN_DATA}` directory, so it needs the marketplace root's optional
+> `renames` field (v2.1.193+) or existing users silently lose their stored schedule.
 
 For plugin names, the docs publish **no reserved list at all** and no length limit. The only
-stated rules are kebab-case, no spaces, no path separators. **`fsu-schedule` is clear to use.**
+stated rules are kebab-case, no spaces, no path separators. **`nole-schedule` is clear to use.**
 
 ### Relative path resolution — the part that is easy to get wrong
 
 Relative sources resolve against the **marketplace root** (the directory *containing*
 `.claude-plugin/`), **not** against the `.claude-plugin/` directory. So from
-`fsu-campus/.claude-plugin/marketplace.json`, the source `"./plugins/fsu-schedule"` resolves to
-`fsu-campus/plugins/fsu-schedule`. That is the layout we use.
+`tally-campus/.claude-plugin/marketplace.json`, the source `"./plugins/nole-schedule"` resolves to
+`tally-campus/plugins/nole-schedule`. That is the layout we use.
 
 Constraints:
 
 - No `../` escaping the marketplace root.
 - Relative paths **do not work** if the marketplace is distributed as a bare URL to the
   `marketplace.json` file. Fine for us: we intend git/GitHub distribution.
-- Bare names (`"fsu-schedule"` with no `./`) require `metadata.pluginRoot`, which needs
+- Bare names (`"nole-schedule"` with no `./`) require `metadata.pluginRoot`, which needs
   **v2.1.239+**. Our local CLI is 2.1.168, so we use the explicit `./plugins/...` form, which
   works on every version.
 
@@ -124,7 +132,7 @@ Verified specifics for `${CLAUDE_PLUGIN_DATA}`, since the whole persistence desi
 - Substitution also resolves inside skill and agent *content*, hook and monitor commands, MCP
   `command`/`args`/`env`/`url`/`headers`, and LSP `command`/`args`/`env`/`workspaceFolder`.
 - The `{id}` is the install id with any character outside `a-z A-Z 0-9 _ -` replaced by `-`. Ours
-  will be `fsu-schedule@fsu-campus` → `~/.claude/plugins/data/fsu-schedule-fsu-campus/`.
+  will be `nole-schedule@tally-campus` → `~/.claude/plugins/data/nole-schedule-tally-campus/`.
 - Quote it in shell commands: `"${CLAUDE_PLUGIN_ROOT}"/scripts/foo.sh`.
 
 ## Validation

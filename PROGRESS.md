@@ -498,8 +498,8 @@ do not need; Part A works with no planner; the shuttle quotes no times.
 
 Carried forward until fixed.
 
-- **`owner.name` and `author.name` are `"TODO"`** in both manifests. Harmless for a
-  local install; must be real before this is published anywhere.
+- ~~**`owner.name` and `author.name` are `"TODO"`** in both manifests.~~ **Closed in
+  step 8**: both are `Tally Campus Project`, as is the LICENSE copyright line.
 - **A session caches skill text.** Editing `SKILL.md` and running
   `claude plugin update` is not enough — the running session keeps serving the
   already-loaded version, and `/reload-plugins` or a restart is required. Verified
@@ -527,7 +527,11 @@ Carried forward until fixed.
   answer. Not fixable by us.
 - **Only Fall 2026 ships**, so `deadlines` refuses for any other term and `parking`
   refuses for any date it cannot check blackouts against. Both refusals are
-  correct; both stop being necessary when a second calendar ships.
+  correct; both stop being necessary when a second calendar ships. **Step 8 added
+  the other half of this**: once TODAY is past the last shipped term the calendar
+  is stale, and `deadlines` and `whats-next` refuse rather than serving dead
+  dates. Shipping Spring 2027 is now the thing that keeps the plugin alive, not
+  merely the thing that widens it.
 - **Time to find a parking space cannot be estimated at all**, which is why a drive
   answer has no total. The single highest-value data item in the project now: a
   capacity and `typicalFullBy` per garage would *bound* it, an occupancy feed would
@@ -582,7 +586,7 @@ Smaller, all carried forward:
   better than one that can only offer PG5.
 - **`UCD`/`UCC`/`UCB`** and the nine small buildings. Note fixture 04 uses `UCB` as
   its unknown building and must be repointed if it ships.
-- **`owner.name` and `author.name` are still `"TODO"`.**
+- ~~**`owner.name` and `author.name` are still `"TODO"`.**~~ Done in step 8.
 
 ### The acceptance criteria, cumulative
 
@@ -624,3 +628,160 @@ Room-number-to-floor derivation is verified against 736 real FSU rooms: a
 four-digit room starting with `0` carries the floor in its first two digits,
 anything else in its first digit. `deriveFloor` refuses room numbers starting with
 a letter (`G700`, `A0101`) rather than guessing.
+
+---
+
+## Step 8 — Publishing: the rename, the README, and the calendar that expires
+
+Version **0.1.0**. Everything before this was pre-release and uninstallable, so the
+version number goes *down* here, once, deliberately: 0.7.0 was never a thing anyone
+had. `CHANGELOG.md` starts at 0.1.0 and says so at the top.
+
+### Part A — the rename, and the one thing it costs later
+
+`fsu-schedule` → **`nole-schedule`**, `fsu-campus` → **`tally-campus`**. "FSU" and
+"Seminoles" are Florida State's marks and this is an unaffiliated student project;
+naming the *product* after them implies an official plugin. Referring to FSU
+factually does not, so the data still says "sourced from the FSU Registrar" and the
+skill descriptions still say "an FSU class schedule" — that is what they are.
+
+Renamed everywhere, not just in the manifests: the plugin **directory**, the schema
+`$id` namespace (`https://tally-campus.example/schemas/v0/`), `package.json` and its
+lockfile, the pack tool's printed instructions, every test path, and both READMEs.
+The two history files, `PROGRESS.md` above this line, keep the old names because
+they are a record of what happened. **Every path in the sections above this one uses
+the old names.**
+
+Owner and author are **`Tally Campus Project`** in both manifests and in the LICENSE
+copyright line — the `"TODO"` that has been on the outstanding list since step 1.
+
+**No `renames` map ships, and that is only true once.** Nothing had been published,
+so there are no installs to carry forward and the map would map nothing. A FUTURE
+rename is a different matter: the plugin name **keys an existing install** and its
+`${CLAUDE_PLUGIN_DATA}` directory —
+`~/.claude/plugins/data/nole-schedule-tally-campus/` — so renaming without the
+marketplace root's `renames` field (v2.1.193+) silently orphans every stored
+schedule. Recorded in `NOTES-SPEC.md` beside the reserved-name check.
+
+### Part B — the README is the product
+
+Rewritten for someone who has never opened Claude Code. The old one opened with the
+repository layout, which is the right first page for a contributor and the wrong one
+for the person deciding whether to install.
+
+The ordering is the argument: what it does in two sentences, then **coverage and
+limits**, then the install commands. Limits *before* install, above the fold, in a
+table — 33 buildings of 500-plus, six garages and no surface lots, walking times
+computed and never measured, no shuttle data, parking refuses on game days, Fall
+2026 only. Framed as boundaries rather than apologies, because the reason to state
+them is that they change whether an answer is useful, not to pre-empt criticism.
+Non-affiliation and "these are estimates, verify them against signage and the
+Registrar" sit in a blockquote under the title and again at the foot.
+
+### Part C — release readiness
+
+`license` was already set in both manifests and `LICENSE` was already present; the
+copyright holder was not. Added `keywords`, `homepage` and `repository` pointing at
+the GitHub repo, in **both** manifests — `claude plugin validate . --strict` accepts
+them in a marketplace plugin entry as well as in `plugin.json`, which
+`NOTES-SPEC.md` had not established either way.
+
+`npm run pack` was re-run and its output walked: **51 files, none of them dev
+tooling**. That is now a test rather than an inspection — `the pack carries NO dev
+tooling` walks the frozen plugin for `package.json`, `node_modules`, `tools/`,
+`tests/`, and then reads every shipped `.mjs` and fails on any import specifier that
+is not a Node builtin or a relative path. The layout has always claimed the plugin
+is dependency-free; the claim is now checked.
+
+### Part D — the staleness problem, which is the real work of this step
+
+`term-calendar.json` is Fall 2026 and ends 2026-12-11. After that, every date in it
+is real, correctly transcribed, and **wrong** — and that is worse than an error,
+because it is specific and quotable. A student who asks in March 2027 when the drop
+deadline is and is told "9 October" has been given the most convincing wrong answer
+this project can produce.
+
+**Nothing else caught it.** `termCalendar('2026-fall')` returns a valid record
+forever, so an explicit `--term`, or a schedule imported last year and never
+deleted, reached the deadline list without passing anything that compares against
+today. `deadlines` already refused when *no calendar could be found* — but a stale
+calendar is found. Only a comparison against today can tell the difference.
+
+**The predicate, and the distinction that matters.** `calendarStatus(date)` in
+`lib/campus.mjs` has three states:
+
+- `covered` — inside a shipped term.
+- `upcoming` — before a shipped term that has not started. **Not stale.** The data
+  is fine; the term has not begun. Collapsing this into staleness would refuse every
+  August import, which is the single most common moment anyone uses this plugin.
+- `stale` — past the end of the last shipped term, with nothing later shipped.
+
+So it is exactly `date > max(endDate)` and nothing subtler. Note the equivalence,
+which is not a coincidence: `stale` holds precisely when `currentTerm()` falls back
+to basis `month`. Both ask "is there any shipped calendar at or after today?", and a
+test asserts them against **each other** across five dates rather than each against
+a literal, so one cannot be changed without the other.
+
+**What each skill does, and why they differ.** The rule is not "everything refuses":
+
+| Skill | Behaviour | Why |
+| --- | --- | --- |
+| `deadlines` | **refuses**, exit 3, `calendar-out-of-date` | every word of its answer is a dead date |
+| `whats-next` | **refuses**, exit 3 | `dayStatus` already refused to invent a class out there, but an empty week and an expired plugin are indistinguishable to a student, and only one means "you have no classes" |
+| `parking` | refuses (already did), now carrying `staleCalendar: true` | an uncovered date was always a refusal; what was missing was naming *expiry* rather than implying a coverage gap |
+| `check-conflicts` | **answers**, with a banner | a collision is a fact about two stored meetings, not about today: "these overlap on Tuesday at 11" stays true after the term ends. Withholding it is its own dishonesty. What goes stale is every date the answer points at afterwards |
+| `import-schedule` | **imports**, and says so on the draft | parsing, resolving buildings and storing need no calendar. Refusing here would be over-reach |
+
+The guard is placed **above** the calendar lookup in each script, so the dead dates
+are never computed at all rather than computed and then talked around — the same
+structure as `blackoutCheck()` running before any parking rule. One shared
+`staleCalendarRefusal()` builds the message, so no skill can be given a softer
+version of it.
+
+**The refusal quotes no date from the expired calendar.** A refusal that ends
+"...but for reference, the drop deadline was 9 October" hands over the exact number
+it just said does not apply, and that is the number the student remembers. A test
+takes every deadline, non-class day and finals date out of the shipped record and
+asserts none appears in the refusal text. The term's own `endDate` is the single
+allowed exception — "the last term it covers ended on X" is what makes the refusal
+legible — and the test excludes it by name rather than by a loose filter.
+
+Documented for maintainers in the README under **Refreshing the calendar for a new
+term**: read the dates off the Registrar rather than from memory, append the record
+with its `provenance`, set `sessionsStatus` honestly, put the home football dates in
+`parkingBlackouts`, run the suite, bump both manifests.
+
+### A correction that fell out of writing the README: the building count was wrong
+
+The README needed a number, and the number in the code was **32**. Thirty-three
+ship, and have since `WCB` was added in 0.6.0 — the count was stale in **nine
+places** across scripts, skills and docs, including two that still described `WCB`
+as "the single largest omission" while it was sitting in the file. Three of the nine
+were strings a student actually reads.
+
+Those three now derive the count from `buildings().length` instead of carrying a
+literal, so the class of error is gone rather than the instance. The rest were
+prose and were corrected. Worth noting how it survived: every one of them was
+*true when written*, and nothing in the suite asserts on a number in a sentence.
+
+### Tests: **268 checks**, up from 250
+
+New `STALENESS` section, run entirely on an **injected clock at March 2027** — which
+is the whole point of having built one in step 6, because this test is otherwise
+unrunnable until the bug has already shipped and hurt someone. It pins the three
+states, the boundary (the last day of the term answers, the day after refuses, both
+dates read from the shipped file), the `upcoming`-is-not-stale case, the equivalence
+with `currentTerm`'s basis, both `deadlines` paths including the realistic one where
+nobody passes `--term`, the no-quoted-dates property, and that `deadlines` still
+answers mid-term *and* in August. Plus the pack's dev-tooling check.
+
+Two existing tests changed, neither weakened:
+
+- **whats-next during winter break** (`2027-01-05`) is now the staleness case,
+  because January is past the only shipped term. The property it was written for —
+  nothing is invented out there — is still asserted; the exit code and kind are
+  added to it.
+- **deadlines refuses a term with no shipped calendar** had its clock moved from
+  February 2027 into the term. Asked from February 2027 the same question is now
+  answered by the staleness guard, which is a *different and more accurate* refusal;
+  pinning the clock keeps the test about the one thing it names.

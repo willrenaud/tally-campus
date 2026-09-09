@@ -3,7 +3,7 @@
  *
  * The seven schema files reference each other by RELATIVE URI (for example
  * "common.defs.schema.json#/$defs/timeOfDay"), which resolve against each file's
- * $id base of https://fsu-campus.example/schemas/v0/. That base is a namespace,
+ * $id base of https://tally-campus.example/schemas/v0/. That base is a namespace,
  * not a fetchable document -- the .example TLD is reserved by IANA and will never
  * resolve -- so nothing may be loaded over the network. Every file must therefore
  * be added to one Ajv instance up front, keyed by its $id, before any of them is
@@ -18,12 +18,12 @@ import addFormats from 'ajv-formats';
 const Ajv2020 = ajvModule.Ajv2020 ?? ajvModule.default;
 
 export const REPO_ROOT = path.resolve(fileURLToPath(import.meta.url), '../../..');
-export const PLUGIN_ROOT = path.join(REPO_ROOT, 'plugins', 'fsu-schedule');
+export const PLUGIN_ROOT = path.join(REPO_ROOT, 'plugins', 'nole-schedule');
 export const SCHEMA_DIR = path.join(PLUGIN_ROOT, 'schemas');
 export const DATA_DIR = path.join(PLUGIN_ROOT, 'data');
 
 /** Base URI the schema $ids live under. Keep in sync with the $id values. */
-export const SCHEMA_BASE = 'https://fsu-campus.example/schemas/v0/';
+export const SCHEMA_BASE = 'https://tally-campus.example/schemas/v0/';
 
 export function readJson(file) {
   return JSON.parse(fs.readFileSync(file, 'utf8'));

@@ -1,0 +1,235 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tally-campus.example/schemas/v0/common.defs.schema.json",
+  "title": "Shared definitions",
+  "description": "Reusable primitive definitions shared by every nole-schedule schema. This file declares no root type of its own; it exists only to be referenced via $ref (for example, \"common.defs.schema.json#/$defs/timeOfDay\"). TIME POLICY for the entire nole-schedule data model: all clock times are wall-clock \"HH:MM\" strings in 24-hour form, and all dates are ISO-8601 \"YYYY-MM-DD\" strings. Both are interpreted in the America/New_York timezone, which is the single timezone of every FSU campus. Naive local datetimes (a date and time fused into one string with no zone) are never used anywhere in this model: a point in absolute time is always an RFC 3339 timestamp carrying an explicit UTC offset. This split is deliberate. A class that meets at 09:05 meets at 09:05 on both sides of a daylight-saving transition, so its time must stay a wall-clock string bound to a named zone rather than a fixed instant; whereas an event that actually happened, such as a schedule import, is a real instant and must carry its offset.",
+  "$defs": {
+    "date": {
+      "type": "string",
+      "format": "date",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+      "description": "A calendar date in ISO-8601 extended form, YYYY-MM-DD, interpreted in America/New_York. Example: \"2026-08-24\"."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$",
+      "description": "An absolute point in time as an RFC 3339 timestamp. The trailing UTC offset (or literal Z) is REQUIRED by the pattern so that naive local datetimes fail validation. Example: \"2026-08-27T14:03:11-04:00\"."
+    },
+    "timeOfDay": {
+      "type": "string",
+      "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+      "description": "A wall-clock time of day, 24-hour \"HH:MM\", zero-padded, in America/New_York. Range 00:00 through 23:59. Example: \"09:05\". Use timeOfDayInclusiveEnd instead when the value is the exclusive end of a window that may run to midnight."
+    },
+    "timeOfDayInclusiveEnd": {
+      "type": "string",
+      "pattern": "^(([01][0-9]|2[0-3]):[0-5][0-9]|24:00)$",
+      "description": "A wall-clock time in America/New_York used as the EXCLUSIVE end of a time window, 24-hour \"HH:MM\". Accepts the extra value \"24:00\" to mean end-of-day. A window whose end is EARLIER than its start wraps past midnight into the following day; see timeWindow for the exact evaluation rule. A window whose end EQUALS its start is invalid, because it is ambiguous between a zero-length window and a whole-day one; write a whole day as \"00:00\" to \"24:00\". JSON Schema cannot compare two sibling properties, so the equality rule is enforced by the data validator rather than by this schema."
+    },
+    "dayOfWeek": {
+      "type": "string",
+      "enum": [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday"
+      ],
+      "description": "A day of the week, spelled out in lowercase English. FSU's own registration systems abbreviate days as M/T/W/R/F/S/U (note that R means Thursday and U means Sunday); importers MUST normalize those single letters to these long forms rather than storing the abbreviations."
+    },
+    "dayOfWeekList": {
+      "type": "array",
+      "description": "A set of weekdays. Order is not significant, but writers SHOULD emit Monday-first order for readability. Values must be unique.",
+      "items": {
+        "$ref": "#/$defs/dayOfWeek"
+      },
+      "minItems": 1,
+      "maxItems": 7,
+      "uniqueItems": true
+    },
+    "timeWindow": {
+      "type": "object",
+      "description": "A recurring weekly window of wall-clock time: a set of weekdays plus a start and an exclusive end, all in America/New_York.\n\nEVALUATION RULE. Let start and end be the endpoints as minutes past midnight, with \"24:00\" equal to 1440. Given an instant with weekday D and time T:\n\n  (a) If end > start, the window does NOT wrap. It matches when D is in daysOfWeek and start <= T < end. This is the ordinary case.\n  (b) If end < start, the window DOES wrap past midnight. It matches when either D is in daysOfWeek and T >= start, or the day BEFORE D is in daysOfWeek and T < end.\n  (c) If end == start the window is invalid; a consumer must reject it rather than guess.\n\nIn the wrapping case daysOfWeek names the days the window OPENS on, not every day it touches. A window of friday 17:00 to 02:00 covers Friday evening and the small hours of Saturday morning; it does not cover Friday 00:00 to 02:00.\n\nWrapping is what lets overnight parking enforcement be one rule instead of two. Note the asymmetry it introduces: for a wrapping window, whether an instant matches depends on the previous day as well as the current one, so an implementation that filters by weekday before comparing times will silently drop the after-midnight half.",
+      "properties": {
+        "daysOfWeek": {
+          "$ref": "#/$defs/dayOfWeekList",
+          "description": "The weekdays this window applies to."
+        },
+        "startTime": {
+          "$ref": "#/$defs/timeOfDay",
+          "description": "Inclusive start of the window."
+        },
+        "endTime": {
+          "$ref": "#/$defs/timeOfDayInclusiveEnd",
+          "description": "Exclusive end of the window. May be earlier than startTime, in which case the window wraps past midnight into the day after each day named in daysOfWeek. Must not equal startTime. Use \"24:00\" for a window ending exactly at midnight without wrapping."
+        }
+      },
+      "required": [
+        "daysOfWeek",
+        "startTime",
+        "endTime"
+      ],
+      "additionalProperties": false
+    },
+    "latitude": {
+      "type": "number",
+      "minimum": 24,
+      "maximum": 32,
+      "description": "WGS-84 latitude in decimal degrees. Deliberately clamped to Florida's bounding box (24 to 32) rather than the full -90 to 90 range, so that a swapped or sign-flipped coordinate pair fails validation loudly instead of silently placing a building in the ocean."
+    },
+    "longitude": {
+      "type": "number",
+      "minimum": -88,
+      "maximum": -79,
+      "description": "WGS-84 longitude in decimal degrees. Deliberately clamped to Florida's bounding box (-88 to -79) rather than the full -180 to 180 range, so that a swapped or sign-flipped coordinate pair fails validation loudly. FSU's Tallahassee campuses sit near -84.3; the Panama City campus near -85.6."
+    },
+    "geoPoint": {
+      "type": "object",
+      "description": "A single WGS-84 coordinate pair.",
+      "properties": {
+        "lat": {
+          "$ref": "#/$defs/latitude"
+        },
+        "lon": {
+          "$ref": "#/$defs/longitude"
+        }
+      },
+      "required": [
+        "lat",
+        "lon"
+      ],
+      "additionalProperties": false
+    },
+    "buildingCode": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9]{1,7}$",
+      "description": "An FSU building code in uppercase, as printed on a class schedule: 2 to 8 characters, starting with a letter. Examples: \"HCB\", \"HWC\", \"WMS\". This is the primary key that joins course meetings, walk-graph nodes, and parking zones to buildings."
+    },
+    "termCode": {
+      "type": "string",
+      "pattern": "^20[0-9]{2}-(spring|summer|fall)$",
+      "description": "A stable identifier for an academic term, formed as the calendar year of the term followed by its season: \"YYYY-season\". Examples: \"2026-fall\", \"2027-spring\". The year is the year the term's classes begin, so FSU's spring term that runs January through April 2027 is \"2027-spring\". Sub-sessions within a summer term are modelled as sessions inside term-calendar rather than as separate term codes."
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "A stable lowercase kebab-case identifier. Used for entrance ids, walk-graph node and edge ids, parking rule ids, and calendar entry ids. Must remain stable across data releases, because other records reference it."
+    },
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "verified",
+        "estimated",
+        "unknown"
+      ],
+      "description": "How much a value should be trusted. \"verified\" means checked against an authoritative FSU source or measured in person; \"estimated\" means derived, interpolated, or eyeballed; \"unknown\" means carried over without review. Answers given to students SHOULD hedge when the supporting data is not verified."
+    },
+    "provenanceMethod": {
+      "type": "string",
+      "enum": [
+        "fetched",
+        "computed",
+        "unverified"
+      ],
+      "description": "How a shipped data record came to hold the values it holds. \"fetched\" means the values were read off the page named by provenance.sourceUrl during the session that wrote the record. \"computed\" means they were derived from other sourced values by a documented calculation, such as a walking duration derived from two fetched coordinates. \"unverified\" means neither: the record rests on an unchecked assumption. Records that would be \"unverified\" should generally not ship at all; the value exists so that one which does slip through is at least labelled as such."
+    },
+    "provenance": {
+      "type": "object",
+      "description": "Where one shipped static record came from, when, and how much to trust it. Distinct from sourceAttribution, which is document-level prose attribution: provenance is a per-record audit trail, and its purpose is to make an unsourced record impossible to write by accident. The rule the data build follows is that a record is either fetched from a page actually retrieved, or computed by a documented calculation from records that were, or it does not ship.",
+      "properties": {
+        "sourceUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "The page the values were read from. For a computed record this is the source of the INPUTS to the computation, so the derivation can be re-checked from the top. Required when method is \"fetched\" or \"computed\"."
+        },
+        "retrievedOn": {
+          "$ref": "#/$defs/date",
+          "description": "The date sourceUrl was actually retrieved, ISO-8601, America/New_York. Campus data goes stale on an annual cycle at best, so this is the field that tells a maintainer what needs re-checking."
+        },
+        "method": {
+          "$ref": "#/$defs/provenanceMethod",
+          "description": "How the record was produced."
+        },
+        "confidence": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ],
+          "description": "How much weight an answer may put on this record. \"high\" means read directly off an official FSU page with no interpretation. \"medium\" means derived, interpolated, or read off a source that was clear about most of the record but not all of it. \"low\" means good enough to route with, not good enough to act on. An answer built on anything below \"high\" should say so."
+        },
+        "note": {
+          "type": "string",
+          "description": "What was ambiguous, interpolated, or assumed. This is where an ambiguity in the source is recorded rather than resolved."
+        }
+      },
+      "required": [
+        "retrievedOn",
+        "method",
+        "confidence"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "enum": [
+                  "fetched",
+                  "computed"
+                ]
+              }
+            },
+            "required": [
+              "method"
+            ]
+          },
+          "then": {
+            "required": [
+              "sourceUrl"
+            ],
+            "properties": {
+              "sourceUrl": {
+                "type": "string",
+                "format": "uri",
+                "description": "Required here because a record claiming to be fetched or computed must name the page it came from. A record with no retrievable source is method \"unverified\", and an unverified record belongs in DATA-GAPS.md rather than in the shipped data."
+              }
+            }
+          }
+        }
+      ]
+    },
+    "sourceAttribution": {
+      "type": "object",
+      "description": "Where a piece of shipped static data came from and when it was last checked, so stale campus data can be found and refreshed.",
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "The authoritative page or document this data was taken from."
+        },
+        "label": {
+          "type": "string",
+          "description": "Human-readable name of the source, for example \"FSU Transportation and Parking Services permit map\"."
+        },
+        "retrievedAt": {
+          "$ref": "#/$defs/timestamp",
+          "description": "When the source was last fetched."
+        },
+        "confidence": {
+          "$ref": "#/$defs/confidence"
+        }
+      },
+      "required": [
+        "label",
+        "retrievedAt"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

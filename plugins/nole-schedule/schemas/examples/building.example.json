@@ -1,0 +1,86 @@
+{
+  "code": "HCB",
+  "name": "Illustrative Classroom Building",
+  "aliases": [
+    "hcb",
+    "the hcb",
+    "classroom building"
+  ],
+  "campusZone": "academic-core",
+  "centroid": {
+    "lat": 30.4423,
+    "lon": -84.2986
+  },
+  "entrances": [
+    {
+      "id": "north-plaza",
+      "label": "North doors facing the green",
+      "point": {
+        "lat": 30.4426,
+        "lon": -84.2986
+      },
+      "facing": "north",
+      "entranceType": "main",
+      "wheelchairAccessible": true,
+      "confidence": "estimated"
+    },
+    {
+      "id": "south-breezeway",
+      "label": "South breezeway doors, ground level",
+      "point": {
+        "lat": 30.442,
+        "lon": -84.2985
+      },
+      "facing": "south",
+      "entranceType": "breezeway",
+      "wheelchairAccessible": false,
+      "accessNote": "Four steps up from the breezeway; the step-free way in is the north doors.",
+      "confidence": "estimated"
+    },
+    {
+      "id": "east-service",
+      "label": "East loading dock",
+      "point": {
+        "lat": 30.4423,
+        "lon": -84.2982
+      },
+      "facing": "east",
+      "entranceType": "loading",
+      "wheelchairAccessible": false,
+      "accessNote": "Staff only; not a route endpoint for students.",
+      "openWindows": [
+        {
+          "daysOfWeek": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday"
+          ],
+          "startTime": "06:00",
+          "endTime": "16:00"
+        }
+      ],
+      "confidence": "unknown"
+    }
+  ],
+  "floorCount": 4,
+  "elevatorCount": 2,
+  "typicalClassroomFloors": [
+    1,
+    2,
+    3
+  ],
+  "notes": "ILLUSTRATIVE PLACEHOLDER RECORD. The name, coordinates, entrance layout, and floor counts here are invented to make the schema shape concrete and testable. Replace with verified FSU data before shipping.",
+  "provenance": {
+    "retrievedOn": "2026-08-27",
+    "method": "unverified",
+    "confidence": "low",
+    "note": "Illustrative example, not real campus data. method \"unverified\" is the correct label for an invented record and is exactly what tools/validate-data.mjs refuses to let into plugins/nole-schedule/data/. Examples are allowed to carry it; shipped records are not."
+  },
+  "source": {
+    "label": "Placeholder example, not a real source",
+    "retrievedAt": "2026-08-27T10:00:00-04:00",
+    "confidence": "unknown"
+  }
+}

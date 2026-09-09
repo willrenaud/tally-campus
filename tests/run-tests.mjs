@@ -26,20 +26,21 @@ import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 
 import { buildAjv, compileFor } from '../tools/lib/ajv-env.mjs';
-import * as N from '../plugins/fsu-schedule/scripts/lib/normalize.mjs';
-import { validateSchedule, loadPermitClasses } from '../plugins/fsu-schedule/scripts/lib/validate.mjs';
-import { parkingSchema } from '../plugins/fsu-schedule/scripts/lib/campus.mjs';
-import * as N_CAMPUS from '../plugins/fsu-schedule/scripts/lib/campus.mjs';
-import { saveSchedule, readSchedule, listTerms, archiveDir, ARCHIVE_KEEP } from '../plugins/fsu-schedule/scripts/lib/store.mjs';
-import { SAFETY_MARGIN, applySafetyMargin, route, formatRange } from '../plugins/fsu-schedule/scripts/lib/routing.mjs';
-import { evaluateLeg, endpointOf, legsForDay, VERDICTS } from '../plugins/fsu-schedule/scripts/lib/feasibility.mjs';
-import { blackoutCheck, ruleAt, windowMatches, dayOfWeek, nextDate, BLACKOUT_EVE_FROM } from '../plugins/fsu-schedule/scripts/lib/parking.mjs';
+import * as N from '../plugins/nole-schedule/scripts/lib/normalize.mjs';
+import { validateSchedule, loadPermitClasses } from '../plugins/nole-schedule/scripts/lib/validate.mjs';
+import { parkingSchema } from '../plugins/nole-schedule/scripts/lib/campus.mjs';
+import * as N_CAMPUS from '../plugins/nole-schedule/scripts/lib/campus.mjs';
+import { saveSchedule, readSchedule, listTerms, archiveDir, ARCHIVE_KEEP } from '../plugins/nole-schedule/scripts/lib/store.mjs';
+import { SAFETY_MARGIN, applySafetyMargin, route, formatRange } from '../plugins/nole-schedule/scripts/lib/routing.mjs';
+import { evaluateLeg, endpointOf, legsForDay, VERDICTS } from '../plugins/nole-schedule/scripts/lib/feasibility.mjs';
+import { blackoutCheck, ruleAt, windowMatches, dayOfWeek, nextDate, BLACKOUT_EVE_FROM } from '../plugins/nole-schedule/scripts/lib/parking.mjs';
+import * as N_SCHEDULE from '../plugins/nole-schedule/scripts/lib/schedule.mjs';
 import { computeZones } from '../tools/build-walk-graph.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const REPO = path.resolve(HERE, '..');
 const FIXTURES = path.join(HERE, 'fixtures');
-const SCRIPTS = path.join(REPO, 'plugins', 'fsu-schedule', 'scripts');
+const SCRIPTS = path.join(REPO, 'plugins', 'nole-schedule', 'scripts');
 
 let passed = 0;
 const failures = [];
@@ -552,7 +553,7 @@ check('06: an event with no course code is flagged, not guessed at', () => {
  * ================================================================== */
 console.log('\nSTORE: re-import replaces, archives, and never merges');
 
-const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'fsu-schedule-test-'));
+const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'nole-schedule-test-'));
 const withChecksum = (doc, sum) => {
   const d = structuredClone(doc);
   d.import = { ...d.import, sourceChecksum: sum };
@@ -618,7 +619,7 @@ check('save-schedule.mjs REFUSES an invalid document', () => {
 });
 
 check('a corrupt stored file is an error, not "no schedule yet"', () => {
-  const dir2 = fs.mkdtempSync(path.join(os.tmpdir(), 'fsu-schedule-test-'));
+  const dir2 = fs.mkdtempSync(path.join(os.tmpdir(), 'nole-schedule-test-'));
   fs.mkdirSync(path.join(dir2, 'schedules'), { recursive: true });
   fs.writeFileSync(path.join(dir2, 'schedules', '2026-fall.json'), '{ this is not json');
   try {
@@ -659,7 +660,7 @@ check('the constant is frozen', () =>
   Object.isFrozen(SAFETY_MARGIN) && Object.isFrozen(SAFETY_MARGIN.components) ? true : 'a caller could mutate the margin at runtime');
 
 check('the margin never makes an estimate SHORTER, on any shipped edge', () => {
-  for (const e of readJson(path.join(REPO, 'plugins', 'fsu-schedule', 'data', 'walk-edges.json'))) {
+  for (const e of readJson(path.join(REPO, 'plugins', 'nole-schedule', 'data', 'walk-edges.json'))) {
     const m = applySafetyMargin(e.baseDurationSeconds);
     if (m.realisticSeconds <= m.optimisticSeconds) return `${e.id}: ${m.realisticSeconds} <= ${m.optimisticSeconds}`;
   }
@@ -900,7 +901,7 @@ const park = (args) => {
   const r = run(PARK, [...args, '--json']);
   return { ...r, json: JSON.parse(r.stdout) };
 };
-const CAL = readJson(path.join(REPO, 'plugins', 'fsu-schedule', 'data', 'term-calendar.json'))
+const CAL = readJson(path.join(REPO, 'plugins', 'nole-schedule', 'data', 'term-calendar.json'))
   .find((t) => t.termCode === '2026-fall');
 
 // Driven off the DATA, not off a list written here: adding a blackout date to the
@@ -1022,7 +1023,7 @@ check('windowMatches handles a window that wraps past midnight', () => {
 });
 
 check('ruleAt is last-match-wins across the shipped garage rules', () => {
-  const zone = readJson(path.join(REPO, 'plugins', 'fsu-schedule', 'data', 'parking-zones.json'))[0];
+  const zone = readJson(path.join(REPO, 'plugins', 'nole-schedule', 'data', 'parking-zones.json'))[0];
   const cases = [
     ['2026-09-03', '09:00', 'student-garage-hours'],   // a Thursday inside student hours
     ['2026-09-03', '03:00', 'base-permit-required'],   // before them: the restrictive catch-all
@@ -1054,7 +1055,7 @@ const packInfo = packOut.status === 0 ? JSON.parse(packOut.stdout) : null;
 const PACKED = path.join(REPO, 'dist', 'marketplace');
 
 check('the pack is a self-contained marketplace', () => {
-  for (const rel of ['.claude-plugin/marketplace.json', 'plugins/fsu-schedule/.claude-plugin/plugin.json']) {
+  for (const rel of ['.claude-plugin/marketplace.json', 'plugins/nole-schedule/.claude-plugin/plugin.json']) {
     if (!fs.existsSync(path.join(PACKED, rel))) return `missing ${rel}`;
   }
   return true;
@@ -1080,9 +1081,42 @@ check('the pack carries no file the working tree does not have', () => {
       if (e.isDirectory()) walk(p, r); else found.push(r);
     }
   };
-  walk(path.join(PACKED, 'plugins', 'fsu-schedule'), 'plugins/fsu-schedule');
+  walk(path.join(PACKED, 'plugins', 'nole-schedule'), 'plugins/nole-schedule');
   const extra = found.filter((f) => !listed.has(f));
   return extra.length ? `the pack contains files not from the source: ${extra.join(', ')}` : true;
+});
+
+check('the pack carries NO dev tooling, and nothing a student would have to install', () => {
+  // What a student installs is the plugin directory and nothing else. Ajv, the
+  // validators, the graph builder, the fixtures and package.json all live at the
+  // repository root precisely so they cannot end up here -- but "precisely so"
+  // is a claim about layout, and layout drifts. This asserts it.
+  const banned = [/(^|\/)package(-lock)?\.json$/, /(^|\/)node_modules(\/|$)/, /(^|\/)tools(\/|$)/, /(^|\/)tests(\/|$)/, /\.test\.mjs$/];
+  const found = [];
+  const walk = (dir, rel) => {
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      const r = rel ? `${rel}/${e.name}` : e.name;
+      if (e.isDirectory()) walk(path.join(dir, e.name), r); else found.push(r);
+    }
+  };
+  walk(path.join(PACKED, 'plugins', 'nole-schedule'), '');
+  const bad = found.filter((f) => banned.some((re) => re.test(f)));
+  if (bad.length) return `dev tooling reached the shipped plugin: ${bad.join(', ')}`;
+
+  // And the scripts import Node builtins and each other, nothing else. A bare
+  // specifier here would mean the plugin needs an npm install to run, which is the
+  // one thing the repository layout exists to prevent.
+  const bare = [];
+  for (const f of found.filter((f) => f.endsWith('.mjs'))) {
+    const src = fs.readFileSync(path.join(PACKED, 'plugins', 'nole-schedule', f), 'utf8');
+    // Anchored at column 0 and requiring the statement form, so the word "import"
+    // appearing inside a comment is not read as a dependency.
+    for (const m of src.matchAll(/^import\s+(?:[^'"]*?\sfrom\s+)?['"]([^'"]+)['"]/gm)) {
+      const spec = m[1];
+      if (!spec.startsWith('node:') && !spec.startsWith('.')) bare.push(`${f} -> ${spec}`);
+    }
+  }
+  return bare.length ? `the shipped scripts import something that is not a Node builtin: ${bare.join(', ')}` : true;
 });
 
 check('the stamp is written OUTSIDE the marketplace, so it never ships', () => {
@@ -1091,7 +1125,7 @@ check('the stamp is written OUTSIDE the marketplace, so it never ships', () => {
 });
 
 check('a script runs from the frozen copy, resolving its own data', () => {
-  const r = run(path.join(PACKED, 'plugins', 'fsu-schedule', 'scripts', 'can-i-make-it.mjs'), ['--from', 'HCB', '--to', 'BEL', '--gap', '15', '--json']);
+  const r = run(path.join(PACKED, 'plugins', 'nole-schedule', 'scripts', 'can-i-make-it.mjs'), ['--from', 'HCB', '--to', 'BEL', '--gap', '15', '--json']);
   if (r.status !== 0) return `exited ${r.status}: ${r.stderr}`;
   return JSON.parse(r.stdout).legs[0].verdict === 'comfortable' ? true : 'the packed copy gave a different answer from the working tree';
 });
@@ -1233,7 +1267,7 @@ check('the drive model constants are stated and unmeasured', () => {
  * ================================================================== */
 console.log('\nGRAPH: walk-edges.json is reproducible, and WCB is sourced');
 
-const BUILDINGS = readJson(path.join(REPO, 'plugins', 'fsu-schedule', 'data', 'buildings.json'));
+const BUILDINGS = readJson(path.join(REPO, 'plugins', 'nole-schedule', 'data', 'buildings.json'));
 
 check('build-walk-graph.mjs reproduces the shipped graph exactly', () => {
   const r = run(path.join(REPO, 'tools', 'build-walk-graph.mjs'), ['--check']);
@@ -1348,10 +1382,14 @@ check('whats-next during finals returns NO meetings and points at the exam grid'
 });
 
 check('whats-next during winter break invents nothing and does not wrap around', () => {
+  // January 2027 is past the end of the only shipped term, so this is now the
+  // STALENESS case rather than an in-term dead day. The property this test was
+  // written for is unchanged and still asserted: nothing is invented out there.
   const r = jsonRun(WHATSNEXT, ['--schedule', FX07, '--now', '2027-01-05T09:00']);
   if (r.json.next.found) return `it produced a next class on ${r.json.next.date}, outside any shipped term`;
   if (r.json.today.meetings.length) return 'it listed classes on a date no calendar covers';
-  return r.json.next.reason === 'term-over' ? true : `reason was ${r.json.next.reason}`;
+  if (r.status !== 3) return `exited ${r.status}; past the last shipped term it must refuse, not report an empty week`;
+  return r.json.kind === 'calendar-out-of-date' ? true : `kind was ${r.json.kind}`;
 });
 
 check('whats-next on a weekend names the reason rather than going blank', () => {
@@ -1424,7 +1462,10 @@ check('deadlines works with NO schedule imported', () => {
 });
 
 check('deadlines REFUSES a term with no shipped calendar', () => {
-  const r = jsonRun(DEADLINES, ['--term', '2027-spring', '--now', '2027-02-01']);
+  // The clock is inside Fall 2026 on purpose. Asked from FEBRUARY 2027 this same
+  // question is answered by the staleness guard instead, which is a different and
+  // more accurate refusal; pinning the clock keeps this test about the one thing.
+  const r = jsonRun(DEADLINES, ['--term', '2027-spring', '--now', '2026-10-01']);
   if (r.status !== 3) return `exited ${r.status}; inventing a drop deadline is how a student misses one`;
   return r.json.kind === 'no-calendar' ? true : `kind was ${r.json.kind}`;
 });
@@ -1464,6 +1505,159 @@ check('deadlines quotes the Registrar rather than paraphrasing', () => {
   if (!/drop a course without receiving a grade/.test(drop.description)) return 'the drop wording was paraphrased away';
   if (!/withdraw from school without receiving a grade/.test(withdraw.description)) return 'the withdrawal wording was paraphrased away';
   return true;
+});
+
+
+/* ================================================================== *
+ * 11. STALENESS -- the shipped calendar expires, and the plugin must know
+ *
+ * term-calendar.json is Fall 2026 and nothing else. Every date in it is real and
+ * correctly transcribed, and every one of them is WRONG the moment the term is
+ * over -- which is the most convincing kind of wrong answer this project can
+ * produce. Nothing else catches it: termCalendar('2026-fall') keeps returning a
+ * valid record forever, so an explicit --term, or a schedule imported last year
+ * and never deleted, reaches the deadline list without passing anything that
+ * compares against today.
+ *
+ * The clock is injected at MARCH 2027 throughout. That is what an injectable
+ * clock is for: this test is otherwise unrunnable until the bug has already
+ * shipped and hurt someone.
+ * ================================================================== */
+console.log('\nSTALENESS: after the last shipped term, dead dates are refused rather than served');
+
+const FUTURE = '2027-03-15';                       // three months past the last shipped term
+const CURRENT_TERM_END = CAL.endDate;              // read from the data, never written here
+
+/* --- the predicate itself --- */
+for (const [date, want] of [
+  ['2026-09-15', 'covered'],                       // mid-term
+  [CAL.startDate, 'covered'],                      // first day of the span
+  [CURRENT_TERM_END, 'covered'],                   // LAST day of the span, still fine
+  ['2026-08-01', 'upcoming'],                      // before it starts -- NOT stale
+  [FUTURE, 'stale']
+]) {
+  check(`calendarStatus ${date} -> ${want}`, () => {
+    const r = N_CAMPUS.calendarStatus(date);
+    return r.state === want ? true : `state was ${r.state}`;
+  });
+}
+
+check('the day AFTER the last shipped term is the day the data goes stale', () => {
+  // The boundary is the whole behaviour. Off by one here and either December is
+  // refused while the term is still running, or January is answered out of a dead
+  // calendar. Both dates come from the shipped file.
+  const dayAfter = N_SCHEDULE.addDays(CURRENT_TERM_END, 1);
+  if (N_CAMPUS.calendarStatus(CURRENT_TERM_END).stale) return `${CURRENT_TERM_END} is inside the term and must not be stale`;
+  return N_CAMPUS.calendarStatus(dayAfter).stale ? true : `${dayAfter} is past every shipped term and must be stale`;
+});
+
+check('"before the term starts" is NOT staleness', () => {
+  // Collapsing these two would refuse every August import, which is the single
+  // most common moment anyone uses this plugin.
+  const r = N_CAMPUS.calendarStatus('2026-08-01');
+  return r.stale === false ? true : 'an unstarted term was treated as expired data';
+});
+
+check('stale is exactly the condition currentTerm calls basis "month"', () => {
+  // Two views of one question: is there any shipped calendar at or after today?
+  // If one is ever changed the other must move with it, so they are asserted
+  // against each other rather than each against a literal.
+  for (const d of ['2026-08-01', '2026-09-15', CURRENT_TERM_END, FUTURE, '2030-01-01']) {
+    const stale = N_CAMPUS.calendarStatus(d).stale;
+    const month = N_CAMPUS.currentTerm(d).basis === 'month';
+    if (stale !== month) return `${d}: calendarStatus stale=${stale} but currentTerm basis says ${month}`;
+  }
+  return true;
+});
+
+/* --- deadlines: the script where an expired calendar does the most damage --- */
+check('deadlines REFUSES in March 2027, even asked explicitly for Fall 2026', () => {
+  const r = jsonRun(DEADLINES, ['--term', '2026-fall', '--now', FUTURE]);
+  if (r.status !== 3) return `exited ${r.status}; it served deadlines from a term that ended ${CURRENT_TERM_END}`;
+  return r.json.kind === 'calendar-out-of-date' ? true : `kind was ${r.json.kind}`;
+});
+
+check('deadlines REFUSES in March 2027 with a schedule still stored from last year', () => {
+  // The realistic path: nobody passes --term. The stored schedule names 2026-fall,
+  // the lookup succeeds, and without the guard the answer is a full deadline list.
+  const r = jsonRun(DEADLINES, ['--schedule', FX05, '--now', FUTURE]);
+  if (r.status !== 3) return `exited ${r.status}; a schedule left over from last term must not resurrect its deadlines`;
+  return r.json.kind === 'calendar-out-of-date' ? true : `kind was ${r.json.kind}`;
+});
+
+check('the stale refusal quotes NO date out of the expired calendar', () => {
+  // A refusal ending "...but for reference, the drop deadline was 9 October" hands
+  // over the exact number it just said does not apply, and that is the number the
+  // student remembers. Checked against every date in the shipped record.
+  const text = run(DEADLINES, ['--term', '2026-fall', '--now', FUTURE]).stdout;
+  const dates = [
+    ...CAL.deadlines.map((d) => d.date),
+    ...CAL.nonClassDays.flatMap((d) => [d.startDate, d.endDate]),
+    CAL.finals.startDate, CAL.finals.endDate
+  ];
+  // The term's own endDate is the ONE date the message is allowed to name -- it is
+  // the sentence "the last term it covers ended on X", which is what makes the
+  // refusal legible rather than a bare error. It happens to coincide with the last
+  // day of finals, hence the explicit exclusion rather than a looser filter.
+  const leaked = dates.filter((d) => d !== CAL.endDate && text.includes(d));
+  return leaked.length ? `the refusal quotes ${leaked.join(', ')}` : true;
+});
+
+check('the stale refusal sends the student to the Registrar', () => {
+  const r = jsonRun(DEADLINES, ['--term', '2026-fall', '--now', FUTURE]);
+  if (!/registrar\.fsu\.edu/.test(r.json.sendTo || '')) return `sendTo was ${r.json.sendTo}`;
+  const text = run(DEADLINES, ['--term', '2026-fall', '--now', FUTURE]).stdout;
+  return /out of date/i.test(text) ? true : 'the text never says the data is out of date';
+});
+
+check('deadlines still answers INSIDE the term, and BEFORE it starts', () => {
+  // The guard must not have made the plugin useless in the case it ships for.
+  const during = jsonRun(DEADLINES, ['--term', '2026-fall', '--now', '2026-10-01']);
+  if (during.status !== 0) return `mid-term exited ${during.status}`;
+  const before = jsonRun(DEADLINES, ['--term', '2026-fall', '--now', '2026-08-01']);
+  if (before.status !== 0) return `August, before classes begin, exited ${before.status}`;
+  return during.json.deadlines.length >= 12 ? true : 'the mid-term answer lost its deadlines';
+});
+
+/* --- whats-next --- */
+check('whats-next REFUSES in March 2027 rather than reporting an empty week', () => {
+  // An empty week and an expired plugin are indistinguishable to a student, and
+  // only one of them means "you have no classes".
+  const r = jsonRun(WHATSNEXT, ['--schedule', FX07, '--now', `${FUTURE}T09:00`]);
+  if (r.status !== 3) return `exited ${r.status}`;
+  if (r.json.next.found) return 'it produced a next class from an expired calendar';
+  if (r.json.today.meetings.length) return 'it listed meetings on a date no calendar covers';
+  return r.json.kind === 'calendar-out-of-date' ? true : `kind was ${r.json.kind}`;
+});
+
+/* --- parking --- */
+check('parking names STALENESS, not merely a missing calendar, in March 2027', () => {
+  const r = park(['--building', 'HCB', '--date', FUTURE, '--time', '09:00']);
+  if (r.status !== 3) return `exited ${r.status}`;
+  if (r.json.staleCalendar !== true) return 'the refusal does not distinguish an expired copy from a coverage gap';
+  if (!/out of date/i.test(r.json.why)) return 'the reason does not say the data is out of date';
+  return /registrar\.fsu\.edu/.test(r.json.alsoSee || '') ? true : `alsoSee was ${r.json.alsoSee}`;
+});
+
+/* --- check-conflicts: the one that says it and keeps going --- */
+check('check-conflicts still ANSWERS in March 2027, with the staleness said out loud', () => {
+  // A collision is a fact about two stored meetings, not about today: "these
+  // overlap on Tuesday at 11" stays true after the term ends. Withholding it
+  // would be its own dishonesty. What goes stale is every date it points at.
+  const r = jsonRun(CONFLICTS, ['--schedule', FX05, '--now', FUTURE]);
+  if (r.status !== 0) return `exited ${r.status}; a conflict verdict does not expire`;
+  if (r.json.tally.conflict !== 1) return `the verdict changed: ${JSON.stringify(r.json.tally)}`;
+  if (r.json.calendarStale !== true) return 'it answered without flagging that the calendar has expired';
+  const text = run(CONFLICTS, ['--schedule', FX05, '--now', FUTURE]).stdout;
+  return /OUT OF DATE/.test(text) ? true : 'the text carries no staleness banner';
+});
+
+/* --- import stays possible, because parsing needs no calendar --- */
+check('import is NOT blocked by a stale calendar, but is told about it', () => {
+  const r = jsonRun(path.join(SCRIPTS, 'current-term.mjs'), ['--date', FUTURE]);
+  if (r.status !== 0) return `exited ${r.status}; refusing to import would be over-reach`;
+  if (!r.json.termCode) return 'it stopped producing a term to import into';
+  return r.json.calendarStale === true ? true : 'the importer is not told the calendar has expired';
 });
 
 fs.rmSync(emptyDir, { recursive: true, force: true });

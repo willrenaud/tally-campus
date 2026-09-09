@@ -1,6 +1,6 @@
 # Data gaps
 
-Everything that is missing from `plugins/fsu-schedule/data/`, why, and what was tried.
+Everything that is missing from `plugins/nole-schedule/data/`, why, and what was tried.
 
 This file is a to-do list, not an apology. The build rule is that a record is either read off a page
 actually fetched, or computed from records that were, or it does not ship — so every judgement call
@@ -156,7 +156,7 @@ route between zones rather than pretending the walk is possible.
 
 Every edge in `walk-edges.json` is `durationSource: "estimated"` with `provenance.method: "computed"`
 and `confidence: "medium"`. The model is haversine distance × 1.3 ÷ 1.4 m/s; see
-[`plugins/fsu-schedule/data/README.md`](plugins/fsu-schedule/data/README.md) for the constants and
+[`plugins/nole-schedule/data/README.md`](plugins/nole-schedule/data/README.md) for the constants and
 their justification.
 
 Missing as a direct consequence:

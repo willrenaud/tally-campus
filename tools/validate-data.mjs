@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Validate every shipped campus data file in plugins/fsu-schedule/data/ against
+ * Validate every shipped campus data file in plugins/nole-schedule/data/ against
  * its schema, then run the cross-file checks JSON Schema cannot express.
  *
  * Exits nonzero on any failure, so it is usable as a pre-commit gate and in CI.

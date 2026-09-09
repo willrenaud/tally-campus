@@ -1,0 +1,431 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tally-campus.example/schemas/v0/walk-edge.schema.json",
+  "title": "Walking edge",
+  "description": "One walkable connection between two points on campus. This is the routable unit of the pedestrian graph: a route is computed by chaining edges with a shortest-path search, NOT by looking up a precomputed building-to-building duration. That distinction drives the whole design. Edge endpoints are node references that may be a building entrance, a free-standing waypoint (a path junction, crosswalk, or plaza corner that belongs to no building), or a parking access point, so N buildings need roughly N + J nodes and a sparse set of edges along real sidewalks rather than N-squared pairs. Adding a building means adding its entrances and a handful of edges to nearby waypoints; nothing else has to be recomputed. A route's total duration is the sum of its edges' durations after crowd factors are applied, so every edge must be independently meaningful. Waypoints themselves are defined by walk-edge.schema.json#/$defs/waypoint and are shipped as their own data file.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "$ref": "common.defs.schema.json#/$defs/slug",
+      "description": "Globally unique, stable identifier for this edge. Referenced by accessibleAlternativeEdgeId on other edges and useful for explaining a route step by step."
+    },
+    "from": {
+      "$ref": "#/$defs/nodeRef",
+      "description": "One endpoint of the edge."
+    },
+    "to": {
+      "$ref": "#/$defs/nodeRef",
+      "description": "The other endpoint. Unless bidirectional is false, direction carries no meaning beyond naming which end reverseDurationSeconds applies to."
+    },
+    "bidirectional": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether the edge may be traversed in both directions. Nearly always true. Set false only for genuinely one-way pedestrian infrastructure, such as an exit-only turnstile or a one-way construction detour."
+    },
+    "distanceMeters": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "Path length in metres along the actual walkable surface, not straight-line distance between the endpoints. A path that bends around a building is longer than the crow flies, and using crow-flies distance here is the single most common way a schedule feasibility answer ends up wrong."
+    },
+    "baseDurationSeconds": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "description": "How many seconds this edge takes to walk on an empty sidewalk at the pace recorded in paceAssumption. This is the number a router sums. It is stored rather than derived from distance because stairs, ramps, door queues, and crossing waits make duration a poor function of length."
+    },
+    "reverseDurationSeconds": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "description": "Seconds to walk the edge from \"to\" back to \"from\", when that differs meaningfully from baseDurationSeconds. Set it for slopes and stair flights, where uphill is materially slower. Omit when the edge is symmetric; a router must then reuse baseDurationSeconds for both directions."
+    },
+    "durationSource": {
+      "type": "string",
+      "enum": [
+        "measured",
+        "estimated",
+        "interpolated",
+        "imported"
+      ],
+      "description": "How baseDurationSeconds was arrived at. \"measured\" means somebody actually walked it with a timer, and those values should win over any computed estimate. \"estimated\" means derived from distance and a pace assumption. \"interpolated\" means inferred from neighbouring measured edges. \"imported\" means taken wholesale from an external routing dataset."
+    },
+    "measurement": {
+      "$ref": "#/$defs/measurement",
+      "description": "Provenance for a measured duration. Required in practice whenever durationSource is \"measured\", so a later contributor can tell one careful stopwatch run from an average of thirty."
+    },
+    "paceAssumption": {
+      "$ref": "#/$defs/paceAssumption",
+      "description": "The walking pace baseDurationSeconds assumes. Recording it lets a router rescale every edge for a specific student's pace instead of shipping one pace for everyone."
+    },
+    "surface": {
+      "type": "string",
+      "enum": [
+        "paved-sidewalk",
+        "brick-paver",
+        "concrete-plaza",
+        "crosswalk",
+        "stairs",
+        "ramp",
+        "indoor-corridor",
+        "covered-walkway",
+        "unpaved-path",
+        "parking-lot",
+        "road-shoulder"
+      ],
+      "description": "What the walker is actually walking on. Drives both accessibility filtering and a rain penalty. \"crosswalk\" additionally implies a wait, which should already be folded into baseDurationSeconds."
+    },
+    "coverage": {
+      "type": "string",
+      "enum": [
+        "none",
+        "partial",
+        "full"
+      ],
+      "default": "none",
+      "description": "How much of the edge is sheltered from rain. \"full\" means covered end to end (indoor corridor, breezeway, colonnade); \"partial\" means a meaningful but incomplete stretch is covered; \"none\" means open sky. Tallahassee afternoon thunderstorms make this a real routing preference, not decoration, so a router may prefer covered edges when rain is expected even at a time cost."
+    },
+    "coveredFraction": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "The fraction of distanceMeters that is under cover, when coverage is \"partial\" and a finer number is known. Purely additional precision; coverage remains the field a router should branch on."
+    },
+    "accessibility": {
+      "$ref": "#/$defs/accessibility",
+      "description": "Whether and how this edge can be used by someone with a mobility impairment."
+    },
+    "crowdFactors": {
+      "type": "array",
+      "description": "Time-windowed multipliers applied to baseDurationSeconds when the sidewalk is packed. The motivating case is the class-change window: FSU's Monday/Wednesday/Friday period boundaries dump the whole core onto the same few sidewalks at once, and an edge that takes 180 seconds at 14:00 can take 240 at 09:50. Windows on one edge SHOULD NOT overlap; if they do, a router must apply the single matching factor with the highest multiplier rather than compounding them, so that overlapping data cannot silently produce an absurd duration.",
+      "items": {
+        "$ref": "#/$defs/crowdFactor"
+      }
+    },
+    "seasonalClosure": {
+      "type": "array",
+      "description": "Date ranges when this edge is unusable, for construction or event closures. A router must drop the edge entirely for dates inside a closure rather than penalizing it.",
+      "items": {
+        "$ref": "#/$defs/closure"
+      }
+    },
+    "notes": {
+      "type": "string",
+      "description": "Free-text detail about this edge, for example that the crosswalk signal has a long cycle or that the stairs are the ones behind the library."
+    },
+    "source": {
+      "$ref": "common.defs.schema.json#/$defs/sourceAttribution",
+      "description": "Where this edge came from and when it was last checked."
+    },
+    "provenance": {
+      "$ref": "common.defs.schema.json#/$defs/provenance",
+      "description": "Per-record audit trail: which page this record was read from, on what date, by what method, and how much to trust it. REQUIRED on every shipped record. A record that cannot name a source it was actually fetched from, or a documented computation over records that were, does not belong in the data directory at all; it belongs in DATA-GAPS.md."
+    }
+  },
+  "required": [
+    "id",
+    "from",
+    "to",
+    "distanceMeters",
+    "baseDurationSeconds",
+    "durationSource",
+    "provenance"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "nodeRef": {
+      "description": "A reference to one endpoint in the pedestrian graph. The kind field discriminates between the three sorts of node, and every walk edge connects exactly two of them. Keeping waypoints as first-class nodes is what allows the graph to stay sparse.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/buildingEntranceRef"
+        },
+        {
+          "$ref": "#/$defs/waypointRef"
+        },
+        {
+          "$ref": "#/$defs/parkingAccessRef"
+        }
+      ]
+    },
+    "buildingEntranceRef": {
+      "type": "object",
+      "description": "A specific door of a specific building, as declared in that building's entrances list.",
+      "properties": {
+        "kind": {
+          "const": "building-entrance",
+          "description": "Discriminator."
+        },
+        "building": {
+          "$ref": "common.defs.schema.json#/$defs/buildingCode",
+          "description": "The building's code."
+        },
+        "entrance": {
+          "$ref": "common.defs.schema.json#/$defs/slug",
+          "description": "The entrance id, which must exist in that building's entrances array. Not enforceable by JSON Schema across files; the data build step is expected to check it."
+        }
+      },
+      "required": [
+        "kind",
+        "building",
+        "entrance"
+      ],
+      "additionalProperties": false
+    },
+    "waypointRef": {
+      "type": "object",
+      "description": "A junction, crosswalk, or plaza corner belonging to no building. Waypoints are what keep the graph from needing an edge for every building pair.",
+      "properties": {
+        "kind": {
+          "const": "waypoint",
+          "description": "Discriminator."
+        },
+        "waypoint": {
+          "$ref": "common.defs.schema.json#/$defs/slug",
+          "description": "The waypoint id, which must exist in the shipped waypoint dataset."
+        }
+      },
+      "required": [
+        "kind",
+        "waypoint"
+      ],
+      "additionalProperties": false
+    },
+    "parkingAccessRef": {
+      "type": "object",
+      "description": "A pedestrian entry or exit point of a parking zone, as declared in that zone's accessPoints list. Including parking in the same graph is what lets a single search answer \"park here, then walk to your 14:00\".",
+      "properties": {
+        "kind": {
+          "const": "parking-access-point",
+          "description": "Discriminator."
+        },
+        "zone": {
+          "$ref": "common.defs.schema.json#/$defs/slug",
+          "description": "The parking zone's id."
+        },
+        "accessPoint": {
+          "$ref": "common.defs.schema.json#/$defs/slug",
+          "description": "The access point id within that zone."
+        }
+      },
+      "required": [
+        "kind",
+        "zone",
+        "accessPoint"
+      ],
+      "additionalProperties": false
+    },
+    "waypoint": {
+      "type": "object",
+      "description": "Definition of a free-standing graph node. Waypoint records are shipped as their own data file and validated against this subschema; walk edges reference them by id.",
+      "properties": {
+        "id": {
+          "$ref": "common.defs.schema.json#/$defs/slug",
+          "description": "Globally unique, stable waypoint identifier."
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Landmark-relative description a student would recognize, for example \"Crosswalk at Woodward and Call\"."
+        },
+        "point": {
+          "$ref": "common.defs.schema.json#/$defs/geoPoint",
+          "description": "Coordinate of the junction."
+        },
+        "waypointType": {
+          "type": "string",
+          "enum": [
+            "path-junction",
+            "crosswalk",
+            "plaza",
+            "stair-landing",
+            "bus-stop",
+            "bike-rack",
+            "gate"
+          ],
+          "description": "What sort of node this is. \"crosswalk\" and \"gate\" nodes are the ones that typically carry a waiting penalty on their adjoining edges."
+        },
+        "campusZone": {
+          "type": "string",
+          "enum": [
+            "academic-core",
+            "north-campus",
+            "south-campus",
+            "east-campus",
+            "west-campus",
+            "southwest-campus",
+            "innovation-park",
+            "panama-city",
+            "off-campus"
+          ],
+          "description": "Which broad campus area the waypoint sits in, matching the zone enum used by buildings."
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "point"
+      ],
+      "additionalProperties": false
+    },
+    "paceAssumption": {
+      "type": "object",
+      "description": "The walking speed a duration was computed or measured at, so durations can be rescaled per student rather than baked in.",
+      "properties": {
+        "metersPerSecond": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 4,
+          "description": "Walking speed in metres per second. Roughly 1.4 is an unhurried adult pace and 1.8 is a hurried student between classes. The cap of 4 rejects values accidentally entered in another unit."
+        },
+        "profile": {
+          "type": "string",
+          "enum": [
+            "unhurried",
+            "average",
+            "hurried",
+            "wheelchair",
+            "measured-subject"
+          ],
+          "description": "A label for the pace, so a router can pick a matching set of edges without inspecting the number."
+        }
+      },
+      "required": [
+        "metersPerSecond"
+      ],
+      "additionalProperties": false
+    },
+    "measurement": {
+      "type": "object",
+      "description": "Provenance for an empirically measured duration.",
+      "properties": {
+        "sampleCount": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "How many separate timed walks the duration averages."
+        },
+        "measuredAt": {
+          "$ref": "common.defs.schema.json#/$defs/date",
+          "description": "Date of the most recent measurement, so a value taken before a construction project can be spotted."
+        },
+        "medianSeconds": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "Median of the samples. Prefer the median over the mean when reporting, since one interrupted walk skews a small sample badly."
+        },
+        "p90Seconds": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "description": "Ninetieth-percentile duration. This is the honest number to use when telling a student whether they will make it, because the question is really about the bad case, not the typical one."
+        },
+        "method": {
+          "type": "string",
+          "enum": [
+            "stopwatch",
+            "gps-track",
+            "crowdsourced",
+            "vendor-routing-api"
+          ],
+          "description": "How the walk was timed."
+        }
+      },
+      "required": [
+        "sampleCount",
+        "measuredAt"
+      ],
+      "additionalProperties": false
+    },
+    "accessibility": {
+      "type": "object",
+      "description": "Mobility constraints on this edge. Two distinct ideas live here and must not be conflated: whether the edge is usable in a wheelchair, and whether the edge exists specifically as an accessible detour.",
+      "properties": {
+        "wheelchairAccessible": {
+          "type": "boolean",
+          "description": "Whether this edge can be traversed independently in a wheelchair: step-free, adequately wide, and not exceeding the grade limit. A router asked for an accessible route must traverse only edges where this is true."
+        },
+        "accessibleRouteOnly": {
+          "type": "boolean",
+          "default": false,
+          "description": "True when this edge exists as an accessibility detour, such as a ramp switchback or a long way around to reach a lift. It is still walkable by anyone, but a router SHOULD deprioritize it for students who did not ask for an accessible route, because it trades distance for step-free access."
+        },
+        "hasStairs": {
+          "type": "boolean",
+          "description": "Whether the edge includes any stair flight."
+        },
+        "stairCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of steps across all flights on the edge."
+        },
+        "maxGradePercent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Steepest sustained slope along the edge, as a percentage rise over run. Above roughly 8 percent a route stops being comfortably accessible even without steps."
+        },
+        "accessibleAlternativeEdgeId": {
+          "$ref": "common.defs.schema.json#/$defs/slug",
+          "description": "When this edge is not wheelchair accessible, the id of the edge that serves as its step-free equivalent. Lets an answer name the detour instead of just refusing to route."
+        }
+      },
+      "required": [
+        "wheelchairAccessible"
+      ],
+      "additionalProperties": false
+    },
+    "crowdFactor": {
+      "type": "object",
+      "description": "A recurring weekly window during which this edge takes longer than its base duration because of pedestrian congestion.",
+      "properties": {
+        "window": {
+          "$ref": "common.defs.schema.json#/$defs/timeWindow",
+          "description": "When the congestion happens, in America/New_York wall-clock time."
+        },
+        "multiplier": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 4,
+          "description": "Factor applied to baseDurationSeconds inside the window. 1.0 means no effect; 1.3 means the walk takes thirty percent longer. The lower bound of 1 is deliberate: this field models congestion only, and an edge is never faster because more people are on it."
+        },
+        "reason": {
+          "type": "string",
+          "enum": [
+            "class-change",
+            "lunch-rush",
+            "event",
+            "construction-bottleneck",
+            "game-day"
+          ],
+          "description": "Why the edge is congested, so an answer can explain the delay rather than assert it."
+        },
+        "confidence": {
+          "$ref": "common.defs.schema.json#/$defs/confidence",
+          "description": "How well supported the multiplier is."
+        }
+      },
+      "required": [
+        "window",
+        "multiplier"
+      ],
+      "additionalProperties": false
+    },
+    "closure": {
+      "type": "object",
+      "description": "A date range during which the edge cannot be used at all.",
+      "properties": {
+        "startDate": {
+          "$ref": "common.defs.schema.json#/$defs/date",
+          "description": "First day the edge is closed, inclusive."
+        },
+        "endDate": {
+          "$ref": "common.defs.schema.json#/$defs/date",
+          "description": "Last day the edge is closed, inclusive. Omit when the end date is not yet known."
+        },
+        "reason": {
+          "type": "string",
+          "description": "Why the edge is closed."
+        }
+      },
+      "required": [
+        "startDate"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -23,7 +23,7 @@
  * depends on remembering to run it is the same class of thing as a safety rule
  * written in prose -- see the rest of this project's opinion about those.
  *
- * So: pack copies plugins/fsu-schedule into dist/marketplace/, a directory nobody
+ * So: pack copies plugins/nole-schedule into dist/marketplace/, a directory nobody
  * edits, and you install THAT. dist/ is gitignored. The working tree is then free
  * to change without the installed copy moving underneath the test, and the two can
  * be compared deliberately by re-packing.
@@ -34,10 +34,10 @@
  *
  *   1.  npm run pack
  *   2.  In Claude Code:  /plugin marketplace add <the absolute path this prints>
- *   3.                   /plugin install fsu-schedule@fsu-campus
+ *   3.                   /plugin install nole-schedule@tally-campus
  *   4.  Edit the working tree freely. The install does not follow it.
  *   5.  To test a change: npm run pack again, then  /plugin marketplace update
- *       fsu-campus  and  /plugin update fsu-schedule.
+ *       tally-campus  and  /plugin update nole-schedule.
  *
  * ------------------------------------------------------------------
  * THE OTHER HALF OF THE PROBLEM, WHICH THIS DOES NOT FIX
@@ -58,7 +58,7 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const SRC_PLUGIN = path.join(REPO, 'plugins', 'fsu-schedule');
+const SRC_PLUGIN = path.join(REPO, 'plugins', 'nole-schedule');
 const SRC_MARKETPLACE = path.join(REPO, '.claude-plugin', 'marketplace.json');
 const DIST = path.join(REPO, 'dist');
 const OUT = path.join(DIST, 'marketplace');
@@ -93,7 +93,7 @@ function copyTree(from, to) {
   }
 }
 
-copyTree(SRC_PLUGIN, path.join(OUT, 'plugins', 'fsu-schedule'));
+copyTree(SRC_PLUGIN, path.join(OUT, 'plugins', 'nole-schedule'));
 
 fs.mkdirSync(path.join(OUT, '.claude-plugin'), { recursive: true });
 fs.copyFileSync(SRC_MARKETPLACE, path.join(OUT, '.claude-plugin', 'marketplace.json'));
@@ -128,16 +128,16 @@ if (asJson) {
   process.exit(0);
 }
 
-console.log(`Packed fsu-schedule ${info.pluginVersion} -- ${info.fileCount} files, tree ${treeHash.slice(0, 12)}`);
+console.log(`Packed nole-schedule ${info.pluginVersion} -- ${info.fileCount} files, tree ${treeHash.slice(0, 12)}`);
 console.log(`  commit: ${info.gitCommit ?? '(not a git checkout)'}${info.gitDirty ? '  DIRTY -- this pack does not match any commit' : ''}`);
 console.log(`  stamp:  ${path.relative(REPO, path.join(DIST, 'PACK-INFO.json'))}`);
 console.log('');
 console.log('Install the FROZEN copy, not the working tree:');
 console.log(`  /plugin marketplace add ${OUT}`);
-console.log('  /plugin install fsu-schedule@fsu-campus');
+console.log('  /plugin install nole-schedule@tally-campus');
 console.log('');
-console.log('After changing anything in plugins/fsu-schedule:');
+console.log('After changing anything in plugins/nole-schedule:');
 console.log('  npm run pack');
-console.log('  /plugin marketplace update fsu-campus');
-console.log('  /plugin update fsu-schedule');
+console.log('  /plugin marketplace update tally-campus');
+console.log('  /plugin update nole-schedule');
 console.log('  /reload-plugins        <- a running session caches skill text; this is not optional');
