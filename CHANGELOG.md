@@ -84,3 +84,11 @@ MIT licensed, `license` set in both manifests. `keywords`, `homepage` and `repos
 <https://github.com/willrenaud/tally-campus>. `npm run validate`, `claude plugin validate .` and
 **268 test checks** pass. The packed plugin is asserted to contain no dev tooling and no import
 that is not a Node builtin or a relative path.
+
+### Published
+
+Pushed to <https://github.com/willrenaud/tally-campus> and tagged `v0.1.0`. The public
+install path was then tested from a clean state — local marketplace removed first, added
+from GitHub, installed, and one query run end to end in a fresh session. A GitHub source
+installs a **commit-pinned copy** under `~/.claude/plugins/cache/tally-campus/nole-schedule/0.1.0/`,
+unlike a directory source, which points at the directory itself; 51 files, no dev tooling.

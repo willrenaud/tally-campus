@@ -785,3 +785,118 @@ Two existing tests changed, neither weakened:
   February 2027 into the term. Asked from February 2027 the same question is now
   answered by the staleness guard, which is a *different and more accurate* refusal;
   pinning the clock keeps the test about the one thing it names.
+
+### Part E — published, and the public path tested as a stranger
+
+`81ceb7a` pushed to `main` at <https://github.com/willrenaud/tally-campus>, tagged
+**`v0.1.0`**, tag pushed.
+
+Then the install was done the way somebody who has never seen this repository would
+do it. The local marketplace and the old plugin were **removed first**, so nothing
+could fall back to a working tree:
+
+    claude plugin uninstall fsu-schedule@fsu-campus
+    claude plugin marketplace remove fsu-campus
+    claude plugin marketplace add willrenaud/tally-campus
+    claude plugin install nole-schedule@tally-campus
+
+It worked, first attempt, with no fallback to the local path. `claude plugin list`
+reports `nole-schedule@tally-campus  Version: 0.1.0  ✔ enabled`. A fresh session was
+then asked *"when is the last day to drop a class without receiving a grade?"* and
+answered from the shipped Registrar calendar — the three 9 October deadlines quoted
+in FSU's own wording, the distinction between dropping a course and withdrawing from
+school preserved, and the full-term caveat attached. That question was chosen
+because it needs **no imported schedule**, so it exercises the whole path — install,
+skill discovery, `${CLAUDE_PLUGIN_ROOT}`, script, shipped data — with nothing
+carried over from this machine's state.
+
+#### What behaved differently from local, which is the thing that was being tested
+
+**A GitHub source installs a frozen, commit-pinned copy. A directory source does
+not.** This is the opposite of the failure mode the step was watching for, and it
+retires a problem rather than creating one.
+
+    ~/.claude/plugins/marketplaces/tally-campus/          <- the clone
+    ~/.claude/plugins/cache/tally-campus/nole-schedule/0.1.0/   <- what is installed
+
+`installed_plugins.json` records that path along with
+`"gitCommitSha": "81ceb7a0b1e3e824c3a166df70af459b94bf7997"`. So the install is a
+**versioned snapshot of a specific commit**, and editing the working tree cannot
+move it. That is exactly what `npm run pack` was built in step 5 to fake for a
+directory source, where the "installed" plugin resolves to the directory you named
+and a half-finished edit is live the moment it is saved.
+
+**`npm run pack` is therefore now a local-development tool only**, not something the
+publishing path depends on. It is still the right way to test a change before
+pushing it, and `dist/PACK-INFO.json` still answers "am I looking at a cached copy?"
+— but the thing it works around does not exist for a student installing from GitHub.
+
+**The install carries the plugin directory and nothing else: 51 files**, the same
+count the packer produces, with no `package.json`, no `tools/`, no `tests/`, no
+`node_modules`. The repository root is in the clone under `marketplaces/`; none of
+it reaches the installed plugin. The layout claim has now been verified on the real
+public path and not only against the packer.
+
+**Relative paths resolved correctly**, which was the specific risk. `"source":
+"./plugins/nole-schedule"` resolved against the clone root as documented, and the
+shipped scripts located their own `data/` relative to their own file rather than via
+`${CLAUDE_PLUGIN_ROOT}` — which is why they work identically from the repository,
+from `dist/marketplace/`, and from the versioned cache directory. Running
+`deadlines.mjs` straight out of the install directory gives byte-identical output to
+running it out of the working tree, including the new staleness refusal.
+
+**One thing broke, exactly as it should have.** Before the old marketplace was
+removed, `claude plugin list` reported:
+
+    fsu-schedule@fsu-campus   Status: ✘ failed to load
+    Error: Plugin fsu-schedule not found in marketplace fsu-campus
+
+That is the rename with no `renames` map, seen from the user's side. It cost nothing
+here because the only install was this machine's own dev copy — which is precisely
+the argument for why a future rename needs the map. **The failure is loud rather
+than silent**, which is the good version: the plugin refuses to load rather than
+loading with an empty data directory.
+
+#### Still true, and unfixable from here
+
+A running session caches skill text, so `/plugin update` alone does not change what
+a live session serves — a restart or `/reload-plugins` is required. The end-to-end
+query above was run in a **fresh** session for that reason. This has been on the
+outstanding list since step 4 and the publishing path does not change it.
+
+### Step 9 starts here
+
+Publishing does not change what the next step should be, but it re-ranks one item to
+the top.
+
+**1. Spring 2027's calendar, the moment the Registrar publishes it.** This was a
+"smaller, carried forward" item before Part D and it is now the thing that keeps the
+plugin alive: after 2026-12-11 the calendar-dependent skills stop answering. The
+README documents the refresh procedure. It is a small, well-specified data task with
+a hard deadline attached, and it is the difference between a plugin that works and
+one that correctly explains why it cannot help.
+
+**2. Garage capacity and `typicalFullBy`** — unchanged from step 8's list, still the
+highest-value *data* item, still what a drive answer cannot be totalled without.
+
+**3. Seminole Express, via the GTFS feed** — scoped in `DATA-GAPS.md` §11, ready to
+build, still a whole step.
+
+**4. Walk the campus with a GPS** — measured edges with a `p90Seconds`, which is what
+`SAFETY_MARGIN` is designed to be deleted for.
+
+### The acceptance criteria, cumulative
+
+Unchanged from step 8, plus:
+
+12. **Data that describes a time window has an expiry, and the code must know the
+    difference between "not yet" and "no longer".** A record that is correct on the
+    day it is written keeps returning cleanly forever; only a comparison against
+    today can tell that it has stopped being true. Refuse on the far side of it, and
+    do not let the refusal quote the data it is refusing to use — but do not refuse
+    on the near side, where the data is simply early. Those two look identical to a
+    naive check and are opposites to a user.
+13. **A number written in a sentence goes stale silently.** The building count read
+    32 in nine places for two versions because every one of them was true when
+    written and nothing asserts on prose. Where a count is user-facing, derive it
+    from the data; where it is not, expect to find it wrong.
