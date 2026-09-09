@@ -85,7 +85,7 @@ Deliberately not a deadline question as the check: `deadlines` is the one skill 
 without needing to write anything, so it is the one most likely to look fine on a surface where
 everything else is broken.
 
-To update later: `/plugin update nole-schedule`. To remove it: `/plugin uninstall nole-schedule`.
+To update later: `/plugin update nole-schedule@tally-campus` — use the full name with `@tally-campus`, the short form is not always accepted. To remove it: `/plugin uninstall nole-schedule@tally-campus`.
 
 ## Importing your schedule
 

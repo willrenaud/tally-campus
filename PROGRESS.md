@@ -900,3 +900,150 @@ Unchanged from step 8, plus:
     32 in nine places for two versions because every one of them was true when
     written and nothing asserts on prose. Where a count is user-facing, derive it
     from the data; where it is not, expect to find it wrong.
+
+---
+
+## Step 9 — 0.1.1, the release that exists because 0.1.0 shipped broken
+
+A student installed 0.1.0 **on the regular Claude desktop app**. The skills loaded.
+Nothing they instruct could be executed. The import read their screenshot and then
+could not save it, could not resolve a building, could not check the calendar. They
+reported it as "only the SKILL.md files arrived".
+
+### The diagnosis, which found three things and only fixed two
+
+Four candidate causes were checked in order.
+
+**Not packaging.** The installed copy at
+`~/.claude/plugins/cache/tally-campus/nole-schedule/0.1.0/` holds all 51 files,
+every script and every data file. **Not the push.** A fresh
+`git clone --branch v0.1.0` from GitHub gives the same 51. Both ruled out with
+evidence rather than inspection.
+
+**It is the surface, and it is also resolution.** Two separate defects, and the
+report conflated them because they produce the same sentence:
+
+1. **The surface cannot run the scripts at all.** Every operative step of every one
+   of the six skills shells out to `node`. There is no path through any skill that
+   answers without executing something. On a surface that loads instructions but does
+   not run programs, this plugin has nothing to offer — and it does not say so.
+
+2. **The paths are broken independently, and would have failed in Claude Code too.**
+   `${CLAUDE_PLUGIN_ROOT}` is **textually substituted into skill content** and works.
+   The environment variables are **not exported to a tool subprocess** — measured,
+   both empty. So:
+   - `import-schedule` defines `$P` as a **prose shorthand** and then issues six
+     commands as `node "$P"/script.mjs`. `$P` is not a variable. Copied literally it
+     expands to nothing and every script in the import flow dies with
+     `MODULE_NOT_FOUND`. The four scripts the student reported missing are **exactly**
+     the `$P` table entries a screenshot import would run — the list matches the
+     table, not the directory.
+   - 11 references to `$CLAUDE_PLUGIN_DATA` are written **unbraced**, which is not
+     substituted. A fresh session quoted its own skill text back showing
+     `--data-dir "$CLAUDE_PLUGIN_DATA"` verbatim, unexpanded.
+   - Every command is POSIX-only, on a machine whose primary shell is PowerShell.
+
+**How the step-8 verification missed all of it.** It probed with `deadlines`.
+`deadlines` is the one skill deliberately built to answer with no stored schedule, so
+it is the only one that works without a data directory. The least demanding surface
+was tested and reported as end-to-end. **A probe must exercise the thing most likely
+to be broken, not the thing most likely to pass.**
+
+### The third finding, which is worse than either defect
+
+**On a non-executing surface this plugin did not fail closed. It failed into being
+the thing the whole project exists to prevent.**
+
+The skill text carried quotable hard values — real deadline dates, real walking
+ranges, real building codes, a fully-formed worked draft — and **no instruction
+anywhere about what to do if a script could not run**. Every guard this project
+built lives in the scripts: the three-outcome conflict rule, the refusal before any
+arithmetic, the range that cannot collapse to one number, the calendar that expires.
+None of it protects anyone when the scripts do not run and the model answers from the
+examples instead.
+
+Step 5 established *put the safety in the script, not in the prose*. That was right
+and it had an unexamined premise: **that the script runs.** Where it does not, all the
+safety is in the one place the design decided not to trust, and the prose that remains
+is a worked example of a confident answer.
+
+Suggestive, not proven: the broken run reported **"4 courses and 7 blocks"**. The
+re-import example in `import-schedule` contained the phrases *"5 courses, 7 meeting
+blocks"* and *"the new import has 4 courses"*. Those were the only places those two
+numbers existed, and no script had run to produce real ones.
+
+### What 0.1.1 changes, and deliberately nothing else
+
+**1. The requirement is stated, above the install commands.** A banner at the top of
+the README, again immediately above the two commands, a row in the coverage table, and
+a banner on the plugin README. The regular Claude desktop and web apps load these
+instructions and do not run the programs they depend on.
+
+The README's "check it worked" step is now **an import, not a deadline question** —
+the same mistake as the step-8 probe, corrected in the place a student would repeat it.
+
+**2. Every skill refuses when its script does not run.** A gate above the title in all
+six `SKILL.md` files: *if the script did not run, you have no answer.* It enumerates
+every way that happens and forbids answering from the examples, from training, from
+the student's own words, or from an earlier answer in the conversation.
+
+**The gate alone would be a suggestion, so the second half is structural: the data is
+gone.** Every worked example in all six skills now uses placeholders chosen to look
+wrong if quoted — `ZZZ`, `AAA1111`, `<DATE>`, `NN–NN minutes`. No real building code,
+deadline, duration or course code remains in any example text. A model on a
+non-executing surface now has **nothing plausible to fabricate from**, which does not
+depend on it having read the gate. That is the part that would still work on a bad day.
+
+The `import-schedule` re-import example carries an explicit note that its counts are
+`<N>` on purpose, because a course count is the one figure a student uses to check
+that nothing was lost.
+
+Left in deliberately: FSU policy text that accompanies a refusal ("out by 11:59 PM the
+night before"), the documented source disagreement about student white-space hours,
+and format illustrations in the ambiguous-time table. None can become a wrong answer
+about where to park or when to drop — they explain a refusal or a parsing rule. The
+frontmatter `description` fields keep real building names; that is skill-matching
+metadata, not example text, and it is what makes the skill findable.
+
+**Not in this release, by instruction:** `$P`, the unbraced variables, `store.mjs`'s
+false claim that Claude Code exports `CLAUDE_PLUGIN_DATA`, and the stale WCB examples.
+All real, all confirmed, none of them able to produce a confidently wrong answer to a
+student — they produce visible errors. 0.1.2.
+
+### Verified with `import-schedule`, not `deadlines`
+
+Pushed, then updated the GitHub install to 0.1.1 and ran a **fresh session** against a
+two-course text schedule.
+
+- It drafted the week, resolved **BEL → Bellamy Building** and **HCB → Classroom
+  Building** against the shipped data, listed its assumptions, and stopped to ask —
+  correct draft-first behaviour, and the data directory was still empty at that point.
+- Told to complete, it wrote
+  `~/.claude/plugins/data/nole-schedule-tally-campus/schedules/2026-fall.json`.
+- The file validates against `student-schedule.schema.json` via the shipped
+  `review-schedule.mjs`, and `whats-next.mjs` reads it back and reports the right next
+  class. Full round trip through the directory that was the thing reported broken.
+- The test schedule was then **removed**, leaving the data directory empty as found.
+
+**The run also confirmed defect 2 live**: the session reported that
+`CLAUDE_PLUGIN_DATA` was not set in its shell and that it had to pass `--data-dir`
+explicitly. It recovered by knowing the documented path. A model that guesses
+differently writes a student's schedule somewhere the other five skills will not look.
+That is 0.1.2's first item and it is not cosmetic.
+
+Also found: `claude plugin update nole-schedule` fails on the bare name and needs
+`nole-schedule@tally-campus`. The README said the short form. Corrected.
+
+### The acceptance criteria, cumulative
+
+Unchanged, plus:
+
+14. **A probe must exercise what is most likely to be broken.** Verifying with the
+    skill that needs least is how a release ships broken and passes its own test.
+15. **Safety in the script assumes the script runs.** Where it might not, the prose
+    that remains must refuse — and, more importantly, must contain nothing worth
+    quoting. Remove the plausible values and the failure mode stops depending on the
+    model's judgement.
+16. **State the runtime requirement where the install happens.** A constraint the user
+    discovers halfway through their first real task was a documentation defect before
+    it was anything else.

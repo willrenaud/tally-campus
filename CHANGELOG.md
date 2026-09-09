@@ -92,3 +92,57 @@ install path was then tested from a clean state — local marketplace removed fi
 from GitHub, installed, and one query run end to end in a fresh session. A GitHub source
 installs a **commit-pinned copy** under `~/.claude/plugins/cache/tally-campus/nole-schedule/0.1.0/`,
 unlike a directory source, which points at the directory itself; 51 files, no dev tooling.
+
+## 0.1.1 — 2026-09-09
+
+A student installed 0.1.0 on the regular Claude desktop app. The skills loaded and
+nothing they instruct could run: the import read their screenshot, then could not save
+it, could not resolve a building, could not check the calendar. Two fixes, nothing else.
+
+### Requires Claude Code — now stated, above the install commands
+
+The regular Claude desktop app and claude.ai in a browser load this plugin's
+instructions but do not run the programs those instructions depend on, and **every**
+skill here is a program it has to run. There is no reduced version that works without
+them. That is now a banner at the top of the README, a paragraph immediately above the
+two install commands, a row in the coverage table, and a banner on the plugin README.
+
+The README's "check it worked" step is now an **import**, not a deadline question.
+`deadlines` is the one skill that answers without writing anything, so it is the one
+most likely to look fine on a surface where everything else is broken — which is
+exactly how 0.1.0 passed its own release check.
+
+### Every skill refuses when its script cannot run
+
+A gate above the title in all six skills: **if the script did not run, there is no
+answer.** It covers every way that happens — no tool to run commands, no `node`, file
+not found, unexpected exit, unparseable output, a surface that will not run programs —
+and forbids answering from the examples, from training, from the student's own words,
+or from an earlier answer.
+
+**And the examples are defused, which is the part that does not depend on the model
+reading the gate.** Every worked example across the six skills now uses placeholders
+chosen to look wrong if quoted: `ZZZ`, `AAA1111`, `<DATE>`, `NN–NN minutes`. No real
+building code, deadline date, walking duration or course code remains in any example
+text. On a surface where the scripts cannot run there is now nothing plausible left to
+fabricate an answer from.
+
+This closes a hole the design had not examined: every guard in this project lives in
+the scripts, which assumes the scripts run. Where they do not, the skill text was a
+worked example of a confident answer with real values in it.
+
+### Not in this release
+
+`$P` (a prose shorthand issued as if it were a shell variable), the 11 unbraced
+`$CLAUDE_PLUGIN_DATA` references, `store.mjs`'s false claim that Claude Code exports
+that variable to a subprocess, and two stale examples calling `WCB` unshipped. All
+real, all confirmed, all in 0.1.2 — they produce visible errors rather than confident
+wrong answers, which is why they wait.
+
+### Verified
+
+With `import-schedule` against the GitHub install, in a fresh session: drafted the
+week, resolved `BEL` and `HCB` against the shipped data, wrote
+`~/.claude/plugins/data/nole-schedule-tally-campus/schedules/2026-fall.json`, and the
+file validated and read back correctly through `whats-next`. 268 checks,
+`npm run validate`, and `claude plugin validate . --strict` all pass.
