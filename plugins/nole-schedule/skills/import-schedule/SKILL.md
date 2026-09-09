@@ -142,17 +142,20 @@ that refusal is a backstop, not the plan. Run `review-schedule.mjs` first.
 
 ## The scripts
 
-All are dependency-free Node and run with no install. `$P` below is
-`${CLAUDE_PLUGIN_ROOT}/scripts`.
+All are dependency-free Node and run with no install. Every command below is
+written out in full on purpose. **There is no `$P` shorthand and no shell variable
+to expand** — an earlier version of this file defined one in prose, and a shorthand
+that looks like a variable but is not one expands to nothing, turning every command
+here into a file-not-found error that reads exactly like the scripts being absent.
 
 | Script | Use it for |
 | --- | --- |
-| `node "$P"/current-term.mjs` | The term to assume, from today's date and the shipped calendar. |
-| `node "$P"/parse-ics.mjs <file>` | Unfolding and reading an `.ics` export into drafts. |
-| `node "$P"/resolve-buildings.mjs "<CODE> <ROOM>" ...` | Turning a raw location string into a building code, or finding out that it cannot be. |
-| `node "$P"/review-schedule.mjs draft.json` | Validating, rendering the week, listing assumptions, and separating them from genuine questions. Writes nothing. |
-| `node "$P"/save-schedule.mjs --plan --term 2026-fall` | What is already stored, so you can say what you are about to replace. |
-| `node "$P"/save-schedule.mjs draft.json` | Validating again and writing. |
+| `node "${CLAUDE_PLUGIN_ROOT}"/scripts/current-term.mjs` | The term to assume, from today's date and the shipped calendar. |
+| `node "${CLAUDE_PLUGIN_ROOT}"/scripts/parse-ics.mjs <file>` | Unfolding and reading an `.ics` export into drafts. |
+| `node "${CLAUDE_PLUGIN_ROOT}"/scripts/resolve-buildings.mjs "<CODE> <ROOM>" ...` | Turning a raw location string into a building code, or finding out that it cannot be. |
+| `node "${CLAUDE_PLUGIN_ROOT}"/scripts/review-schedule.mjs draft.json` | Validating, rendering the week, listing assumptions, and separating them from genuine questions. Writes nothing. |
+| `node "${CLAUDE_PLUGIN_ROOT}"/scripts/save-schedule.mjs --plan --term 2026-fall` | What is already stored, so you can say what you are about to replace. |
+| `node "${CLAUDE_PLUGIN_ROOT}"/scripts/save-schedule.mjs draft.json` | Validating again and writing. |
 
 Write the draft to a temporary file and pass its path; do not try to hold a large
 JSON document in a shell argument.

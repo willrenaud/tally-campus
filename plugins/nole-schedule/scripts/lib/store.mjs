@@ -33,8 +33,13 @@ export function dataRoot(explicit) {
   const dir = explicit || process.env.CLAUDE_PLUGIN_DATA;
   if (!dir) {
     throw new Error(
-      'CLAUDE_PLUGIN_DATA is not set. Claude Code exports it when the plugin runs; ' +
-      'pass --data-dir <path> to run this script outside that environment.'
+      'No data directory. Pass --data-dir <path>.\n\n' +
+      'NOTE: CLAUDE_PLUGIN_DATA is NOT an environment variable in this process. Claude Code\n' +
+      'substitutes ${CLAUDE_PLUGIN_DATA} into SKILL.md text before the model reads it; it does\n' +
+      'not export it to the shell a script runs in. So a skill must pass the substituted path\n' +
+      'as --data-dir, and a caller that expected to inherit it from the environment was\n' +
+      'relying on something that has never been true. An earlier version of this message said\n' +
+      'the opposite and sent at least one debugging session the wrong way.'
     );
   }
   return dir;

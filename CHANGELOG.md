@@ -146,3 +146,51 @@ week, resolved `BEL` and `HCB` against the shipped data, wrote
 `~/.claude/plugins/data/nole-schedule-tally-campus/schedules/2026-fall.json`, and the
 file validated and read back correctly through `whats-next`. 268 checks,
 `npm run validate`, and `claude plugin validate . --strict` all pass.
+
+## 0.1.2 — 2026-09-09
+
+The path defects held back from 0.1.1, plus the assertion layer that stops them
+recurring. No behaviour change for a student whose scripts were already running.
+
+### Fixed
+
+- **`$P` removed.** `import-schedule` defined it as a shorthand in prose and then
+  issued six commands as `node "$P"/script.mjs`. It is not a shell variable; copied
+  literally it expands to nothing and every command fails with `MODULE_NOT_FOUND`,
+  which reads exactly like the scripts being missing from the install. All six are
+  now written out with `${CLAUDE_PLUGIN_ROOT}`.
+- **All 11 `$CLAUDE_PLUGIN_DATA` references braced**, across five skills. The braced
+  form is substituted into skill text before the model reads it (verified directly);
+  the bare form is not, is not in the environment, and can be rejected by a sandbox
+  for containing shell expansion.
+- **`store.mjs` stopped asserting something false.** Its error claimed Claude Code
+  exports `CLAUDE_PLUGIN_DATA` to the script's environment. It does not — it
+  substitutes into skill text. The message now explains the actual mechanism.
+- **The last stale `WCB` claim** in code. The skill-level ones were already gone,
+  removed as a side effect of 0.1.1's defusing: a generic example cannot go stale.
+
+### Added: the skill text is now tested
+
+A `SKILL TEXT` section asserts, per skill — no prose shorthand used as a path, every
+`CLAUDE_` variable braced, every `node` command rooted at `${CLAUDE_PLUGIN_ROOT}`, no
+numeric course/block tally, no real building code in the body, no real calendar date
+in ISO or spoken form, and the gate present above the title. The frontmatter
+`description` is exempt from the building-code rule; it is skill-matching metadata and
+real names are what make a skill findable.
+
+**And `npm run mutate`, which tests those tests.** Assertions over text can be vacuous
+in a way that is invisible — an over-anchored regex matching nothing passes forever.
+That happened twice while writing this section, and the second instance passed cleanly
+while guarding nothing. So each assertion is verified by reintroducing its defect and
+requiring a failure. Seven mutations, all caught, non-zero exit if any is not.
+
+### Recorded
+
+The student's broken run reported "4 courses and 7 blocks". The 0.1.0 re-import example
+contained "5 courses, 7 meeting blocks" and "the new import has 4 courses" — the only
+places those numbers existed, with no script having run to produce real ones. Treated as
+fabrication from the examples rather than a parser defect: nothing shipped parses a
+screenshot, and `review-schedule.mjs`, which would have shown the count, was one of the
+commands `$P` had killed. See PROGRESS.md step 10.
+
+311 checks, 7 mutations, `npm run validate`, `claude plugin validate . --strict`.

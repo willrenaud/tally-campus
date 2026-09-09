@@ -18,7 +18,7 @@ The goal is to make questions like these answerable from structured data instead
 - *What's due this week?*
 - *Do these two courses conflict?*
 
-## Version 0.1.1 — six skills, two travel modes. Claude Code only.
+## Version 0.1.2 — six skills, two travel modes. Claude Code only.
 
 | Skill | What it does |
 | --- | --- |

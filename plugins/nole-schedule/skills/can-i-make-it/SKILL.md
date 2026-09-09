@@ -107,11 +107,11 @@ are not symmetric and the answer is not centred.
 
 ## The script
 
-    node "${CLAUDE_PLUGIN_ROOT}"/scripts/can-i-make-it.mjs --data-dir "$CLAUDE_PLUGIN_DATA"
-    node "${CLAUDE_PLUGIN_ROOT}"/scripts/can-i-make-it.mjs --data-dir "$CLAUDE_PLUGIN_DATA" --day thursday
+    node "${CLAUDE_PLUGIN_ROOT}"/scripts/can-i-make-it.mjs --data-dir "${CLAUDE_PLUGIN_DATA}"
+    node "${CLAUDE_PLUGIN_ROOT}"/scripts/can-i-make-it.mjs --data-dir "${CLAUDE_PLUGIN_DATA}" --day thursday
     node "${CLAUDE_PLUGIN_ROOT}"/scripts/can-i-make-it.mjs --from <FROM> --to <TO> --gap <MINUTES>
     node "${CLAUDE_PLUGIN_ROOT}"/scripts/can-i-make-it.mjs --from <FROM> --to <TO> --gap <MINUTES> --date <YYYY-MM-DD>
-    node "${CLAUDE_PLUGIN_ROOT}"/scripts/can-i-make-it.mjs --data-dir "$CLAUDE_PLUGIN_DATA" --json
+    node "${CLAUDE_PLUGIN_ROOT}"/scripts/can-i-make-it.mjs --data-dir "${CLAUDE_PLUGIN_DATA}" --json
 
 Pass `--date` whenever a drive alternative might come up: it is what lets the
 blackout check run against the drive plan. `--time` and `--permits` refine which

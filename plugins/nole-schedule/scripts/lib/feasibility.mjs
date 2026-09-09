@@ -158,8 +158,8 @@ export function evaluateLeg({
 
   /* --- 2. Location. Any leg touching an endpoint that is not a shipped building
    * refuses. Not "estimates with a warning" -- refuses. The nearest shipped
-   * building is not a stand-in for a missing one, and the distance from WCB to
-   * anything the data does know is exactly the number that is missing. --- */
+   * building is not a stand-in for a missing one: the distance from an unshipped
+   * building to anything the data does know is exactly the number that is missing. --- */
   for (const [side, end] of [['from', from], ['to', to]]) {
     if (end.kind === 'unknown-building') {
       return {

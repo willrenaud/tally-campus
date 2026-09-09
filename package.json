@@ -10,8 +10,9 @@
     "validate:schemas": "node tools/validate-schemas.mjs",
     "validate:data": "node tools/validate-data.mjs",
     "test": "node tests/run-tests.mjs",
-    "test:all": "npm run validate && npm test",
-    "pack": "node tools/pack-plugin.mjs"
+    "test:all": "npm run validate && npm test && npm run mutate",
+    "pack": "node tools/pack-plugin.mjs",
+    "mutate": "node tools/mutate-skill-text.mjs"
   },
   "devDependencies": {
     "ajv": "^8.17.1",

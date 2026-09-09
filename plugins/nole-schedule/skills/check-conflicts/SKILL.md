@@ -64,8 +64,8 @@ $ARGUMENTS
 
 ## The script
 
-    node "${CLAUDE_PLUGIN_ROOT}"/scripts/check-conflicts.mjs --data-dir "$CLAUDE_PLUGIN_DATA"
-    node "${CLAUDE_PLUGIN_ROOT}"/scripts/check-conflicts.mjs --data-dir "$CLAUDE_PLUGIN_DATA" --json
+    node "${CLAUDE_PLUGIN_ROOT}"/scripts/check-conflicts.mjs --data-dir "${CLAUDE_PLUGIN_DATA}"
+    node "${CLAUDE_PLUGIN_ROOT}"/scripts/check-conflicts.mjs --data-dir "${CLAUDE_PLUGIN_DATA}" --json
 
 Exit codes: **0** answered — *including* answering "cannot determine" — **2** could
 not run, **4** no schedule imported.

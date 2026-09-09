@@ -64,9 +64,9 @@ $ARGUMENTS
 
 ## The script
 
-    node "${CLAUDE_PLUGIN_ROOT}"/scripts/deadlines.mjs --data-dir "$CLAUDE_PLUGIN_DATA"
+    node "${CLAUDE_PLUGIN_ROOT}"/scripts/deadlines.mjs --data-dir "${CLAUDE_PLUGIN_DATA}"
     node "${CLAUDE_PLUGIN_ROOT}"/scripts/deadlines.mjs --term 2026-fall --within 30
-    node "${CLAUDE_PLUGIN_ROOT}"/scripts/deadlines.mjs --data-dir "$CLAUDE_PLUGIN_DATA" --json
+    node "${CLAUDE_PLUGIN_ROOT}"/scripts/deadlines.mjs --data-dir "${CLAUDE_PLUGIN_DATA}" --json
 
 Exit codes: **0** answered, **2** could not run, **3** **refused** — either no
 shipped calendar covers the term asked about (`no-calendar`), or today is past

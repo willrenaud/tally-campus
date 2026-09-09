@@ -90,7 +90,7 @@ would hedge.
 
     node "${CLAUDE_PLUGIN_ROOT}"/scripts/where-to-park.mjs --building <CODE> --date <YYYY-MM-DD> --time <HH:MM>
     node "${CLAUDE_PLUGIN_ROOT}"/scripts/where-to-park.mjs --building <CODE> --permits student-commuter
-    node "${CLAUDE_PLUGIN_ROOT}"/scripts/where-to-park.mjs --data-dir "$CLAUDE_PLUGIN_DATA" --course <COURSE> --date <YYYY-MM-DD>
+    node "${CLAUDE_PLUGIN_ROOT}"/scripts/where-to-park.mjs --data-dir "${CLAUDE_PLUGIN_DATA}" --course <COURSE> --date <YYYY-MM-DD>
     node "${CLAUDE_PLUGIN_ROOT}"/scripts/where-to-park.mjs --building <CODE> --json
 
 Exit codes: **0** answered, **2** could not run, **3** **refused by design**.

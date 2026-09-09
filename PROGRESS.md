@@ -1047,3 +1047,132 @@ Unchanged, plus:
 16. **State the runtime requirement where the install happens.** A constraint the user
     discovers halfway through their first real task was a documentation defect before
     it was anything else.
+
+---
+
+## Step 10 — 0.1.2, and the test that makes the class of defect unrepresentable
+
+The four path and documentation defects 0.1.1 deliberately held back, plus the thing
+that matters more than any of them: an assertion layer that reads the skill text as
+something which has to **work**, not merely exist.
+
+### The concrete case that justifies the 0.1.1 work
+
+Recorded here because it is the clearest evidence this project has that **a worked
+example is executable**, and because it was nearly filed as a parser bug.
+
+A student's broken run — on the regular Claude desktop app, where no script could be
+executed — reported their imported schedule as **"4 courses and 7 blocks"**. Their
+earlier, working test of the same schedule had produced **5 courses including MAN4720
+on Mon/Wed**, matching fixture 07 exactly.
+
+The re-import example in 0.1.0's `import-schedule` read:
+
+> You already have a Fall 2026 schedule stored: **5 courses, 7 meeting blocks**,
+> imported on 20 August from a text paste. […] The new import has **4 courses** —
+> POS2041 is not in it. Was that a drop?
+
+Those were **the only two places in the entire plugin** where the numbers 7 and 4
+appeared as schedule counts, and no script had run to produce real ones. The broken
+run reproduced both.
+
+**This is treated as strong evidence of fabrication from the examples, not as a parser
+defect.** Two further facts support it and one closes it off:
+
+- **There is no parser to defect.** `import-schedule` states it outright: *"You read
+  the image; no script can."* Nothing shipped reads a screenshot. For that source type
+  the parse is the model's own vision, so there is no shipped code path that could drop
+  a course.
+- **The one guard against a dropped course never ran.** `review-schedule.mjs` renders
+  the week back with counts precisely so a missing course is visible before saving, and
+  it was one of the commands killed by `$P`. The parse and the check on the parse were
+  disabled by the same defect.
+- The structural shape is wrong too: **7 blocks from 4 courses** implies days split
+  into separate blocks, which is not how the importer builds a document — it collapses
+  a meeting pattern into `daysOfWeek`. Fixture 07 is 5 courses in 5 blocks.
+
+The lesson is not "the model was careless". It is that **the file contained a
+ready-made answer**, and a ready-made answer will eventually be given. 0.1.1 removed
+every one of them; 0.1.2 makes their return a test failure.
+
+### Items 3–6: the path defects
+
+- **`$P` is gone.** All six commands in `import-schedule` are written out in full with
+  `${CLAUDE_PLUGIN_ROOT}`. The section now carries a short note that there is no
+  shorthand and no variable to expand, and why: a shorthand that *looks* like a
+  variable expands to nothing and turns every command into a file-not-found error
+  that reads exactly like the scripts being absent from the install.
+- **All 11 `$CLAUDE_PLUGIN_DATA` references are braced**, across five skills.
+  Confirmed first, rather than assumed: a probe session was asked to quote back the
+  one already-braced reference, and it arrived as
+  `C:/Users/willr/.claude/plugins/data/nole-schedule-tally-campus/schedules/<termCode>.json`
+  — fully substituted. So bracing is a real fix and not a cosmetic one. It also
+  sidesteps a third failure found during 0.1.1's verification: a sandbox can reject a
+  command outright *for containing shell variable expansion*, which the bare form does
+  and the substituted form does not.
+- **`store.mjs` no longer asserts something false.** Its error said *"Claude Code
+  exports it when the plugin runs"*. It does not: the harness substitutes
+  `${CLAUDE_PLUGIN_DATA}` into skill **text**, and never exports it to the shell a
+  script runs in. The message now says so at length, including that an earlier version
+  said the opposite and sent a debugging session the wrong way. An error message is
+  read exactly when someone is confused, which is the worst moment to be lied to.
+- **The last stale `WCB` claim in code is fixed.** The skill-level ones were already
+  gone — 0.1.1's defusing removed them as a side effect, which is worth noting: making
+  examples generic retired a whole category of staleness, because a generic example
+  cannot go out of date.
+
+### Item 7: the part that is the point
+
+**`SKILL TEXT`**, section 12 of the suite. Per skill: no prose shorthand used as a
+path, every `CLAUDE_` variable braced, every `node` command rooted at
+`${CLAUDE_PLUGIN_ROOT}`, no numeric course/block tally, no real building code in the
+body, no real calendar date in either ISO or spoken form, and the gate present **above
+the title**.
+
+Two judgement calls, both deliberate:
+
+- **The frontmatter `description` is exempt from the building-code check.** It is what
+  a user's question is matched against, real names are what make the skill findable,
+  and it is routing metadata rather than a source for an answer.
+- **The tally check looks for numerals only.** "one course", "two classes" is ordinary
+  English prose and appears eight times across the skills; a *tally* is always written
+  as a numeral. Banning the spelled forms would force stilted prose and catch nothing.
+
+### And the test that tests the tests
+
+**`tools/mutate-skill-text.mjs` (`npm run mutate`), now part of `npm run test:all`.**
+
+Section 12 asserts things about text, and assertions over text are unusually easy to
+write so that they can never fail — one over-anchored regex matching nothing passes
+forever, guards nothing, and looks exactly like a passing test. That is not
+hypothetical; it happened **twice** while writing this section:
+
+1. A command detector anchored to the start of a line found **no commands at all** in
+   `import-schedule`, whose six commands live in a markdown table, and reported the
+   skill as unable to do anything.
+2. Its replacement required a quote after `node`, so `node ./scripts/x.mjs` was not
+   recognised as a command and **skipped the rooting check in silence** — a relative
+   path being the exact defect that check exists to catch.
+
+The first failed loudly. **The second passed**, and was found only by reintroducing the
+defect and discovering that nothing complained. So each of the seven assertions is now
+verified by putting its defect back, running the suite, and requiring a failure. All
+seven are caught; the harness exits non-zero if any is not, or `test:all` would report
+success over a guard with no teeth — the same failure one level up.
+
+This is the same idea as the Ajv parity check from step 3: a second, independent thing
+whose only job is to notice when the first has quietly stopped working.
+
+### Tests: **311 checks**, up from 268, plus 7 mutations
+
+### The acceptance criteria, cumulative
+
+Unchanged, plus:
+
+17. **An assertion that has never been seen to fail is not a test.** This is sharper
+    than "write tests": a text assertion can be vacuous in a way a value assertion
+    cannot, and the vacuum is invisible. Mutate it, watch it fail, then trust it.
+18. **A worked example is executable.** Anything plausible in a file will eventually be
+    emitted as an answer, whatever the surrounding prose says. Examples carry shape;
+    they must not carry values. The corollary is a pleasant one: a generic example
+    cannot go stale, so this also retired the `WCB` drift for free.

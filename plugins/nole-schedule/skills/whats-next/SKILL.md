@@ -64,9 +64,9 @@ $ARGUMENTS
 
 ## The script
 
-    node "${CLAUDE_PLUGIN_ROOT}"/scripts/whats-next.mjs --data-dir "$CLAUDE_PLUGIN_DATA"
-    node "${CLAUDE_PLUGIN_ROOT}"/scripts/whats-next.mjs --data-dir "$CLAUDE_PLUGIN_DATA" --json
-    node "${CLAUDE_PLUGIN_ROOT}"/scripts/whats-next.mjs --data-dir "$CLAUDE_PLUGIN_DATA" --now 2026-11-20T13:00
+    node "${CLAUDE_PLUGIN_ROOT}"/scripts/whats-next.mjs --data-dir "${CLAUDE_PLUGIN_DATA}"
+    node "${CLAUDE_PLUGIN_ROOT}"/scripts/whats-next.mjs --data-dir "${CLAUDE_PLUGIN_DATA}" --json
+    node "${CLAUDE_PLUGIN_ROOT}"/scripts/whats-next.mjs --data-dir "${CLAUDE_PLUGIN_DATA}" --now <YYYY-MM-DD>T<HH:MM>
 
 It prints NEXT CLASS, TODAY and THIS WEEK in one pass — answer whichever the
 student asked for and ignore the rest. `--now` exists for testing and for a

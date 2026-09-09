@@ -1662,6 +1662,137 @@ check('import is NOT blocked by a stale calendar, but is told about it', () => {
 
 fs.rmSync(emptyDir, { recursive: true, force: true });
 
+/* ================================================================== *
+ * 12. SKILL TEXT -- the commands must be substitutable, and the examples
+ *     must contain nothing worth quoting
+ *
+ * This section exists because of a real, shipped, student-facing failure, and it
+ * is the only part of 0.1.2 that stops the failure CLASS rather than the instance.
+ *
+ * WHAT HAPPENED. 0.1.0 shipped six skills whose commands were written as
+ * `node "$P"/current-term.mjs`, where `$P` was a shorthand DEFINED IN PROSE two
+ * lines above. It is not a shell variable. Copied literally it expands to nothing,
+ * every script dies with MODULE_NOT_FOUND, and the failure reads exactly like the
+ * scripts being absent from the install -- which is what was reported. Eleven more
+ * commands passed `--data-dir "$CLAUDE_PLUGIN_DATA"` unbraced; the harness
+ * substitutes ${CLAUDE_PLUGIN_DATA} into skill CONTENT but does not export it to a
+ * subprocess, so the bare form survived into the shell and expanded to "".
+ *
+ * WHY A TEST AND NOT JUST A FIX. Both defects are one-line edits and both were
+ * invisible to every check the project had: manifests validate, data validates,
+ * 268 checks pass, the packer reports the file present. Nothing reads the skill
+ * text as a thing that has to WORK. These assertions are that reader.
+ *
+ * THE COUNT CHECK, which is the subtlest one. The 0.1.0 import example contained
+ * the strings "5 courses, 7 meeting blocks" and "the new import has 4 courses".
+ * A student's broken run -- on a surface where no script could execute -- reported
+ * "4 courses and 7 blocks". Those were the only places in the plugin those numbers
+ * existed. A course count is the one figure a student uses to check that nothing
+ * was lost, which makes a plausible one sitting in an example the most expensive
+ * string in the file. So: no numeral may precede "courses"/"blocks"/"classes" in
+ * skill text. Spelled-out words are left alone deliberately -- "one course", "two
+ * classes" is ordinary English prose, while a TALLY is always written as a numeral.
+ * ================================================================== */
+console.log('\nSKILL TEXT: commands substitute, examples carry nothing quotable');
+
+const SKILLS_DIR = path.join(REPO, 'plugins', 'nole-schedule', 'skills');
+const skillFiles = fs.readdirSync(SKILLS_DIR)
+  .map((d) => ({ name: d, file: path.join(SKILLS_DIR, d, 'SKILL.md') }))
+  .filter((s) => fs.existsSync(s.file))
+  .map((s) => ({ ...s, text: fs.readFileSync(s.file, 'utf8') }));
+
+check('there are six shipped skills, and this suite reads all of them', () =>
+  (skillFiles.length === 6 ? true : `found ${skillFiles.length}: ${skillFiles.map((s) => s.name).join(', ')}`));
+
+/* --- the command form --- */
+for (const s of skillFiles) {
+  check(`${s.name}: no "$P" or any other prose shorthand used as a path`, () => {
+    // The word may appear in the note explaining that it is NOT a variable; what
+    // must never appear is it being USED, i.e. inside a command as a path.
+    const used = s.text.split('\n').filter((l) => /\$[A-Za-z_][A-Za-z0-9_]*["']?\s*\//.test(l) && !/\$\{/.test(l));
+    return used.length ? `used as a path on: ${used[0].trim().slice(0, 90)}` : true;
+  });
+
+  check(`${s.name}: every CLAUDE_ variable is braced`, () => {
+    // ${CLAUDE_PLUGIN_ROOT} is substituted into skill content; $CLAUDE_PLUGIN_ROOT
+    // is not, and is not in the environment either. Only the braced form works.
+    const bare = [...s.text.matchAll(/\$CLAUDE_[A-Z_]+/g)]
+      .filter((m) => s.text[m.index - 1] !== '{' && !s.text.slice(m.index - 2, m.index).includes('${'));
+    return bare.length ? `${bare.length} unbraced, first is ${bare[0][0]}` : true;
+  });
+
+  check(`${s.name}: every node command runs a script under \${CLAUDE_PLUGIN_ROOT}`, () => {
+    // Two things this had to learn, both from mutation-testing it:
+    //  1. Commands appear in indented code blocks AND in markdown table cells
+    //     (import-schedule lists its six scripts in a table), so it cannot anchor
+    //     to the start of a line. An earlier version did, found nothing in
+    //     import-schedule, and reported "this skill cannot do anything".
+    //  2. It must not require a quote after `node`, or a RELATIVE path such as
+    //     `node ./scripts/x.mjs` is not recognised as a command at all and skips
+    //     the rooting check silently -- the exact defect this test exists for.
+    // So: any line that invokes node on a .mjs file, however it is written.
+    const cmds = s.text.split('\n').filter((l) => /\bnode\s+\S/.test(l) && /\.mjs/.test(l));
+    if (!cmds.length) return `no node command found at all; this skill cannot do anything`;
+    const bad = cmds.filter((l) => !l.includes('${CLAUDE_PLUGIN_ROOT}'));
+    return bad.length ? `not rooted: ${bad[0].trim().slice(0, 90)}` : true;
+  });
+}
+
+/* --- the examples carry nothing quotable --- */
+const REAL_CODES = new Set(N_CAMPUS.buildings().map((b) => b.code));
+const CAL_ALL = readJson(path.join(REPO, 'plugins', 'nole-schedule', 'data', 'term-calendar.json'))[0];
+
+for (const s of skillFiles) {
+  check(`${s.name}: no numeric course/block tally in the text`, () => {
+    // See the header. This is the string the broken run reproduced.
+    const hits = [...s.text.matchAll(/\b\d+ +(courses?|meeting blocks?|blocks?|classes)\b/gi)].map((m) => m[0]);
+    return hits.length ? `a quotable tally: ${hits.join(', ')}` : true;
+  });
+
+  check(`${s.name}: no real building code in the body`, () => {
+    // The frontmatter description is EXEMPT and deliberately so: it is what Claude
+    // matches a user's question against, and real names are what make the skill
+    // findable. It is routing metadata, never a source for an answer.
+    const body = s.text.replace(/^---\n[\s\S]*?\n---\n/, '');
+    const hits = [...REAL_CODES].filter((c) => new RegExp('\\b' + c + '\\b').test(body));
+    return hits.length ? `real building code(s) in example text: ${hits.join(', ')}` : true;
+  });
+
+  check(`${s.name}: no real calendar date in the text`, () => {
+    const dates = [
+      ...CAL_ALL.deadlines.map((d) => d.date),
+      ...CAL_ALL.nonClassDays.flatMap((d) => [d.startDate, d.endDate]),
+      ...(CAL_ALL.parkingBlackouts || []).map((b) => b.date)
+    ];
+    const iso = dates.filter((d) => s.text.includes(d));
+    // The same dates written the way a person says them, which is how they appeared
+    // in the 0.1.0 examples -- "9 October", "20 November".
+    const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+      'August', 'September', 'October', 'November', 'December'];
+    const spoken = dates.map((d) => {
+      const [, m, day] = d.split('-');
+      return `${Number(day)} ${MONTHS[Number(m) - 1]}`;
+    }).filter((phrase) => s.text.includes(phrase));
+    const all = [...new Set([...iso, ...spoken])];
+    return all.length ? `real deadline/holiday date(s) quotable from the text: ${all.join(', ')}` : true;
+  });
+}
+
+/* --- the gate itself --- */
+for (const s of skillFiles) {
+  check(`${s.name}: carries the no-script-no-answer gate, above the title`, () => {
+    const body = s.text.replace(/^---\n[\s\S]*?\n---\n/, '');
+    if (!body.includes('STOP. No script, no answer.')) return 'the gate is missing entirely';
+    const gateAt = body.indexOf('STOP. No script, no answer.');
+    const titleAt = body.indexOf('\n# ');
+    if (titleAt !== -1 && gateAt > titleAt) return 'the gate is below the title, where it can be skimmed past';
+    return /If the script did not run, you have no answer/.test(body)
+      ? true : 'the gate is present but does not state the rule';
+  });
+}
+
+
+
 /* ================================================================== */
 console.log(`\n${passed} checks passed, ${failures.length} failed.`);
 if (failures.length) {
