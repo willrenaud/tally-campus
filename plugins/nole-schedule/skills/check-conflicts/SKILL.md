@@ -3,6 +3,61 @@ name: check-conflicts
 description: Check an imported FSU schedule for time collisions between courses. Reports three outcomes rather than two — a genuine overlap, a pair ruled out because one runs first-half and the other second-half, and pairs that CANNOT BE DECIDED because FSU does not publish fall session dates. Use whenever a student asks whether two courses conflict, whether their schedule works, or whether they can add a section.
 ---
 
+## STOP. No script, no answer.
+
+**Everything this skill knows comes from running its script.** This file contains no
+data. It contains instructions for running a program and for reading what the program
+prints, and nothing else.
+
+So there is exactly one gate, and it is not a matter of judgement:
+
+> **If the script did not run, you have no answer. Say so and stop.**
+
+That covers every way it can fail to run: no tool available to execute commands, `node`
+not installed, the file not found, a non-zero exit you did not expect, output you cannot
+parse, or a surface that will not run local programs at all. In every one of those cases
+the honest and only output is that you could not run it.
+
+**You must not, under any circumstance, answer anyway from:**
+
+- **the examples in this file.** Every date, time, duration, building code, room number
+  and course code in every example below is a **deliberate fake** — `ZZZ`, `AAA1111`,
+  `<DATE>`, `NN–NN minutes`. They are placeholders chosen to look obviously wrong if
+  they ever reach a student. If you find yourself about to quote one, that is the bug
+  this gate exists to catch.
+- **anything you know about Florida State** — its calendar, its buildings, its parking,
+  its walking distances. Your training is not this plugin's data and must never stand in
+  for it.
+- **the student's own words.** They told you their schedule; that is the input, not a
+  verified answer.
+- **an earlier answer in this conversation.** A number that came from a successful run
+  is about that run's question, not this one.
+
+**A plausible answer here is worse than no answer.** The whole point of this plugin is
+that its refusals live in the script — the ranges that cannot collapse to a single
+number, the verdicts with no `yes` rung, the calendar that expires, the dates it will
+not invent. None of that protects anyone if the script does not run and you answer from
+memory. You would be producing exactly the confident, unverifiable, wrong-looking-right
+answer the whole design exists to prevent, with the plugin's name on it.
+
+### What to say when it will not run
+
+Name what you tried to run, say plainly that it did not run, and give the likely reason:
+
+> I can't answer this. This plugin's skills work by running a script on your machine,
+> and I wasn't able to run it here.
+>
+> **This plugin requires Claude Code.** The regular Claude desktop and web apps can load
+> these instructions but cannot execute the scripts they depend on, so the plugin has no
+> way to work there. If you are in Claude Code and still seeing this, the command I tried
+> was `<the command>` and it failed with `<the error>`.
+
+Then stop. Do not offer a partial answer, a guess, a "rough idea", or a caveated
+estimate. There is nothing to be partial about: with no script output there is no
+information here at all.
+
+---
+
 # Do these classes conflict?
 
 $ARGUMENTS
@@ -55,14 +110,17 @@ publishes, and it comes with a one-step fix. Say all three parts:
    the first and last meeting are on the syllabus. Give those and the course
    becomes `partOfTerm: "custom"` with a `dateRange`, which resolves exactly.
 
-> **REL3170 and PHI2100 — I can't tell you, and here's exactly why.**
+**`AAA1111`, `BBB2222` and the times below are fake placeholders**, not real courses.
+Fill them from the script's output.
+
+> **AAA1111 and BBB2222 — I can't tell you, and here's exactly why.**
 >
-> They're both Tue/Thu 10:00–11:15, so on the clock they're identical. But REL3170
-> is a first-half course and PHI2100 is second-half, which would normally mean
+> They're both `<days>` `<TIME>`–`<TIME>`, so on the clock they're identical. But
+> AAA1111 is a first-half course and BBB2222 is second-half, which would normally mean
 > they're fine — different halves of the term, no overlap.
 >
 > The problem is that FSU only publishes session date ranges for *summer* terms.
-> There's no published first-half/second-half date range for Fall 2026 anywhere, so
+> There's no published first-half/second-half date range for the term in question, so
 > I have nothing to compare. They might never overlap, or they might collide every
 > week.
 >

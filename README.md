@@ -1,5 +1,22 @@
 # nole-schedule
 
+> ## ⚠ This plugin requires Claude Code. It does not work in the Claude app.
+>
+> **It will not work in the regular Claude desktop app, and it will not work at claude.ai in
+> a browser.** Those apps can load this plugin's instructions but cannot run the programs
+> those instructions depend on — and every single thing this plugin does is a program it has
+> to run. There is no reduced version that works without them.
+>
+> Installed in the wrong app, it looks present, reads your screenshot, and then cannot save
+> it, cannot look up a building, and cannot check a deadline. That is not a bug to work
+> around. It is the wrong app.
+>
+> **Claude Code** is the separate coding tool that runs in a terminal:
+> <https://claude.com/claude-code>. It is also a desktop app and a VS Code / JetBrains
+> extension — those run local programs, so those work.
+>
+> **Plain-English test:** if you type `/plugin` and nothing happens, you are in the wrong app.
+
 **Import your class schedule once, then ask Claude where your next class is, whether you can
 make it there in time, where to park, and when the drop deadline is.** It answers from campus
 data that ships with the plugin — buildings, a walking-time graph, the parking garages and the
@@ -27,6 +44,7 @@ plugin is deliberately small and says so:
 | **The shuttle** | **No Seminole Express data.** | The plugin will name the bus as an option when a walk is too long. It has no routes, no stops and no times, and it will not pretend otherwise. |
 | **The calendar** | **Fall 2026 only.** | After that term ends, every calendar-dependent skill **stops answering** and points you at the Registrar rather than serving deadlines from a term that is over. See [Refreshing the calendar](#refreshing-the-calendar-for-a-new-term). |
 | **Accessibility** | Nothing. | There is no accessible-route data in this dataset, so `can-i-make-it` refuses accessible-route questions instead of handing back the default walking route. |
+| **Where it runs** | **Claude Code only.** | Every skill works by running a program on your machine. The regular Claude desktop and web apps load the instructions but never run the programs, so the plugin cannot function there at all. See the banner at the top. |
 
 These are honest boundaries, not apologies. A plugin that guessed at the buildings it does not have,
 put a number on how long it takes to find a space in a full garage, or quoted a shuttle time it
@@ -41,6 +59,10 @@ what is missing and what was tried.
 
 ## Installing
 
+**Before you copy anything: this requires Claude Code.** Not the regular Claude desktop app,
+not claude.ai in a browser. Both will install something that cannot work, and will fail
+halfway through your first import rather than up front. See the banner at the top of this page.
+
 You need [Claude Code](https://claude.com/claude-code) installed. Open it in a terminal by
 running `claude`, then type these two commands **at the Claude Code prompt** (not in your normal
 shell):
@@ -54,9 +76,14 @@ The first command tells Claude Code where to find the plugin; the second install
 **restart Claude Code** — quit and run `claude` again. New skills are picked up when a session
 starts, so a plugin installed in a running session will not answer until you restart it.
 
-To check it worked, ask: *when is the last day to drop a class?* You should get a list of
-Registrar deadlines. That question works before you have imported anything, because deadlines
-belong to the term rather than to you.
+To check it worked, ask: *import my class schedule* and give it anything — even one line like
+"AAA1111 Monday 9am in Bellamy". It should read the week back to you and offer to save it.
+**If it reads your schedule but cannot save it, you are in the wrong app** — that is exactly
+the symptom the banner above describes.
+
+Deliberately not a deadline question as the check: `deadlines` is the one skill that answers
+without needing to write anything, so it is the one most likely to look fine on a surface where
+everything else is broken.
 
 To update later: `/plugin update nole-schedule`. To remove it: `/plugin uninstall nole-schedule`.
 

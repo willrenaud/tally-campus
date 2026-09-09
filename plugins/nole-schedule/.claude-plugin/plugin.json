@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "nole-schedule",
   "displayName": "Nole Schedule",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Import your class schedule once, then ask Claude about walking times between classes, parking, conflicts, and deadlines. Campus data is sourced from the FSU Registrar and other public pages; this is an independent project, not affiliated with or endorsed by Florida State University.",
   "author": {
     "name": "Tally Campus Project",

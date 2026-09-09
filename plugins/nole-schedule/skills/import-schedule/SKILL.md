@@ -3,6 +3,61 @@ name: import-schedule
 description: Import an FSU class schedule from text pasted out of myFSU or Student Central, an .ics calendar export, a screenshot, or the student describing their courses one at a time. Parses it, resolves buildings against the shipped campus data, shows the week back for confirmation, and saves it. Use whenever a student wants to add, replace, re-import, or correct their class schedule for a term.
 ---
 
+## STOP. No script, no answer.
+
+**Everything this skill knows comes from running its script.** This file contains no
+data. It contains instructions for running a program and for reading what the program
+prints, and nothing else.
+
+So there is exactly one gate, and it is not a matter of judgement:
+
+> **If the script did not run, you have no answer. Say so and stop.**
+
+That covers every way it can fail to run: no tool available to execute commands, `node`
+not installed, the file not found, a non-zero exit you did not expect, output you cannot
+parse, or a surface that will not run local programs at all. In every one of those cases
+the honest and only output is that you could not run it.
+
+**You must not, under any circumstance, answer anyway from:**
+
+- **the examples in this file.** Every date, time, duration, building code, room number
+  and course code in every example below is a **deliberate fake** — `ZZZ`, `AAA1111`,
+  `<DATE>`, `NN–NN minutes`. They are placeholders chosen to look obviously wrong if
+  they ever reach a student. If you find yourself about to quote one, that is the bug
+  this gate exists to catch.
+- **anything you know about Florida State** — its calendar, its buildings, its parking,
+  its walking distances. Your training is not this plugin's data and must never stand in
+  for it.
+- **the student's own words.** They told you their schedule; that is the input, not a
+  verified answer.
+- **an earlier answer in this conversation.** A number that came from a successful run
+  is about that run's question, not this one.
+
+**A plausible answer here is worse than no answer.** The whole point of this plugin is
+that its refusals live in the script — the ranges that cannot collapse to a single
+number, the verdicts with no `yes` rung, the calendar that expires, the dates it will
+not invent. None of that protects anyone if the script does not run and you answer from
+memory. You would be producing exactly the confident, unverifiable, wrong-looking-right
+answer the whole design exists to prevent, with the plugin's name on it.
+
+### What to say when it will not run
+
+Name what you tried to run, say plainly that it did not run, and give the likely reason:
+
+> I can't answer this. This plugin's skills work by running a script on your machine,
+> and I wasn't able to run it here.
+>
+> **This plugin requires Claude Code.** The regular Claude desktop and web apps can load
+> these instructions but cannot execute the scripts they depend on, so the plugin has no
+> way to work there. If you are in Claude Code and still seeing this, the command I tried
+> was `<the command>` and it failed with `<the error>`.
+
+Then stop. Do not offer a partial answer, a guess, a "rough idea", or a caveated
+estimate. There is nothing to be partial about: with no script output there is no
+information here at all.
+
+---
+
 # Import a class schedule
 
 You are turning whatever a student has to hand into one validated
@@ -94,7 +149,7 @@ All are dependency-free Node and run with no install. `$P` below is
 | --- | --- |
 | `node "$P"/current-term.mjs` | The term to assume, from today's date and the shipped calendar. |
 | `node "$P"/parse-ics.mjs <file>` | Unfolding and reading an `.ics` export into drafts. |
-| `node "$P"/resolve-buildings.mjs "HCB 216" ...` | Turning a raw location string into a building code, or finding out that it cannot be. |
+| `node "$P"/resolve-buildings.mjs "<CODE> <ROOM>" ...` | Turning a raw location string into a building code, or finding out that it cannot be. |
 | `node "$P"/review-schedule.mjs draft.json` | Validating, rendering the week, listing assumptions, and separating them from genuine questions. Writes nothing. |
 | `node "$P"/save-schedule.mjs --plan --term 2026-fall` | What is already stored, so you can say what you are about to replace. |
 | `node "$P"/save-schedule.mjs draft.json` | Validating again and writing. |
@@ -136,20 +191,26 @@ JSON document in a shell argument.
 The week first, as a table the student can scan. Then assumptions. Then, only if
 `MUST ASK` is non-empty, the questions. Then the request for a yes.
 
-> **Fall 2026** — 5 courses, 5 meeting blocks. *(assuming Fall 2026, from today's date)*
+**Everything in this draft is a fake placeholder** — the term, the counts, the course
+codes, the buildings, the rooms and the times. `AAA1111`, `ZZZ`, `<N>`. It shows the
+SHAPE of a draft message and contains no data. Every value in a real draft comes from
+what you parsed and from `review-schedule.mjs`. **Never carry a number out of this
+example into a message to a student** — not the course count, not the block count.
+
+> **`<term>`** — `<N>` courses, `<N>` meeting blocks. *(assuming `<term>`, from today's date)*
 >
 > | | Mon | Tue | Wed | Thu | Fri |
 > | --- | --- | --- | --- | --- | --- |
-> | 08:00–09:15 | | | | ISM3541 · WCB **G700** | |
-> | 11:30–12:45 | | FIN4424 · WCB **2703** | | FIN4424 · WCB **2703** | |
+> | `<TIME>`–`<TIME>` | | | | AAA1111 · ZZZ **0000** | |
+> | `<TIME>`–`<TIME>` | | BBB2222 · ZZZ **1111** | | BBB2222 · ZZZ **1111** | |
 >
 > **Assumptions** — correct any of these in a word:
-> - Assuming Fall 2026 from today's date; the screenshot does not say.
+> - Assuming `<term>` from today's date; the screenshot does not say.
 > - No section numbers in the image, so none stored. Nothing about location,
 >   conflicts or walking times uses them; say the word if you want them.
-> - All five treated as full-term — the source does not say otherwise.
-> - WCB is not in the shipped campus data (see below).
-> - ISM3541 meets once a week, on Thursday. Ordinary, but correct me if a day was cut off.
+> - All `<N>` treated as full-term — the source does not say otherwise.
+> - ZZZ is not in the shipped campus data (see below).
+> - AAA1111 meets once a week. Ordinary, but correct me if a day was cut off.
 > - Read from an image, so **room numbers** are the likeliest thing to be wrong —
 >   they are bolded above. Check them.
 >
@@ -216,8 +277,8 @@ class numbers. That is normal and none of it is a question. Omit all of them.
 Set `import.sourceFormat` to `manual-entry`. Collect course by course — this is the
 one source type where the student is generating the data as you go, so there is no
 draft to show until they are done. Ask for the building the way a student says it —
-"Bellamy", "HCB" — and run it through `resolve-buildings.mjs`, which understands
-aliases. Read the whole week back at the end, not after each course.
+a nickname, a full name, or a code — and run it through `resolve-buildings.mjs`, which
+understands aliases. Read the whole week back at the end, not after each course.
 
 ## Decision table for ambiguous input
 
@@ -271,7 +332,7 @@ the first place.
 
 Say which course, that the building is not in the shipped data, and what that costs:
 
-> BUL3310 meets in WCB 1010. WCB — the Wertheim Center — is not in this plugin's
+> AAA1111 meets in ZZZ 0000. ZZZ is not in this plugin's
 > campus data, so I have kept the class exactly as you gave it but I cannot compute
 > walking times to or from it, cannot tell you whether you can make it there from
 > your previous class, and cannot answer parking questions anchored on it. Times,
@@ -307,10 +368,16 @@ into `schedules/archive/` first and keeps the five most recent per term.
 
 Say what it will do as part of the draft message, not before it:
 
-> You already have a Fall 2026 schedule stored: 5 courses, 7 meeting blocks,
-> imported on 20 August from a text paste. Saving this replaces it. The old version
-> is archived, so this is undoable. The new import has 4 courses — POS2041 is not in
-> it. Was that a drop?
+> You already have a `<term>` schedule stored: `<N>` courses, `<N>` meeting blocks,
+> imported on `<DATE>` from a text paste. Saving this replaces it. The old version
+> is archived, so this is undoable. The new import has `<N>` courses — AAA1111 is not
+> in it. Was that a drop?
+
+**The counts in that example are `<N>` for a reason.** They are the numbers most likely
+to be lifted out of an example and reported as if they were real, because they read as
+incidental. They are not incidental: a course count is the single figure a student uses
+to check that nothing was lost. Get it from `review-schedule.mjs` or from your own
+parse, never from this page.
 
 That last question earns its place: a course disappearing between imports is either
 a drop or a parse failure, the two have opposite fixes, and the student is the only

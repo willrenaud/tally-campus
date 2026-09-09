@@ -1,5 +1,10 @@
 # nole-schedule
 
+> **⚠ Requires Claude Code.** Every skill here works by running a program on your machine.
+> The regular Claude desktop app and claude.ai in a browser load these instructions but do
+> not run those programs, so the plugin cannot work there — it will read your schedule and
+> then fail to save it. Get Claude Code at <https://claude.com/claude-code>.
+
 Import your class schedule once, then ask Claude about it.
 
 **Not affiliated with Florida State University.** Independent student project; FSU is referred
@@ -13,7 +18,7 @@ The goal is to make questions like these answerable from structured data instead
 - *What's due this week?*
 - *Do these two courses conflict?*
 
-## Version 0.1.0 — the first public release. Six skills, two travel modes.
+## Version 0.1.1 — six skills, two travel modes. Claude Code only.
 
 | Skill | What it does |
 | --- | --- |

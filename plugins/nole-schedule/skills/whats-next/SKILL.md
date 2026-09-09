@@ -3,6 +3,61 @@ name: whats-next
 description: Tell a student what class they have next, what is on today, or what their week looks like — time, building and room, read from their imported FSU schedule. Handles the end of the day, weekends, holidays, the Homecoming half day, finals week and the gaps between terms without inventing a next class. Use whenever a student asks what is next, what they have today or tomorrow, when their first or last class is, or what their week looks like.
 ---
 
+## STOP. No script, no answer.
+
+**Everything this skill knows comes from running its script.** This file contains no
+data. It contains instructions for running a program and for reading what the program
+prints, and nothing else.
+
+So there is exactly one gate, and it is not a matter of judgement:
+
+> **If the script did not run, you have no answer. Say so and stop.**
+
+That covers every way it can fail to run: no tool available to execute commands, `node`
+not installed, the file not found, a non-zero exit you did not expect, output you cannot
+parse, or a surface that will not run local programs at all. In every one of those cases
+the honest and only output is that you could not run it.
+
+**You must not, under any circumstance, answer anyway from:**
+
+- **the examples in this file.** Every date, time, duration, building code, room number
+  and course code in every example below is a **deliberate fake** — `ZZZ`, `AAA1111`,
+  `<DATE>`, `NN–NN minutes`. They are placeholders chosen to look obviously wrong if
+  they ever reach a student. If you find yourself about to quote one, that is the bug
+  this gate exists to catch.
+- **anything you know about Florida State** — its calendar, its buildings, its parking,
+  its walking distances. Your training is not this plugin's data and must never stand in
+  for it.
+- **the student's own words.** They told you their schedule; that is the input, not a
+  verified answer.
+- **an earlier answer in this conversation.** A number that came from a successful run
+  is about that run's question, not this one.
+
+**A plausible answer here is worse than no answer.** The whole point of this plugin is
+that its refusals live in the script — the ranges that cannot collapse to a single
+number, the verdicts with no `yes` rung, the calendar that expires, the dates it will
+not invent. None of that protects anyone if the script does not run and you answer from
+memory. You would be producing exactly the confident, unverifiable, wrong-looking-right
+answer the whole design exists to prevent, with the plugin's name on it.
+
+### What to say when it will not run
+
+Name what you tried to run, say plainly that it did not run, and give the likely reason:
+
+> I can't answer this. This plugin's skills work by running a script on your machine,
+> and I wasn't able to run it here.
+>
+> **This plugin requires Claude Code.** The regular Claude desktop and web apps can load
+> these instructions but cannot execute the scripts they depend on, so the plugin has no
+> way to work there. If you are in Claude Code and still seeing this, the command I tried
+> was `<the command>` and it failed with `<the error>`.
+
+Then stop. Do not offer a partial answer, a guess, a "rough idea", or a caveated
+estimate. There is nothing to be partial about: with no script output there is no
+information here at all.
+
+---
+
 # What's next
 
 $ARGUMENTS
@@ -57,10 +112,10 @@ The five cases the script separates, and what each one means:
 | Case | What the script does | What to say |
 | --- | --- | --- |
 | Ordinary class day | Lists meetings in time order | The straight answer. |
-| After the last class today | Searches forward day by day | "Nothing else today — next is Tuesday 11:30." |
-| Weekend or holiday | `dayStatus` returns `none` with the reason | Name the reason. "Monday is Labor Day, so nothing until Tuesday." |
-| **Finals week** | Returns **no meetings at all** | The weekly pattern does not apply. Exams are not at the normal meeting time. Send them to the Registrar's exam grid. **Never expand the weekly schedule across Dec 7–11.** |
-| Term over / between terms | Stops rather than wrapping | "Fall 2026 classes ended 4 December." Do not roll forward into a term with no shipped calendar. |
+| After the last class today | Searches forward day by day | "Nothing else today — next is `<weekday>` at `<TIME>`." |
+| Weekend or holiday | `dayStatus` returns `none` with the reason | Name the reason the script gave. "`<weekday>` is `<holiday name>`, so nothing until `<weekday>`." |
+| **Finals week** | Returns **no meetings at all** | The weekly pattern does not apply. Exams are not at the normal meeting time. Send them to the Registrar's exam grid. **Never expand the weekly schedule across the finals range the script reports.** |
+| Term over / between terms | Stops rather than wrapping | "`<term>` classes ended `<DATE>`." Do not roll forward into a term with no shipped calendar. |
 
 The search walks forward one real calendar day at a time and **stops at the end of
 the term**. It never wraps around to the start. If it comes back empty, that is
@@ -68,13 +123,14 @@ the answer.
 
 ## The Homecoming half day
 
-Friday 20 November 2026 cancels classes **from 12:00 p.m.**, while morning classes
-meet as normal. The shipped record has `classesCancelled: false`, which on its own
+One Friday in the shipped term cancels classes **from midday**, while morning classes
+meet as normal. The script is what knows which Friday and what time — do not name
+either from here. The shipped record has `classesCancelled: false`, which on its own
 reads as an ordinary day — so the schema now carries `cancelledFromTime` and the
 script reports the day as `partial`, lists the morning classes, and lists the
 afternoon ones under **CANCELLED**.
 
-Surface both halves. A student told "you have ECO2013 at 2pm" that day walks to a
+Surface both halves. A student told they have an afternoon class that day walks to a
 locked room.
 
 ## Location-unresolved courses are listed, never omitted
@@ -82,8 +138,11 @@ locked room.
 A course whose building is not in the shipped data, or whose room FSU has not
 announced, still appears in the list **with its time**, flagged inline:
 
-> **Thu** — ISM3541 8:00–9:15, WCB G700 · FIN4424 11:30–12:45, WCB 2703 ·
-> SOP3004 3:00–4:15, PDB A0101 *(Psychology)*
+> **`<weekday>`** — AAA1111 `<TIME>`–`<TIME>`, ZZZ 0000 · BBB2222 `<TIME>`–`<TIME>`,
+> ZZZ 1111 · CCC3333 `<TIME>`–`<TIME>`, YYY 2222 *(`<building name>`)*
+
+(Fake codes, as everywhere in this file. The shape is the lesson: one line per class,
+time first, place after, nothing omitted.)
 
 The time is right even when the place is not. Dropping a class to keep the answer
 tidy is the failure a student cannot catch — they trust the list, miss the class,
@@ -95,22 +154,29 @@ flagged as the least reliable thing on the line.
 
 ## What an answer looks like
 
-> **Next up: FIN4424 at 11:30 in WCB 2703** — the Wertheim Center. You've got
-> about two hours.
+**Every course code, building code, room and time below is a fake placeholder.**
+`AAA1111`, `ZZZ`, `<TIME>` — they are not real and they are not defaults. Fill them
+from the script's output; if you have none, see the gate at the top of this file.
+
+> **Next up: AAA1111 at `<TIME>` in ZZZ 0000** — the `<building name>`. You've got
+> about `<N>` hours.
 >
-> Rest of today: FIN4453 at 1:15 (WCB 1701), then SOP3004 at 3:00 over in PDB
-> A0101. That last one is the only walk worth planning — WCB to Psychology is
-> across campus. Ask me "can I make it" if you want the number.
+> Rest of today: BBB2222 at `<TIME>` (ZZZ 1111), then CCC3333 at `<TIME>` over in
+> YYY 2222. That last one is the only walk worth planning — ZZZ to YYY is across
+> campus. Ask me "can I make it" if you want the number.
 
 And a non-day:
 
-> **Nothing today — it's Labor Day.** FSU has classes cancelled all day.
+> **Nothing today — it's `<holiday name>`.** Classes are cancelled all day.
 >
-> Next is Tuesday: FIN4424 at 11:30 in WCB 2703.
+> Next is `<weekday>`: AAA1111 at `<TIME>` in ZZZ 0000.
 >
-> Worth knowing separately: Labor Day Monday is also a home football game, so if
-> you were planning to park on campus for anything else, ask me about parking
-> first.
+> Worth knowing separately: that day is also a home football game, so if you were
+> planning to park on campus for anything else, ask me about parking first.
+
+Note what the shape teaches and the values do not: name the course, the time and the
+place; say what is left today; flag the one leg worth planning; name the holiday rather
+than going blank. All of that comes from the script.
 
 ## Never
 

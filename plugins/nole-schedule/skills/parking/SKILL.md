@@ -3,6 +3,61 @@ name: parking
 description: Answer where to park at FSU for a given class, building, date and time — which garage, whether a permit is valid in that window, and what the enforcement actually is. Covers FSU's six parking garages only; refuses outright on home football game dates, on the evening before one, on dates with no shipped calendar, and on buildings that are not in the campus data. Use whenever a student asks about parking, garages, permits, or where to leave the car.
 ---
 
+## STOP. No script, no answer.
+
+**Everything this skill knows comes from running its script.** This file contains no
+data. It contains instructions for running a program and for reading what the program
+prints, and nothing else.
+
+So there is exactly one gate, and it is not a matter of judgement:
+
+> **If the script did not run, you have no answer. Say so and stop.**
+
+That covers every way it can fail to run: no tool available to execute commands, `node`
+not installed, the file not found, a non-zero exit you did not expect, output you cannot
+parse, or a surface that will not run local programs at all. In every one of those cases
+the honest and only output is that you could not run it.
+
+**You must not, under any circumstance, answer anyway from:**
+
+- **the examples in this file.** Every date, time, duration, building code, room number
+  and course code in every example below is a **deliberate fake** — `ZZZ`, `AAA1111`,
+  `<DATE>`, `NN–NN minutes`. They are placeholders chosen to look obviously wrong if
+  they ever reach a student. If you find yourself about to quote one, that is the bug
+  this gate exists to catch.
+- **anything you know about Florida State** — its calendar, its buildings, its parking,
+  its walking distances. Your training is not this plugin's data and must never stand in
+  for it.
+- **the student's own words.** They told you their schedule; that is the input, not a
+  verified answer.
+- **an earlier answer in this conversation.** A number that came from a successful run
+  is about that run's question, not this one.
+
+**A plausible answer here is worse than no answer.** The whole point of this plugin is
+that its refusals live in the script — the ranges that cannot collapse to a single
+number, the verdicts with no `yes` rung, the calendar that expires, the dates it will
+not invent. None of that protects anyone if the script does not run and you answer from
+memory. You would be producing exactly the confident, unverifiable, wrong-looking-right
+answer the whole design exists to prevent, with the plugin's name on it.
+
+### What to say when it will not run
+
+Name what you tried to run, say plainly that it did not run, and give the likely reason:
+
+> I can't answer this. This plugin's skills work by running a script on your machine,
+> and I wasn't able to run it here.
+>
+> **This plugin requires Claude Code.** The regular Claude desktop and web apps can load
+> these instructions but cannot execute the scripts they depend on, so the plugin has no
+> way to work there. If you are in Claude Code and still seeing this, the command I tried
+> was `<the command>` and it failed with `<the error>`.
+
+Then stop. Do not offer a partial answer, a guess, a "rough idea", or a caveated
+estimate. There is nothing to be partial about: with no script output there is no
+information here at all.
+
+---
+
 # Where to park
 
 $ARGUMENTS
@@ -33,10 +88,10 @@ would hedge.
 
 ## The script
 
-    node "${CLAUDE_PLUGIN_ROOT}"/scripts/where-to-park.mjs --building HCB --date 2026-09-03 --time 09:00
-    node "${CLAUDE_PLUGIN_ROOT}"/scripts/where-to-park.mjs --building HCB --permits student-commuter
-    node "${CLAUDE_PLUGIN_ROOT}"/scripts/where-to-park.mjs --data-dir "$CLAUDE_PLUGIN_DATA" --course ISM3541 --date 2026-09-03
-    node "${CLAUDE_PLUGIN_ROOT}"/scripts/where-to-park.mjs --building HCB --json
+    node "${CLAUDE_PLUGIN_ROOT}"/scripts/where-to-park.mjs --building <CODE> --date <YYYY-MM-DD> --time <HH:MM>
+    node "${CLAUDE_PLUGIN_ROOT}"/scripts/where-to-park.mjs --building <CODE> --permits student-commuter
+    node "${CLAUDE_PLUGIN_ROOT}"/scripts/where-to-park.mjs --data-dir "$CLAUDE_PLUGIN_DATA" --course <COURSE> --date <YYYY-MM-DD>
+    node "${CLAUDE_PLUGIN_ROOT}"/scripts/where-to-park.mjs --building <CODE> --json
 
 Exit codes: **0** answered, **2** could not run, **3** **refused by design**.
 
@@ -65,8 +120,9 @@ hedged recommendation, and do not name a garage "just in case".
 | `building-not-in-data` | The building is not one of the 33 that ship | There is no coordinate for it, so no garage can be ranked against it. Naming one anyway is a guess about a building the data has never seen. |
 | `location-tba` / `no-location` | The named course has no announced room, or is online | Nothing to park near yet. |
 
-**Two of the seven blackout dates are not Saturdays** — Monday 7 September (Labor
-Day) and Friday 27 November (the day after Thanksgiving). Treating game days as a
+**Not every blackout date is a Saturday** — the shipped term includes a Monday and a
+Friday game, both on dates a student would otherwise be on campus. The script reads
+the list; never assume a weekday is clear. Treating game days as a
 weekend problem misses both. This is a reason to always pass the real date rather
 than reasoning about the day of the week.
 
@@ -120,21 +176,24 @@ Say so rather than reaching for a plausible answer:
 
 ## What an answer looks like
 
-> **For your 9:00 in HCB on Thursday 3 September:**
+**Every building code, garage, date, time and duration below is a fake placeholder.**
+`ZZZ`, `<PGn>`, `NN–NN`. Fill them from the script's output; with no output, see the
+gate at the top of this file.
+
+> **For your `<TIME>` in ZZZ on `<weekday>` `<DATE>`:**
 >
-> **Traditions Way (PG2)** is the closest of the garages the data lists for HCB —
-> roughly a **2–6 minute** walk, though that is a straight-line estimate rather
-> than a real route. Woodward Avenue (PG1) is the other one listed, about 4–8.
+> **`<garage name>` (`<PGn>`)** is the closest of the garages the data lists for ZZZ —
+> roughly a **NN–NN minute** walk, though that is a straight-line estimate rather
+> than a real route. `<garage name>` (`<PGn>`) is another one listed, about NN–NN.
 >
-> At 9:00 on a weekday both are **permit-required**, and student commuter permits
+> At that hour on a weekday both are **permit-required**, and student commuter permits
 > are on the allowed list.
 >
-> Two things you should hear in full. First, FSU's wording is that students may use
-> Student (W) White Spaces "from 5:45 AM to Midnight, **unless denoted by
-> signage**" — the signage clause is part of the rule, so a sign at the space
-> overrides all of this. Second, FSU's own two pages disagree: the garages page
-> says 5:45 AM to midnight, the general parking page says weekdays 7:30 AM to 4:30
-> PM. Nobody has resolved that, including me.
+> Two things you should hear in full. First, the rule the script printed carries a
+> **"unless denoted by signage"** clause — the signage clause is part of the rule, so a
+> sign at the space overrides all of this. Second, FSU's own pages disagree with each
+> other about student hours, and the script surfaces both; nobody has resolved that,
+> including me. Quote the `enforcementNote` the script gave you, verbatim.
 >
 > And the big caveat: **only the six garages are in this data.** No surface lot,
 > metered space or reserved lot is in it at all, so this isn't a list of where you
@@ -142,8 +201,8 @@ Say so rather than reaching for a plausible answer:
 
 And a refusal:
 
-> **Saturday 29 August is a home game — Florida State vs. New Mexico State — and I
-> won't guess at parking for it.**
+> **`<DATE>` is a home game — `<the fixture the script named>` — and I won't guess at
+> parking for it.**
 >
 > FSU closes and reserves campus parking areas on home football game days, requires
 > vehicles out "by 11:59 PM the night before", and tows from reserved Garnet areas

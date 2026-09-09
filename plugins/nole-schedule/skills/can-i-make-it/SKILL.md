@@ -3,6 +3,61 @@ name: can-i-make-it
 description: Work out whether a student can get from one FSU class to the next in the gap between them — walking time between buildings, back-to-back feasibility, "do I have time to stop at Strozier", "how long from Bellamy to HCB", "can I drive between these". Reports a range with its assumptions rather than a single number; when a leg is too long to walk it says so and names driving and the campus shuttle instead of returning a flat no; and it refuses on legs the shipped campus data cannot route. Use whenever a student asks about getting between classes, walking or driving times, or whether a schedule gap is enough.
 ---
 
+## STOP. No script, no answer.
+
+**Everything this skill knows comes from running its script.** This file contains no
+data. It contains instructions for running a program and for reading what the program
+prints, and nothing else.
+
+So there is exactly one gate, and it is not a matter of judgement:
+
+> **If the script did not run, you have no answer. Say so and stop.**
+
+That covers every way it can fail to run: no tool available to execute commands, `node`
+not installed, the file not found, a non-zero exit you did not expect, output you cannot
+parse, or a surface that will not run local programs at all. In every one of those cases
+the honest and only output is that you could not run it.
+
+**You must not, under any circumstance, answer anyway from:**
+
+- **the examples in this file.** Every date, time, duration, building code, room number
+  and course code in every example below is a **deliberate fake** — `ZZZ`, `AAA1111`,
+  `<DATE>`, `NN–NN minutes`. They are placeholders chosen to look obviously wrong if
+  they ever reach a student. If you find yourself about to quote one, that is the bug
+  this gate exists to catch.
+- **anything you know about Florida State** — its calendar, its buildings, its parking,
+  its walking distances. Your training is not this plugin's data and must never stand in
+  for it.
+- **the student's own words.** They told you their schedule; that is the input, not a
+  verified answer.
+- **an earlier answer in this conversation.** A number that came from a successful run
+  is about that run's question, not this one.
+
+**A plausible answer here is worse than no answer.** The whole point of this plugin is
+that its refusals live in the script — the ranges that cannot collapse to a single
+number, the verdicts with no `yes` rung, the calendar that expires, the dates it will
+not invent. None of that protects anyone if the script does not run and you answer from
+memory. You would be producing exactly the confident, unverifiable, wrong-looking-right
+answer the whole design exists to prevent, with the plugin's name on it.
+
+### What to say when it will not run
+
+Name what you tried to run, say plainly that it did not run, and give the likely reason:
+
+> I can't answer this. This plugin's skills work by running a script on your machine,
+> and I wasn't able to run it here.
+>
+> **This plugin requires Claude Code.** The regular Claude desktop and web apps can load
+> these instructions but cannot execute the scripts they depend on, so the plugin has no
+> way to work there. If you are in Claude Code and still seeing this, the command I tried
+> was `<the command>` and it failed with `<the error>`.
+
+Then stop. Do not offer a partial answer, a guess, a "rough idea", or a caveated
+estimate. There is nothing to be partial about: with no script output there is no
+information here at all.
+
+---
+
 # Can I make it between these classes?
 
 $ARGUMENTS
@@ -42,8 +97,8 @@ forgot to count. `tight` is the verdict for a gap that fits the optimistic figur
 but not the realistic one, and it means *go now*, not *you'll be fine*.
 
 **3. Any leg touching a location the data cannot resolve REFUSES.** Not "estimates
-with a caveat". A student timetabled in `WCB` gets told there is no answer, not a
-number derived from a building that happens to be nearby. Only 33 of FSU's 500-odd
+with a caveat". A student timetabled in a building the data does not ship gets told
+there is no answer, not a number derived from a building that happens to be nearby. Only 33 of FSU's 500-odd
 buildings ship, so this comes up constantly and is completely ordinary.
 
 **4. "I can't tell you" is a correct answer.** A student who gets a hedge walks
@@ -54,8 +109,8 @@ are not symmetric and the answer is not centred.
 
     node "${CLAUDE_PLUGIN_ROOT}"/scripts/can-i-make-it.mjs --data-dir "$CLAUDE_PLUGIN_DATA"
     node "${CLAUDE_PLUGIN_ROOT}"/scripts/can-i-make-it.mjs --data-dir "$CLAUDE_PLUGIN_DATA" --day thursday
-    node "${CLAUDE_PLUGIN_ROOT}"/scripts/can-i-make-it.mjs --from HCB --to BEL --gap 15
-    node "${CLAUDE_PLUGIN_ROOT}"/scripts/can-i-make-it.mjs --from WCB --to PDB --gap 30 --date 2026-09-03
+    node "${CLAUDE_PLUGIN_ROOT}"/scripts/can-i-make-it.mjs --from <FROM> --to <TO> --gap <MINUTES>
+    node "${CLAUDE_PLUGIN_ROOT}"/scripts/can-i-make-it.mjs --from <FROM> --to <TO> --gap <MINUTES> --date <YYYY-MM-DD>
     node "${CLAUDE_PLUGIN_ROOT}"/scripts/can-i-make-it.mjs --data-dir "$CLAUDE_PLUGIN_DATA" --json
 
 Pass `--date` whenever a drive alternative might come up: it is what lets the
@@ -63,7 +118,7 @@ blackout check run against the drive plan. `--time` and `--permits` refine which
 garage is offered.
 
 `--from/--to/--gap` is for a question that is not about the stored schedule —
-"how long from Bellamy to HCB". `--data-dir` mode reads the stored schedule and
+"how long from one named building to another". `--data-dir` mode reads the stored schedule and
 checks every back-to-back pair.
 
 Exit codes: **0** something was answered, **2** could not run, **3** *nothing* was
@@ -162,17 +217,21 @@ Say which one it is and why. Do not offer a substitute estimate for any of them.
 | `accessible-routes-unsupported` | `preferences.requiresAccessibleRoutes` is true | **There is no accessibility data anywhere in this dataset** — not on entrances, not on edges, not on garage exits. Say that plainly and point at FSU Student Accessibility Services. Never quietly return the default route. `DATA-GAPS.md` §9. |
 | `no-route` | Both buildings ship but the graph does not connect them | A data defect, not a fact about campus. Say so rather than producing a duration. |
 
-The step-4 screenshot schedule is the live example: four of its five courses are
-in `WCB`, so **every single leg refuses** and the script exits 3. That is the
-right outcome. Report it as "I can't route any of these, and here is why",
-not as an error and not as a partial estimate.
+A schedule can refuse on **every** leg — if each of its courses sits in a building
+the data does not ship, the script exits 3 having answered nothing. That is the right
+outcome. Report it as "I can't route any of these, and here is why", not as an error
+and not as a partial estimate.
 
 ## What an answer looks like
 
-> **Tuesday, ENC1101 → CHM1045, 10-minute gap: tight. Leave as soon as you're packed.**
+**Every value below is a fake placeholder** — `AAA1111`, `ZZZ`, `NN–NN`. They are not
+defaults and not fallbacks. Fill them from the script's output; with no output, see the
+gate at the top of this file.
+
+> **`<weekday>`, AAA1111 → BBB2222, `<N>`-minute gap: tight. Leave as soon as you're packed.**
 >
-> Bellamy to the Kellogg Building is **8–14 minutes**. Your gap is 10, which sits
-> inside that range — the data genuinely cannot tell you which side of it you're on.
+> `<building name>` to `<building name>` is **NN–NN minutes**. Your gap is `<N>`, which
+> sits inside that range — the data genuinely cannot tell you which side of it you're on.
 >
 > The low end is what the shipped data says. The high end adds back what it's known
 > to leave out: every walking time here is measured centre-of-building to
@@ -182,14 +241,15 @@ not as an error and not as a partial estimate.
 
 And a leg that does not work on foot:
 
-> **WCB → SOP3004 in PDB, 30-minute gap: not on foot.**
+> **AAA1111 in ZZZ → BBB2222 in YYY, `<N>`-minute gap: not on foot.**
 >
-> The walk is **38–54 minutes** — Wertheim is right out on Gaines and Psychology is
-> across the whole core. That's a real number, not a rounding problem.
+> The walk is **NN–NN minutes** — the two are at opposite ends of campus. That's a
+> real number, not a rounding problem.
 >
-> **If you drive**, the parts I can estimate are: about 7 min walking to PG5, about
-> 6 min driving to PG3, about 3 min walking in. With the safety margin applied once
-> across both walks, that's **22 minutes before you start looking for a space**.
+> **If you drive**, the parts I can estimate are: about `<N>` min walking to `<garage>`,
+> about `<N>` min driving to `<garage>`, about `<N>` min walking in. With the safety
+> margin applied once across both walks, that's **`<N>` minutes before you start looking
+> for a space**.
 >
 > **And that's where it stops.** I have no capacity, no fill times and no occupancy
 > data for any garage, so *how long it takes to find a space is unknown* — on a
@@ -197,18 +257,17 @@ And a leg that does not work on foot:
 > you a total, because any total I gave you would be leaving out the part that
 > decides it. Budget generously and leave when the first class ends.
 >
-> Seminole Express runs 7am–8pm weekdays, but none of its stops or times are in my
-> data, so I can't tell you whether a bus helps here. The Transit app has live times.
+> Seminole Express runs on weekdays, but none of its stops or times are in my data, so
+> I can't tell you whether a bus helps here. The Transit app has live times.
 
 And a refusal:
 
-> **ISM3541 → FIN4424: I can't tell you.**
+> **AAA1111 → BBB2222: I can't tell you.**
 >
-> Both are in WCB, the Wertheim Center, which isn't in this plugin's campus data —
-> it's new enough that no coordinate could be sourced for it. I could name a
-> building nearby and give you a number, but it would be a number about a different
-> building, so I'd rather say I don't know. Everything else about those classes is
-> stored correctly.
+> Both are in ZZZ, which isn't in this plugin's campus data — only a fraction of
+> campus ships. I could name a building nearby and give you a number, but it would be
+> a number about a different building, so I'd rather say I don't know. Everything else
+> about those classes is stored correctly.
 
 ## Never
 

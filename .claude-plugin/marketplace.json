@@ -2,7 +2,7 @@
   "$schema": "https://code.claude.com/schema/marketplace.json",
   "name": "tally-campus",
   "description": "An unaffiliated, student-built Claude Code marketplace for getting around Tallahassee's campus: class schedules, walking routes, parking, and the academic calendar. Not affiliated with or endorsed by Florida State University.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "owner": {
     "name": "Tally Campus Project",
     "url": "https://github.com/willrenaud/tally-campus"
@@ -13,7 +13,7 @@
       "displayName": "Nole Schedule",
       "source": "./plugins/nole-schedule",
       "description": "Import your class schedule once, then ask Claude about walking times between classes, parking, conflicts, and deadlines. Campus data is sourced from the FSU Registrar and other public pages; this is an independent project, not affiliated with or endorsed by Florida State University.",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "author": {
         "name": "Tally Campus Project",
         "url": "https://github.com/willrenaud/tally-campus"
